@@ -1,0 +1,18 @@
+{{define "content"}}
+<h1>{{.Name}} (ID {{.ID}}, unit price {{printf "%.2f Euro" .PriceEUR}}, {{.Stock}} on stock)</h1>
+<link rel="stylesheet" href="/static/dropzone-min/basic.min.css">
+<link rel="stylesheet" href="/static/dropzone-min/dropzone.min.css">
+<script src="/static/dropzone-min/dropzone.min.js"></script>
+<style>
+.dz-error-mark g g {
+	fill: #dd0000;
+}
+.dz-success-mark g path {
+	fill: #009900;
+}
+</style>
+<form action="/upload/{{.ID}}" class="dropzone my-4" id="my-awesome-dropzone"></form>
+<div class="text-end">
+	<a class="btn btn-secondary" href="/">Back</a>
+</div>
+{{end}}

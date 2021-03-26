@@ -1,0 +1,52 @@
+{{define "content"}}
+<h1>Digital Goods</h1>
+<p>{{.Translate "how"}}</p>
+<ol>
+	<li>{{.Translate "how-1"}}</li>
+	<li>{{.Translate "how-2"}}</li>
+	<li>{{.Translate "how-3"}}</li>
+	<li>{{.Translate "how-4"}}</li>
+	<li>{{.Translate "how-5"}}</li>
+</ol>
+<form method="post">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>{{.Translate "product"}}</th>
+				<th>{{.Translate "amount"}}</th>
+				<th>{{.Translate "in-stock"}}</th>
+				<th>{{.Translate "item-price"}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .AvailableArticles}}
+			<tr>
+				<td>{{.Name}}</td>
+				<td><input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="0" size="2"></td>
+				<td>{{.Stock}}</td>
+				<td>{{$.Translate "%.2f Euro" .PriceEUR}}</td>
+			</tr>
+			{{else}}
+			<tr>
+				<td colspan="4">{{.Translate "sorry-out-of-stock"}}</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{if gt (len .AvailableArticles) 0}}
+		<p class="text-center">
+			<img id="captcha-image" src="/captcha/{{.CaptchaID}}.png" alt="Captcha image">
+		</p>
+		<div class="mb-3">
+			<label for="captcha-solution" class="form-label">{{.Translate "captcha-label"}}</label>
+			<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-solution" name="captcha-solution" required>
+			<div class="invalid-feedback" id="input-err">{{.Translate "captcha-error"}}</div>
+			<div class="form-text"><a class="text-muted" href="#" onclick="reloadCaptcha(); return false;">{{.Translate "captcha-reload"}}</a></div>
+		</div>
+		<input type="hidden" name="captcha-id" value="{{.CaptchaID}}">
+		<div class="text-end">
+			<input class="btn btn-success" type="submit" value="{{.Translate "submit-order"}}">
+		</div>
+	{{end}}
+</form>
+{{end}}

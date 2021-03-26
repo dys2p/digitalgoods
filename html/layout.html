@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	{{block "head" .}}{{end}}
+	<link rel="stylesheet" href="/static/bootstrap.min.css">
+	<script src="/static/scripts.js"></script>
+	<style>
+		nav { margin-bottom: 12px; }
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="/">{{block "brand" .}}{{end}}</a>
+			{{block "menu" .}}{{end}}
+			<div>
+				<a href="?lang=de" class="btn btn-secondary btn-sm ml-4">DE</a>
+				<a href="?lang=en" class="btn btn-secondary btn-sm ml-4">EN</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		{{template "content" .}}
+	</div>
+	{{block "footer" .}}{{end}}
+</body>
+</html>

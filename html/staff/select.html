@@ -1,0 +1,11 @@
+{{define "content"}}
+<h1>Upload</h1>
+<p>What article are you uploading?</p>
+<ul>
+	{{range .}}
+	<li>
+		<a href="/upload/{{.ID}}">{{.Name}} (ID {{.ID}}, unit price {{printf "%.2f Euro" .PriceEUR}}, {{.Stock}} on stock)</a>
+	</li>
+	{{end}}
+</ul>
+{{end}}
