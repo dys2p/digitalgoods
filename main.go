@@ -195,6 +195,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 	}
 	invoiceRequest.ExpirationMinutes = 60
 	invoiceRequest.DefaultLanguage = "de-DE"
+	invoiceRequest.OrderID = "digitalgoods"
 	invoiceRequest.RedirectURL = fmt.Sprintf("%s/i/{InvoiceId}%s", AbsHost(r), LangQuery(r)) // purchase ID is invoice ID
 	btcInvoice, err := store.CreateInvoice(invoiceRequest)
 	if err != nil {
