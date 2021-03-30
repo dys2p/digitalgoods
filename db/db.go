@@ -264,7 +264,7 @@ func (db *DB) SetSettled(id string) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback() // no effect if tx has been commited
+	defer tx.Rollback() // no effect if tx has been committed
 
 	purchase, err := db.getPurchaseWithStmt(id, tx.Stmt(db.getPurchase))
 	if err != nil {
