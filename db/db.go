@@ -85,7 +85,7 @@ func OpenDB() (*DB, error) {
 		return nil, err
 	}
 
-	db.getArticle, err = db.sqlDB.Prepare("select id, name, price from article where id = ?")
+	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article) from article a left join stock s on a.id = s.article where id = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func (db *DB) FulfilUnderdelivered() error {
 
 func (db *DB) GetArticle(id string) (Article, error) {
 	var article = Article{}
-	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.Name, &article.Price)
+	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.Name, &article.Price, &article.Stock)
 }
 
 func (db *DB) GetArticles() ([]Article, error) {
