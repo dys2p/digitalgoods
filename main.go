@@ -278,11 +278,11 @@ func rpc(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch event.Type {
-	case btcpay.InvoiceExpired:
+	case btcpay.EventInvoiceExpired:
 		if err := database.SetExpired(event.InvoiceID); err != nil {
 			log.Printf("rpc: error setting expired %s: %v", event.InvoiceID, err)
 		}
-	case btcpay.InvoiceSettled:
+	case btcpay.EventInvoiceSettled:
 		if err := database.SetSettled(event.InvoiceID); err != nil {
 			log.Printf("rpc: error fulfilling order %s: %v", event.InvoiceID, err)
 		}
