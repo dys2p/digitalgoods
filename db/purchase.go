@@ -10,9 +10,9 @@ import (
 
 const (
 	StatusNew            string = "new"            // waiting for payment
-	StatusExpired               = "expired"        // not paid properly
-	StatusUnderdelivered        = "underdelivered" // payment settled, but we had not had enough items on stock
-	StatusFinalized             = "finalized"      // payment settled, codes delivered
+	StatusExpired        string = "expired"        // not paid properly
+	StatusUnderdelivered string = "underdelivered" // payment settled, but we had not had enough items on stock
+	StatusFinalized      string = "finalized"      // payment settled, codes delivered
 )
 
 type Purchase struct {

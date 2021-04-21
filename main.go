@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"io"
@@ -29,7 +30,7 @@ import (
 
 var database *db.DB
 var sessionManager *scs.SessionManager
-var store *btcpay.Store
+var store btcpay.Store
 var users userdb.Authenticator
 
 //go:embed static
@@ -39,6 +40,11 @@ func main() {
 
 	log.SetFlags(0)
 
+	// os flags
+
+	var test = flag.Bool("test", false, "use btcpay dummy store")
+	flag.Parse()
+
 	var err error
 	database, err = db.OpenDB()
 	if err != nil {
@@ -46,16 +52,26 @@ func main() {
 		return
 	}
 
-	api, err := btcpay.LoadAPI("data/api.json")
-	if err != nil {
-		log.Printf("error loading API: %v", err)
-		return
-	}
+	if *test {
+		store = btcpay.NewDummyStore()
+		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
+	} else {
+		api, err := btcpay.LoadAPI("data/api.json")
+		if err != nil {
+			log.Printf("error loading API: %v", err)
+			return
+		}
 
-	store, err = btcpay.LoadStore(api, "data/store.json")
-	if err != nil {
-		log.Printf("error loading store: %v", err)
-		return
+		store, err = btcpay.LoadServerStore(api, "data/store.json")
+		if err != nil {
+			log.Printf("error loading store: %v", err)
+			return
+		}
+
+		log.Println("don't forget to set up the webhook for your store")
+		log.Println(`  URL: /rpc`)
+		log.Println(`  Event: "An invoice has expired"`)
+		log.Println(`  Event: "An invoice has been settled"`)
 	}
 
 	users, err = userdb.Open()
@@ -63,11 +79,6 @@ func main() {
 		log.Printf("error opening userdb: %v", err)
 		return
 	}
-
-	log.Println("don't forget to set up the webhook for your store")
-	log.Println(`  URL: /rpc`)
-	log.Println(`  Event: "An invoice has expired"`)
-	log.Println(`  Event: "An invoice has been settled"`)
 
 	var stop = make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
@@ -220,7 +231,7 @@ type custPurchase struct {
 }
 
 func (cp *custPurchase) CheckoutLink() template.URL {
-	return template.URL(store.API.InvoiceCheckoutLink(cp.Purchase.InvoiceID))
+	return template.URL(store.GetAPI().InvoiceCheckoutLink(cp.Purchase.InvoiceID))
 }
 
 func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
