@@ -1,5 +1,15 @@
 {{define "content"}}
 <h1>{{.Name}} (ID {{.ID}}, unit price {{printf "%.2f Euro" .PriceEUR}}, {{.Stock}} on stock)</h1>
+<!-- tabs -->
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+		<a class="nav-link active" href="/upload/{{.ID}}/image">Image</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="/upload/{{.ID}}/text">Text</a>
+	</li>
+</ul>
+<!-- image dropzone -->
 <link rel="stylesheet" href="/static/dropzone-min/basic.min.css">
 <link rel="stylesheet" href="/static/dropzone-min/dropzone.min.css">
 <script src="/static/dropzone-min/dropzone.min.js"></script>
@@ -11,7 +21,7 @@
 	fill: #009900;
 }
 </style>
-<form action="/upload/{{.ID}}" class="dropzone my-4" id="my-awesome-dropzone"></form>
+<form action="/upload/{{.ID}}/image" class="dropzone my-4" id="my-awesome-dropzone"></form>
 <div class="text-end">
 	<a class="btn btn-secondary" href="/">Back</a>
 </div>

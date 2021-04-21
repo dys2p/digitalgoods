@@ -22,5 +22,6 @@ var (
 	StaffMarkPaidConfirm = parse("staff.html", "staff/mark-paid-confirm.html")
 	StaffLogin           = parse("staff/login.html")
 	StaffSelect          = parse("staff.html", "staff/select.html")
-	StaffUpload          = parse("staff.html", "staff/upload.html")
+	StaffUploadImage     = parse("staff.html", "staff/upload-image.html")
+	StaffUploadText      = parse("staff.html", "staff/upload-text.html")
 )

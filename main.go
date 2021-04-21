@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -118,7 +119,10 @@ func main() {
 	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid-confirm", auth(wrapTmpl(staffMarkPaidConfirmPost)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload", auth(wrapTmpl(staffSelectGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid", auth(wrapTmpl(staffUploadGet)))
-	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid", auth(wrapAPI(staffUploadPost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/image", auth(wrapTmpl(staffUploadImageGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/image", auth(wrapAPI(staffUploadImagePost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/text", auth(wrapTmpl(staffUploadTextGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/text", auth(wrapAPI(staffUploadTextPost)))
 
 	var staffSrv = ListenAndServe("tcp", "127.0.0.1:9003", sessionManager.LoadAndSave(staffRtr), stop)
 	defer staffSrv.Shutdown()
@@ -351,7 +355,7 @@ func staffMarkPaidConfirmPost(w http.ResponseWriter, r *http.Request) error {
 	if err := database.SetSettled(r.PostFormValue("id")); err != nil {
 		return err
 	}
-	http.Redirect(w, r, fmt.Sprintf("/%s", LangQuery(r)), http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return nil
 }
 
@@ -364,14 +368,20 @@ func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffUploadGet(w http.ResponseWriter, r *http.Request) error {
+	// redirect to image upload
+	http.Redirect(w, r, fmt.Sprintf("/upload/%s/image", httprouter.ParamsFromContext(r.Context()).ByName("articleid")), http.StatusSeeOther)
+	return nil
+}
+
+func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 	article, err := database.GetArticle(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
 	if err != nil {
 		return err
 	}
-	return html.StaffUpload.Execute(w, article)
+	return html.StaffUploadImage.Execute(w, article)
 }
 
-func staffUploadPost(w http.ResponseWriter, r *http.Request) error {
+func staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
 
 	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
 
@@ -393,7 +403,36 @@ func staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	log.Printf("added to stock: %s %s", articleID, db.Mask(header.Filename, 4))
+	log.Printf("added image to stock: %s %s", articleID, db.Mask(header.Filename, 4))
 
 	return database.FulfilUnderdelivered()
+}
+
+func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
+	article, err := database.GetArticle(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
+	if err != nil {
+		return err
+	}
+	return html.StaffUploadText.Execute(w, article)
+}
+
+func staffUploadTextPost(w http.ResponseWriter, r *http.Request) error {
+
+	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
+
+	for _, code := range strings.Fields(r.PostFormValue("codes")) {
+		if err := database.AddToStock(articleID, code, nil); err == nil {
+			log.Printf("added code to stock: %s %s", articleID, db.Mask(code, 20))
+		} else {
+			log.Println(err)
+			return err
+		}
+	}
+
+	if err := database.FulfilUnderdelivered(); err != nil {
+		return err
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return nil
 }

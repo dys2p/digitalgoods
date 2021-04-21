@@ -61,7 +61,6 @@
 		<tr>
 			<th>{{.Translate "product"}}</th>
 			<th>{{.Translate "delivery-date"}}</th>
-			<th>{{.Translate "id"}}</th>
 			<th>{{.Translate "code"}}</th>
 		</tr>
 	</thead>
@@ -70,10 +69,13 @@
 		<tr>
 			<td>{{.ArticleID}}</td>
 			<td>{{.DeliveryDateStr}}</td>
-			<td>{{.ID}}</td>
-			<td>
-				<img src="{{.ImageSrc}}" />
-			</td>
+			{{if .Image}}
+				<!-- use image as code -->
+				<td><img src="{{.ImageSrc}}" /></td>
+			{{else}}
+				<!-- use ID as code -->
+				<td>{{.ID}}</td>
+			{{end}}
 		</tr>
 		{{end}}
 		{{if .IsNew}}
