@@ -155,8 +155,8 @@ type custOrder struct {
 	html.Language
 }
 
-func (*custOrder) AvailableArticles() ([]db.Article, error) {
-	return database.GetAvailableArticles()
+func (*custOrder) Articles() ([]db.Article, error) {
+	return database.GetArticles()
 }
 
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
@@ -177,14 +177,17 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		})
 	}
 
-	availableArticles, err := database.GetAvailableArticles()
+	articles, err := database.GetArticles()
 	if err != nil {
 		return err
 	}
 
 	var order = db.Order{}
 	// iterate over articles, not over post data
-	for _, article := range availableArticles {
+	for _, article := range articles {
+		if article.Hide {
+			continue
+		}
 		val := r.PostFormValue(article.ID)
 		if val == "" {
 			continue

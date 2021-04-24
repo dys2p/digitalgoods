@@ -11,19 +11,18 @@ import (
 const DateFmt = "2006-01-02"
 
 type DB struct {
-	sqlDB                *sql.DB
-	addPurchase          *sql.Stmt
-	addToStock           *sql.Stmt
-	cleanupPurchases     *sql.Stmt
-	deleteFromStock      *sql.Stmt
-	getArticle           *sql.Stmt
-	getArticles          *sql.Stmt
-	getAvailableArticles *sql.Stmt
-	getFromStock         *sql.Stmt
-	getPurchase          *sql.Stmt
-	getPurchases         *sql.Stmt
-	updatePurchase       *sql.Stmt
-	updateStatus         *sql.Stmt
+	sqlDB            *sql.DB
+	addPurchase      *sql.Stmt
+	addToStock       *sql.Stmt
+	cleanupPurchases *sql.Stmt
+	deleteFromStock  *sql.Stmt
+	getArticle       *sql.Stmt
+	getArticles      *sql.Stmt
+	getFromStock     *sql.Stmt
+	getPurchase      *sql.Stmt
+	getPurchases     *sql.Stmt
+	updatePurchase   *sql.Stmt
+	updateStatus     *sql.Stmt
 }
 
 func IsNotFound(err error) bool {
@@ -45,8 +44,10 @@ func OpenDB() (*DB, error) {
 		create table if not exists article (
 			id    TEXT    NOT NULL PRIMARY KEY, -- article id, like "foobar6"
 			name  TEXT    NOT NULL,
-			price INTEGER NOT NULL  -- euro cents
+			price INTEGER NOT NULL, -- euro cents
+			hide  BOOLEAN NOT NULL  -- article is no longer sold, but we don't delete it from the database because that would break purchases
 		);
+		-- ALTER TABLE article ADD COLUMN hide BOOLEAN NOT NULL DEFAULT 0;
 		create table if not exists purchase (
 			invoiceid  TEXT NOT NULL PRIMARY KEY,
 			status     TEXT NOT NULL,
@@ -85,19 +86,13 @@ func OpenDB() (*DB, error) {
 		return nil, err
 	}
 
-	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article) from article a left join stock s on a.id = s.article where id = ?")
+	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
 	if err != nil {
 		return nil, err
 	}
 
 	// left join
-	db.getArticles, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article) from article a left join stock s on a.id = s.article group by a.id order by a.name")
-	if err != nil {
-		return nil, err
-	}
-
-	// inner join
-	db.getAvailableArticles, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article) from article a inner join stock s on a.id = s.article group by a.id order by a.name")
+	db.getArticles, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article group by a.id order by a.name")
 	if err != nil {
 		return nil, err
 	}
@@ -177,19 +172,11 @@ func (db *DB) FulfilUnderdelivered() error {
 
 func (db *DB) GetArticle(id string) (Article, error) {
 	var article = Article{}
-	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.Name, &article.Price, &article.Stock)
+	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.Name, &article.Price, &article.Stock, &article.Hide)
 }
 
 func (db *DB) GetArticles() ([]Article, error) {
-	return db.getArticlesWithStmt(db.getArticles)
-}
-
-func (db *DB) GetAvailableArticles() ([]Article, error) {
-	return db.getArticlesWithStmt(db.getAvailableArticles)
-}
-
-func (db *DB) getArticlesWithStmt(stmt *sql.Stmt) ([]Article, error) {
-	rows, err := stmt.Query()
+	rows, err := db.getArticles.Query()
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +184,7 @@ func (db *DB) getArticlesWithStmt(stmt *sql.Stmt) ([]Article, error) {
 	var articles = []Article{}
 	for rows.Next() {
 		var article = Article{}
-		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.Stock); err != nil {
+		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.Stock, &article.Hide); err != nil {
 			return nil, err
 		}
 		articles = append(articles, article)

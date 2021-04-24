@@ -54,10 +54,10 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Item Price"},
 		TagStr{language.German, "Einzelpreis"},
 	},
-	"sorry-out-of-stock": []TagStr{
-		TagStr{language.AmericanEnglish, "We're out of stock, but please check back later."},
-		TagStr{language.German, "Wir sind ausverkauft, aber Nachschub ist auf dem Weg."},
-	},
+	//"sorry-out-of-stock": []TagStr{
+	//	TagStr{language.AmericanEnglish, "We're out of stock, but please check back later."},
+	//	TagStr{language.German, "Wir sind ausverkauft, aber Nachschub ist auf dem Weg."},
+	//},
 	"captcha-label": []TagStr{
 		TagStr{language.AmericanEnglish, "Please type the digits in order to solve the captcha:"},
 		TagStr{language.German, "Bitte tippe die Ziffern ab, um das Captcha zu lösen:"},

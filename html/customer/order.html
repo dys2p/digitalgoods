@@ -19,21 +19,22 @@
 			</tr>
 		</thead>
 		<tbody>
-			{{range .AvailableArticles}}
-			<tr>
-				<td>{{.Name}}</td>
-				<td><input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="0" size="2"></td>
-				<td>{{.Stock}}</td>
-				<td>{{$.Translate "%.2f Euro" .PriceEUR}}</td>
-			</tr>
-			{{else}}
-			<tr>
-				<td colspan="4">{{.Translate "sorry-out-of-stock"}}</td>
-			</tr>
+			{{range .Articles}}
+				{{if not .Hide}}
+				<tr>
+					<td>{{.Name}}</td>
+					<td>
+						{{if gt .Stock 0}}
+							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="0" size="2">
+						{{end}}
+					</td>
+					<td>{{.Stock}}</td>
+					<td>{{$.Translate "%.2f Euro" .PriceEUR}}</td>
+				</tr>
+				{{end}}
 			{{end}}
 		</tbody>
 	</table>
-	{{if gt (len .AvailableArticles) 0}}
 		<p class="text-center">
 			<img id="captcha-image" src="/captcha/{{.CaptchaID}}.png" alt="Captcha image">
 		</p>
@@ -47,6 +48,5 @@
 		<div class="text-end">
 			<input class="btn btn-success" type="submit" value="{{.Translate "submit-order"}}">
 		</div>
-	{{end}}
 </form>
 {{end}}

@@ -5,6 +5,7 @@ type Article struct {
 	Name  string
 	Price int // euro cents
 	Stock int
+	Hide  bool
 }
 
 func (a Article) PriceEUR() float64 {
