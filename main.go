@@ -57,15 +57,9 @@ func main() {
 		store = btcpay.NewDummyStore()
 		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
 	} else {
-		api, err := btcpay.LoadAPI("data/api.json")
+		store, err = btcpay.Load("data/btcpay.json")
 		if err != nil {
-			log.Printf("error loading API: %v", err)
-			return
-		}
-
-		store, err = btcpay.LoadServerStore(api, "data/store.json")
-		if err != nil {
-			log.Printf("error loading store: %v", err)
+			log.Printf("error loading btcpay store: %v", err)
 			return
 		}
 
@@ -238,7 +232,7 @@ type custPurchase struct {
 }
 
 func (cp *custPurchase) CheckoutLink() template.URL {
-	return template.URL(store.GetAPI().InvoiceCheckoutLink(cp.Purchase.InvoiceID))
+	return template.URL(store.InvoiceCheckoutLink(cp.Purchase.InvoiceID))
 }
 
 func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
