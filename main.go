@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -89,6 +90,7 @@ func main() {
 	custRtr.HandlerFunc(http.MethodGet, "/", wrapTmpl(custOrderGet))
 	custRtr.HandlerFunc(http.MethodPost, "/", wrapTmpl(custOrderPost))
 	custRtr.HandlerFunc(http.MethodGet, "/i/:invoiceid", wrapTmpl(custPurchaseGet))
+	custRtr.HandlerFunc(http.MethodGet, "/health", health)
 	custRtr.HandlerFunc(http.MethodPost, "/rpc", rpc)
 	custRtr.Handler("GET", "/captcha/:fn", captcha.Server(captcha.StdWidth, captcha.StdHeight))
 
@@ -151,6 +153,18 @@ type custOrder struct {
 
 func (*custOrder) Articles() ([]db.Article, error) {
 	return database.GetArticles()
+}
+
+func (*custOrder) HealthURLs() []template.URL {
+	var urls = []template.URL{}
+	if srvStore, ok := store.(*btcpay.ServerStore); ok {
+		if u, err := url.Parse(srvStore.ServerURI); err == nil {
+			u.Host = "healthd." + u.Host
+			urls = append(urls, template.URL(u.String()))
+		}
+	}
+	urls = append(urls, "/health")
+	return urls
 }
 
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
