@@ -10,7 +10,6 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -153,18 +152,6 @@ type custOrder struct {
 
 func (*custOrder) Articles() ([]db.Article, error) {
 	return database.GetArticles()
-}
-
-func (*custOrder) HealthURLs() []template.URL {
-	var urls = []template.URL{}
-	if srvStore, ok := store.(*btcpay.ServerStore); ok {
-		if u, err := url.Parse(srvStore.ServerURI); err == nil {
-			u.Host = "healthd." + u.Host
-			urls = append(urls, template.URL(u.String()))
-		}
-	}
-	urls = append(urls, "/health")
-	return urls
 }
 
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {

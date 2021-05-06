@@ -1,10 +1,5 @@
 {{define "content"}}
 <h1>Digital Goods</h1>
-<div class="my-3" id="health">
-	<noscript>
-		<div class="alert alert-info">If you enable JavaScript, you can see the health status of our BTCPay Server here.</div>
-	</noscript>
-</div>
 <p>{{.Translate "how"}}</p>
 <ol>
 	<li>{{.Translate "how-1"}}</li>
@@ -53,18 +48,5 @@
 	<div class="text-end">
 		<input class="btn btn-success" type="submit" value="{{.Translate "submit-order"}}">
 	</div>
-	<script>
-		let urls = {{.HealthURLs}};
-
-		/* prepare placeholders */
-		let healthElement = document.getElementById("health");
-		healthElement.innerHTML = "BTCPay Server status:"
-		urls.forEach(function(url, index) {
-			healthElement.innerHTML += ` <span id="health-${index}"></span>`;
-		});
-
-		/* load sync status data */
-		updateHealth(urls);
-	</script>
 </form>
 {{end}}

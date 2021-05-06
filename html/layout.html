@@ -12,8 +12,14 @@
 <body>
 	<nav class="navbar navbar-light bg-light">
 		<div class="container-fluid">
+			<!-- left -->
 			{{block "brand" .}}{{end}}
-			{{block "menu" .}}{{end}}
+			<!-- center -->
+			<div class="d-flex align-items-center">
+				{{block "menu" .}}{{end}}
+				{{block "health" .}}{{end}}
+			</div>
+			<!-- right -->
 			<div>
 				<a href="?lang=de" class="btn btn-secondary btn-sm ml-4">DE</a>
 				<a href="?lang=en" class="btn btn-secondary btn-sm ml-4">EN</a>
@@ -26,3 +32,15 @@
 	{{block "footer" .}}{{end}}
 </body>
 </html>
+
+{{define "health-widget"}}
+<script>
+/* own namespace */
+{
+	let url = {{.}};
+	let id = btoa(url); // use base64(url) as DOM id
+	document.write(` <span id="${id}"></span>`);
+	updateHealth(url);
+}
+</script>
+{{end}}
