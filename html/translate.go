@@ -23,8 +23,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."},
 	},
 	"how-2": []TagStr{
-		TagStr{language.AmericanEnglish, "Bookmark the URL of your order."},
-		TagStr{language.German, "Speichere den Link zu deiner Bestellung."},
+		TagStr{language.AmericanEnglish, "Save the URL of your order. (You need it to access your goods if you closed the browser tab.)"},
+		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. (Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast.)"},
 	},
 	"how-3": []TagStr{
 		TagStr{language.AmericanEnglish, "Pay the requested amount of Monero (XMR) or Bitcoin (BTC) to the given address. The amount must be paid completely with a single transaction within 60 minutes."},
