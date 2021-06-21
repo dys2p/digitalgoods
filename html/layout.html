@@ -7,29 +7,40 @@
 	<link rel="stylesheet" href="/static/bootstrap.min.css">
 	<script src="/static/scripts.js"></script>
 	<style>
-		nav { margin-bottom: 12px; }
+		nav {
+			margin-bottom: 12px;
+		}
+		@media (min-width: 992px) {
+			.equal-width-lg {
+				flex: 1 1 0px;
+			}
+		}
 	</style>
 </head>
 <body>
-	<nav class="navbar navbar-light bg-light">
-		<div class="container-fluid">
-			<!-- left -->
-			{{block "brand" .}}{{end}}
-			<!-- center -->
-			<div class="d-flex align-items-center">
-				{{block "menu" .}}{{end}}
-				{{block "health" .}}{{end}}
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<!-- left -->
+				<div class="equal-width-lg navbar-brand">
+					{{block "brand" .}}{{end}}
+				</div>
+				<!-- center -->
+				<div class="equal-width-lg text-lg-center">
+					{{block "menu" .}}{{end}}
+					{{block "health" .}}{{end}}
+				</div>
+				<!-- right -->
+				<div class="equal-width-lg text-lg-end">
+					<a href="?lang=de" class="btn btn-secondary btn-sm ml-4">DE</a>
+					<a href="?lang=en" class="btn btn-secondary btn-sm ml-4">EN</a>
+				</div>
 			</div>
-			<!-- right -->
-			<div>
-				<a href="?lang=de" class="btn btn-secondary btn-sm ml-4">DE</a>
-				<a href="?lang=en" class="btn btn-secondary btn-sm ml-4">EN</a>
-			</div>
-		</div>
-	</nav>
-	<div class="container">
+		</nav>
+	</header>
+	<main class="container">
 		{{template "content" .}}
-	</div>
+	</main>
 	{{block "footer" .}}{{end}}
 </body>
 </html>
