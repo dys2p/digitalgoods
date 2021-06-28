@@ -150,8 +150,12 @@ type custOrder struct {
 	html.Language
 }
 
-func (*custOrder) Articles() ([]db.Article, error) {
-	return database.GetArticles()
+func (*custOrder) ArticlesByCategory(category db.Category) ([]db.Article, error) {
+	return database.GetArticlesByCategory(category)
+}
+
+func (*custOrder) Categories() ([]*db.Category, error) {
+	return database.GetCategories()
 }
 
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
@@ -234,6 +238,46 @@ type custPurchase struct {
 
 func (cp *custPurchase) CheckoutLink() template.URL {
 	return template.URL(store.InvoiceCheckoutLink(cp.Purchase.InvoiceID))
+}
+
+func (cp *custPurchase) GetArticleName(id string) string {
+	article, err := database.GetArticle(id)
+	if err != nil {
+		return id
+	}
+	return article.Name
+}
+
+type orderGroup struct {
+	Category *db.Category
+	Rows     []db.OrderRow
+}
+
+// returns empty orderGroups too
+func (cp *custPurchase) GroupedOrder() ([]orderGroup, error) {
+	categories, err := database.GetCategories()
+	if err != nil {
+		return nil, err
+	}
+	result := make([]orderGroup, len(categories))
+	for i := range categories {
+		result[i].Category = categories[i]
+		result[i].Rows = []db.OrderRow{}
+	}
+	for _, row := range cp.Purchase.Ordered {
+		article, err := database.GetArticle(row.ArticleID)
+		if err != nil {
+			return nil, err
+		}
+		// linear search, well...
+		for i := range categories {
+			if categories[i].ID == article.CategoryID {
+				result[i].Rows = append(result[i].Rows, row)
+			}
+		}
+		// don't check the unlikely case that no category is found because this is just the "ordered" section and not the "delivered goods" section
+	}
+	return result, nil
 }
 
 func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {

@@ -6,23 +6,29 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/dys2p/digitalgoods/html"
+	"golang.org/x/text/language"
 )
 
 const DateFmt = "2006-01-02"
 
 type DB struct {
-	sqlDB            *sql.DB
-	addPurchase      *sql.Stmt
-	addToStock       *sql.Stmt
-	cleanupPurchases *sql.Stmt
-	deleteFromStock  *sql.Stmt
-	getArticle       *sql.Stmt
-	getArticles      *sql.Stmt
-	getFromStock     *sql.Stmt
-	getPurchase      *sql.Stmt
-	getPurchases     *sql.Stmt
-	updatePurchase   *sql.Stmt
-	updateStatus     *sql.Stmt
+	sqlDB                   *sql.DB
+	addPurchase             *sql.Stmt
+	addToStock              *sql.Stmt
+	cleanupPurchases        *sql.Stmt
+	deleteFromStock         *sql.Stmt
+	getArticle              *sql.Stmt
+	getArticles             *sql.Stmt
+	getArticlesByCategory   *sql.Stmt
+	getCategories           *sql.Stmt
+	getCategoryDescriptions *sql.Stmt
+	getFromStock            *sql.Stmt
+	getPurchase             *sql.Stmt
+	getPurchases            *sql.Stmt
+	updatePurchase          *sql.Stmt
+	updateStatus            *sql.Stmt
 }
 
 func IsNotFound(err error) bool {
@@ -41,25 +47,39 @@ func OpenDB() (*DB, error) {
 	}
 
 	_, err = sqlDB.Exec(`
-		create table if not exists article (
-			id    TEXT    NOT NULL PRIMARY KEY, -- article id, like "foobar6"
-			name  TEXT    NOT NULL,
-			price INTEGER NOT NULL, -- euro cents
-			hide  BOOLEAN NOT NULL  -- article is no longer sold, but we don't delete it from the database because that would break purchases
+		pragma foreign_keys = on;
+		create table if not exists category (
+			id   text not null primary key,
+			name text not null
 		);
-		-- ALTER TABLE article ADD COLUMN hide BOOLEAN NOT NULL DEFAULT 0;
+		create table if not exists category_description (
+			category text not null,
+			language text not null,
+			htmltext text not null,
+			foreign key (category) references category(id),
+			primary key (category, language)
+		);
+		create table if not exists article (
+			id       text    not null primary key,
+			category text    not null,
+			name     text    not null,
+			price    integer not null, -- euro cents
+			hide     boolean not null, -- article is no longer sold, but we don't delete it from the database because that would break purchases
+			foreign key (category) references category(id)
+		);
 		create table if not exists purchase (
-			invoiceid  TEXT NOT NULL PRIMARY KEY,
-			status     TEXT NOT NULL,
-			ordered    TEXT NOT NULL, -- json
-			delivered  TEXT NOT NULL, -- json (codes removed from stock)
-			deletedate TEXT NOT NULL  -- yyyy-mm-dd
+			invoiceid  text not null primary key,
+			status     text not null,
+			ordered    text not null, -- json
+			delivered  text not null, -- json (codes removed from stock)
+			deletedate text not null  -- yyyy-mm-dd
 		);
 		create table if not exists stock (
-			article TEXT    NOT NULL, -- article id
-			itemid  TEXT    NOT NULL PRIMARY KEY,
-			image   BLOB,
-			addtime INTEGER NOT NULL -- yyyy-mm-dd, sell oldest first
+			article text    not null,
+			itemid  text    not null primary key,
+			image   blob,
+			addtime integer not null, -- yyyy-mm-dd, sell oldest first
+			foreign key (article) references article(id)
 		);
 	`)
 	if err != nil {
@@ -86,13 +106,29 @@ func OpenDB() (*DB, error) {
 		return nil, err
 	}
 
-	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
+	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.category,a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
 	if err != nil {
 		return nil, err
 	}
 
 	// left join
 	db.getArticles, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article group by a.id order by a.name")
+	if err != nil {
+		return nil, err
+	}
+
+	// left join
+	db.getArticlesByCategory, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.name")
+	if err != nil {
+		return nil, err
+	}
+
+	db.getCategories, err = db.sqlDB.Prepare("select id, name from category order by name")
+	if err != nil {
+		return nil, err
+	}
+
+	db.getCategoryDescriptions, err = db.sqlDB.Prepare("select category, language, htmltext from category_description")
 	if err != nil {
 		return nil, err
 	}
@@ -172,11 +208,19 @@ func (db *DB) FulfilUnderdelivered() error {
 
 func (db *DB) GetArticle(id string) (Article, error) {
 	var article = Article{}
-	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.Name, &article.Price, &article.Stock, &article.Hide)
+	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.CategoryID, &article.Name, &article.Price, &article.Stock, &article.Hide)
 }
 
 func (db *DB) GetArticles() ([]Article, error) {
-	rows, err := db.getArticles.Query()
+	return db.articles(db.getArticles)
+}
+
+func (db *DB) GetArticlesByCategory(category Category) ([]Article, error) {
+	return db.articles(db.getArticlesByCategory, category.ID)
+}
+
+func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]Article, error) {
+	rows, err := stmt.Query(args...)
 	if err != nil {
 		return nil, err
 	}
@@ -190,6 +234,48 @@ func (db *DB) GetArticles() ([]Article, error) {
 		articles = append(articles, article)
 	}
 	return articles, nil
+}
+
+func (db *DB) GetCategories() ([]*Category, error) {
+
+	// table category
+	rows, err := db.getCategories.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var categories = []*Category{}
+	var catMap = map[string]*Category{}
+	for rows.Next() {
+		var category = &Category{
+			Description: []html.TagStr{},
+		}
+		if err := rows.Scan(&category.ID, &category.Name); err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+		catMap[category.ID] = category
+	}
+
+	// table category_description
+	rows, err = db.getCategoryDescriptions.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var categoryID string
+		var lang string
+		var htmltext string
+		if err := rows.Scan(&categoryID, &lang, &htmltext); err != nil {
+			return nil, err
+		}
+		if c, ok := catMap[categoryID]; ok {
+			c.Description = append(c.Description, html.TagStr{language.Make(lang), htmltext})
+		}
+	}
+
+	return categories, nil
 }
 
 func (db *DB) GetPurchase(id string) (*Purchase, error) {

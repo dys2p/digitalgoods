@@ -1,11 +1,12 @@
 package db
 
 type Article struct {
-	ID    string
-	Name  string
-	Price int // euro cents
-	Stock int
-	Hide  bool
+	ID         string
+	CategoryID string
+	Name       string
+	Price      int // euro cents
+	Stock      int
+	Hide       bool
 }
 
 func (a Article) PriceEUR() float64 {

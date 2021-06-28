@@ -19,10 +19,33 @@
 			</tr>
 		</thead>
 		<tbody>
-			{{range .Articles}}
+		{{range .Categories}}
+			<tr>
+				<td colspan="4">
+					<!-- same as in purchase.html -->
+					<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
+					<label for="toggle-{{.ID}}">
+						<strong>{{.Name}}</strong>
+						({{$.Translate "click-more"}})
+					</label>
+					<style>
+					#toggle-{{.ID}} ~ div {
+						display: none;
+					}
+					#toggle-{{.ID}}:checked ~ div {
+						display: block;
+					}
+					</style>
+					<div class="mt-2 mb-1">
+						{{.Translate $.Language}}
+					</div>
+					<!-- end -->
+				</td>
+			</tr>
+			{{range $.ArticlesByCategory .}}
 				{{if not .Hide}}
 				<tr>
-					<td>{{.Name}}</td>
+					<td class="ps-4">{{.Name}}</td>
 					<td>
 						{{if gt .Stock 0}}
 							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="0">
@@ -33,6 +56,7 @@
 				</tr>
 				{{end}}
 			{{end}}
+		{{end}}
 		</tbody>
 	</table>
 	<p class="text-center">
