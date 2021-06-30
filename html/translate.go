@@ -2,7 +2,9 @@ package html
 
 import (
 	"net/http"
+	"sort"
 
+	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -10,6 +12,11 @@ import (
 type TagStr struct {
 	Tag language.Tag
 	Str string
+}
+
+type IDName struct {
+	ID   string
+	Name string // sort by name
 }
 
 // global variable used by type Language
@@ -166,6 +173,126 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "There is no such purchase, or it has been deleted."},
 		TagStr{language.German, "Diese Bestellung wurde nicht gefunden oder bereits gelöscht."},
 	},
+	"country-tax-question": []TagStr{
+		TagStr{language.AmericanEnglish, "In which country do you reside? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
+		TagStr{language.German, "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"},
+	},
+	"country-BE": []TagStr{
+		TagStr{language.AmericanEnglish, "Belgium"},
+		TagStr{language.German, "Belgien"},
+	},
+	"country-BG": []TagStr{
+		TagStr{language.AmericanEnglish, "Bulgaria"},
+		TagStr{language.German, "Bulgarien"},
+	},
+	"country-DK": []TagStr{
+		TagStr{language.AmericanEnglish, "Denmark"},
+		TagStr{language.German, "Dänemark"},
+	},
+	"country-DE": []TagStr{
+		TagStr{language.AmericanEnglish, "Germany"},
+		TagStr{language.German, "Deutschland"},
+	},
+	"country-EE": []TagStr{
+		TagStr{language.AmericanEnglish, "Estonia"},
+		TagStr{language.German, "Estland"},
+	},
+	"country-FI": []TagStr{
+		TagStr{language.AmericanEnglish, "Finland"},
+		TagStr{language.German, "Finnland"},
+	},
+	"country-FR": []TagStr{
+		TagStr{language.AmericanEnglish, "France"},
+		TagStr{language.German, "Frankreich"},
+	},
+	"country-EL": []TagStr{
+		TagStr{language.AmericanEnglish, "Greece"},
+		TagStr{language.German, "Griechenland"},
+	},
+	"country-IE": []TagStr{
+		TagStr{language.AmericanEnglish, "Ireland"},
+		TagStr{language.German, "Irland"},
+	},
+	"country-IT": []TagStr{
+		TagStr{language.AmericanEnglish, "Italy"},
+		TagStr{language.German, "Italien"},
+	},
+	"country-HR": []TagStr{
+		TagStr{language.AmericanEnglish, "Croatia"},
+		TagStr{language.German, "Kroatien"},
+	},
+	"country-LV": []TagStr{
+		TagStr{language.AmericanEnglish, "Latvia"},
+		TagStr{language.German, "Lettland"},
+	},
+	"country-LT": []TagStr{
+		TagStr{language.AmericanEnglish, "Lithuania"},
+		TagStr{language.German, "Litauen"},
+	},
+	"country-LU": []TagStr{
+		TagStr{language.AmericanEnglish, "Luxembourg"},
+		TagStr{language.German, "Luxemburg"},
+	},
+	"country-MT": []TagStr{
+		TagStr{language.AmericanEnglish, "Malta"},
+		TagStr{language.German, "Malta"},
+	},
+	"country-NL": []TagStr{
+		TagStr{language.AmericanEnglish, "Netherlands"},
+		TagStr{language.German, "Niederlande"},
+	},
+	"country-AT": []TagStr{
+		TagStr{language.AmericanEnglish, "Austria"},
+		TagStr{language.German, "Österreich"},
+	},
+	"country-PL": []TagStr{
+		TagStr{language.AmericanEnglish, "Poland"},
+		TagStr{language.German, "Polen"},
+	},
+	"country-PT": []TagStr{
+		TagStr{language.AmericanEnglish, "Portugal"},
+		TagStr{language.German, "Portugal"},
+	},
+	"country-RO": []TagStr{
+		TagStr{language.AmericanEnglish, "Romania"},
+		TagStr{language.German, "Rumänien"},
+	},
+	"country-SE": []TagStr{
+		TagStr{language.AmericanEnglish, "Sweden"},
+		TagStr{language.German, "Schweden"},
+	},
+	"country-SK": []TagStr{
+		TagStr{language.AmericanEnglish, "Slovakia"},
+		TagStr{language.German, "Slowakei"},
+	},
+	"country-SI": []TagStr{
+		TagStr{language.AmericanEnglish, "Slovenia"},
+		TagStr{language.German, "Slowenien"},
+	},
+	"country-ES": []TagStr{
+		TagStr{language.AmericanEnglish, "Spain"},
+		TagStr{language.German, "Spanien"},
+	},
+	"country-CZ": []TagStr{
+		TagStr{language.AmericanEnglish, "Czechia"},
+		TagStr{language.German, "Tschechien"},
+	},
+	"country-HU": []TagStr{
+		TagStr{language.AmericanEnglish, "Hungary"},
+		TagStr{language.German, "Ungarn"},
+	},
+	"country-CY": []TagStr{
+		TagStr{language.AmericanEnglish, "Cyprus"},
+		TagStr{language.German, "Zypern"},
+	},
+	"non-EU": []TagStr{
+		TagStr{language.AmericanEnglish, "Outside the European Union"},
+		TagStr{language.German, "Außerhalb der Europäischen Union"},
+	},
+	"EU": []TagStr{
+		TagStr{language.AmericanEnglish, "European Union"},
+		TagStr{language.German, "Europäische Union"},
+	},
 }
 
 // Language is any string. It will be matched by golang.org/x/text/language.Make and golang.org/x/text/language.NewMatcher.
@@ -186,7 +313,7 @@ func GetLanguage(r *http.Request) Language {
 func (lang Language) Translate(key string, args ...interface{}) string {
 	item, ok := translations[key]
 	if !ok {
-		// no translation available, create language tag and print
+		// key not found, create language tag and print key
 		return message.NewPrinter(language.Make(string(lang))).Sprintf(key, args...)
 	}
 	// choose language tag from list of translations
@@ -196,4 +323,20 @@ func (lang Language) Translate(key string, args ...interface{}) string {
 	}
 	tag, i := language.MatchStrings(language.NewMatcher(langs), string(lang))
 	return message.NewPrinter(tag).Sprintf(item[i].Str, args...)
+}
+
+func (lang Language) TranslateEUCountries() []IDName {
+	// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
+	ids := [...]string{"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
+	result := make([]IDName, len(ids))
+	for i := range ids {
+		result[i].ID = ids[i]
+		result[i].Name = lang.Translate("country-" + ids[i])
+	}
+	// sort with diacritics etc. in the right order
+	collator := collate.New(language.Und, collate.Loose)
+	sort.Slice(result, func(i, j int) bool {
+		return collator.CompareString(result[i].Name, result[j].Name) < 0
+	})
+	return result
 }

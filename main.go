@@ -176,6 +176,11 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		})
 	}
 
+	countryCode := r.PostFormValue("country")
+	if len(countryCode) > 10 {
+		countryCode = countryCode[:10]
+	}
+
 	articles, err := database.GetArticles()
 	if err != nil {
 		return err
@@ -219,7 +224,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	if err := database.AddPurchase(btcInvoice.ID, order); err != nil {
+	if err := database.AddPurchase(btcInvoice.ID, order, countryCode); err != nil {
 		return err
 	}
 

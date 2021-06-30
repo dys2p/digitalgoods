@@ -27,6 +27,7 @@ type DB struct {
 	getFromStock            *sql.Stmt
 	getPurchase             *sql.Stmt
 	getPurchases            *sql.Stmt
+	logVAT                  *sql.Stmt
 	updatePurchase          *sql.Stmt
 	updateStatus            *sql.Stmt
 }
@@ -68,11 +69,12 @@ func OpenDB() (*DB, error) {
 			foreign key (category) references category(id)
 		);
 		create table if not exists purchase (
-			invoiceid  text not null primary key,
-			status     text not null,
-			ordered    text not null, -- json
-			delivered  text not null, -- json (codes removed from stock)
-			deletedate text not null  -- yyyy-mm-dd
+			invoiceid   text not null primary key,
+			status      text not null,
+			ordered     text not null, -- json
+			delivered   text not null, -- json (codes removed from stock)
+			deletedate  text not null, -- yyyy-mm-dd
+			countrycode text not null
 		);
 		create table if not exists stock (
 			article text    not null,
@@ -81,12 +83,20 @@ func OpenDB() (*DB, error) {
 			addtime integer not null, -- yyyy-mm-dd, sell oldest first
 			foreign key (article) references article(id)
 		);
+		create table if not exists vat_log (
+			deliverydate text not null, -- yyyy-mm-dd
+			article      text not null,
+			amount       int  not null,
+			itemprice    int  not null, -- euro cents
+			countrycode  text not null,
+			foreign key (article) references article(id)
+		);
 	`)
 	if err != nil {
 		return nil, err
 	}
 
-	db.addPurchase, err = db.sqlDB.Prepare("insert into purchase (invoiceid, status, ordered, delivered, deletedate) values (?, ?, ?, '[]', '')")
+	db.addPurchase, err = db.sqlDB.Prepare("insert into purchase (invoiceid, status, ordered, delivered, deletedate, countrycode) values (?, ?, ?, '[]', '', ?)")
 	if err != nil {
 		return nil, err
 	}
@@ -138,12 +148,17 @@ func OpenDB() (*DB, error) {
 		return nil, err
 	}
 
-	db.getPurchase, err = db.sqlDB.Prepare("select status, ordered, delivered, deletedate from purchase where invoiceid = ? limit 1")
+	db.getPurchase, err = db.sqlDB.Prepare("select status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
 	if err != nil {
 		return nil, err
 	}
 
 	db.getPurchases, err = db.sqlDB.Prepare("select invoiceid from purchase where status = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	db.logVAT, err = db.sqlDB.Prepare("insert into vat_log (deliverydate, article, amount, itemprice, countrycode) values (?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
@@ -161,12 +176,12 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-func (db *DB) AddPurchase(invoiceID string, order Order) error {
+func (db *DB) AddPurchase(invoiceID string, order Order, countryCode string) error {
 	orderJson, err := json.Marshal(order)
 	if err != nil {
 		return err
 	}
-	_, err = db.addPurchase.Exec(invoiceID, StatusNew, orderJson)
+	_, err = db.addPurchase.Exec(invoiceID, StatusNew, orderJson, countryCode)
 	return err
 }
 
@@ -289,14 +304,16 @@ func (db *DB) getPurchaseWithStmt(invoiceID string, stmt *sql.Stmt) (*Purchase, 
 	var ordered string
 	var delivered string
 	var deleteDate string
-	if err := stmt.QueryRow(invoiceID).Scan(&status, &ordered, &delivered, &deleteDate); err != nil {
+	var countryCode string
+	if err := stmt.QueryRow(invoiceID).Scan(&status, &ordered, &delivered, &deleteDate, &countryCode); err != nil {
 		return nil, err
 	}
 
 	var purchase = &Purchase{
-		InvoiceID:  invoiceID,
-		Status:     status,
-		DeleteDate: deleteDate,
+		InvoiceID:   invoiceID,
+		Status:      status,
+		DeleteDate:  deleteDate,
+		CountryCode: countryCode,
 	}
 	if err := json.Unmarshal([]byte(ordered), &purchase.Ordered); err != nil {
 		return nil, fmt.Errorf("unmarshaling ordered: %w", err)
@@ -349,9 +366,11 @@ func (db *DB) SetSettled(id string) error {
 		return nil
 	}
 
-	for articleID, amount := range unfulfilled {
+	for _, u := range unfulfilled {
 
-		rows, err := tx.Stmt(db.getFromStock).Query(articleID, amount)
+		// get from stock
+
+		rows, err := tx.Stmt(db.getFromStock).Query(u.ArticleID, u.Amount)
 		if err != nil {
 			return err
 		}
@@ -367,7 +386,13 @@ func (db *DB) SetSettled(id string) error {
 				return err
 			}
 			log.Printf("delivering %s: %s", id, Mask(itemID, 4))
-			purchase.Delivered = append(purchase.Delivered, DeliveredItem{ArticleID: articleID, ID: itemID, Image: image, DeliveryDate: time.Now().Format(DateFmt)})
+			purchase.Delivered = append(purchase.Delivered, DeliveredItem{ArticleID: u.ArticleID, ID: itemID, Image: image, DeliveryDate: time.Now().Format(DateFmt)})
+		}
+
+		// log VAT
+
+		if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, u.Amount, u.ItemPrice, purchase.CountryCode); err != nil {
+			return err
 		}
 	}
 
@@ -378,7 +403,7 @@ func (db *DB) SetSettled(id string) error {
 
 	var newDeleteDate string
 	var newStatus string
-	if len(purchase.GetUnfulfilled()) == 0 {
+	if purchase.GetUnfulfilled().Count() == 0 {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(DateFmt)
 		newStatus = StatusFinalized
 	} else {

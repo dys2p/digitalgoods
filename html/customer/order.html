@@ -59,6 +59,21 @@
 		{{end}}
 		</tbody>
 	</table>
+
+	<div class="mb-3">
+		<label class="form-label">{{.Translate "country-tax-question"}}</label>
+		<select class="form-select" name="country">
+			<optgroup label="{{.Translate "non-EU"}}">
+				<option value="non-EU">{{.Translate "non-EU"}}</option>
+			</optgroup>
+			<optgroup label="{{.Translate "EU"}}">
+				{{range $.TranslateEUCountries}}
+					<option value="{{.ID}}">{{.Name}}</option>
+				{{end}}
+			</optgroup>
+		</select>
+	</div>
+
 	<p class="text-center">
 		<img id="captcha-image" src="/captcha/{{.CaptchaID}}.png" alt="Captcha image">
 	</p>

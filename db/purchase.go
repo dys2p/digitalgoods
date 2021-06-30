@@ -16,11 +16,12 @@ const (
 )
 
 type Purchase struct {
-	InvoiceID  string
-	Status     string
-	Ordered    Order
-	Delivered  Delivery
-	DeleteDate string
+	InvoiceID   string
+	Status      string
+	Ordered     Order
+	Delivered   Delivery
+	DeleteDate  string
+	CountryCode string
 }
 
 func (p *Purchase) DeleteDateStr() (string, error) {
@@ -28,28 +29,35 @@ func (p *Purchase) DeleteDateStr() (string, error) {
 	return t.Format("02.01.2006"), err
 }
 
-// GetUnfulfilled returns the difference of ordered and delivered items.
-// Keys are article IDs, values are amounts. Empty assignments are omitted.
-func (p *Purchase) GetUnfulfilled() map[string]int {
-	var unfulfilled = make(map[string]int)
-	// add ordered
-	for _, o := range p.Ordered {
-		unfulfilled[o.ArticleID] += o.Amount
-	}
-	// subtract delivered
+func (p *Purchase) GetUnfulfilled() Order {
+	// copy ordered
+	var unfulfilled = make(Order, len(p.Ordered))
+	copy(unfulfilled, p.Ordered)
+	// decrement
 	for _, d := range p.Delivered {
-		unfulfilled[d.ArticleID] -= 1 // there is no d.Amount
-	}
-	// remove empty items
-	for articleID, amount := range unfulfilled {
-		if amount == 0 {
-			delete(unfulfilled, articleID)
-		}
+		unfulfilled.Decrement(d.ArticleID) // there is no d.Amount
 	}
 	return unfulfilled
 }
 
 type Order []OrderRow
+
+func (order Order) Count() int {
+	var count = 0
+	for _, o := range order {
+		count += o.Amount
+	}
+	return count
+}
+
+func (order *Order) Decrement(articleID string) {
+	for i := range *order {
+		if (*order)[i].ArticleID == articleID {
+			(*order)[i].Amount--
+			return
+		}
+	}
+}
 
 func (order Order) Sum() int {
 	var sum = 0
