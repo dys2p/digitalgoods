@@ -361,7 +361,10 @@ func (db *DB) SetSettled(id string) error {
 		return err
 	}
 
-	unfulfilled := purchase.GetUnfulfilled()
+	unfulfilled, err := purchase.GetUnfulfilled()
+	if err != nil {
+		return err
+	}
 	if len(unfulfilled) == 0 {
 		return nil
 	}
@@ -403,7 +406,11 @@ func (db *DB) SetSettled(id string) error {
 
 	var newDeleteDate string
 	var newStatus string
-	if purchase.GetUnfulfilled().Count() == 0 {
+	unfulfilled, err = purchase.GetUnfulfilled()
+	if err != nil {
+		return err
+	}
+	if unfulfilled.Count() == 0 {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(DateFmt)
 		newStatus = StatusFinalized
 	} else {

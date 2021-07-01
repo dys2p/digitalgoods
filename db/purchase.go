@@ -29,15 +29,17 @@ func (p *Purchase) DeleteDateStr() (string, error) {
 	return t.Format("02.01.2006"), err
 }
 
-func (p *Purchase) GetUnfulfilled() Order {
+func (p *Purchase) GetUnfulfilled() (Order, error) {
 	// copy ordered
 	var unfulfilled = make(Order, len(p.Ordered))
 	copy(unfulfilled, p.Ordered)
 	// decrement
 	for _, d := range p.Delivered {
-		unfulfilled.Decrement(d.ArticleID) // there is no d.Amount
+		if err := unfulfilled.Decrement(d.ArticleID); err != nil { // there is no d.Amount
+			return nil, err
+		}
 	}
-	return unfulfilled
+	return unfulfilled, nil
 }
 
 type Order []OrderRow
@@ -50,13 +52,14 @@ func (order Order) Count() int {
 	return count
 }
 
-func (order *Order) Decrement(articleID string) {
+func (order *Order) Decrement(articleID string) error {
 	for i := range *order {
 		if (*order)[i].ArticleID == articleID {
 			(*order)[i].Amount--
-			return
+			return nil
 		}
 	}
+	return fmt.Errorf("article %s not found in order", articleID)
 }
 
 func (order Order) Sum() int {
