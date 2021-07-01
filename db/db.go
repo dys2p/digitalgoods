@@ -128,7 +128,7 @@ func OpenDB() (*DB, error) {
 	}
 
 	// left join
-	db.getArticlesByCategory, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.name")
+	db.getArticlesByCategory, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.price asc")
 	if err != nil {
 		return nil, err
 	}
