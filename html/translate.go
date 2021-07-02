@@ -9,6 +9,9 @@ import (
 	"golang.org/x/text/message"
 )
 
+// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
+var euCountryCodes = [...]string{"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
+
 type TagStr struct {
 	Tag language.Tag
 	Str string
@@ -45,6 +48,10 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Write down your codes. We will delete them after 30 days."},
 		TagStr{language.German, "Notiere dir die Codes. Wir werden sie nach 30 Tagen löschen."},
 	},
+	"order-error": []TagStr{
+		TagStr{language.AmericanEnglish, "Please select some products."},
+		TagStr{language.German, "Bitte wähle eines oder mehrere Produkte aus."},
+	},
 	"product": []TagStr{
 		TagStr{language.AmericanEnglish, "Product"},
 		TagStr{language.German, "Produkt"},
@@ -65,10 +72,10 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "click here to read more"},
 		TagStr{language.German, "klicke hier für mehr Infos"},
 	},
-	//"sorry-out-of-stock": []TagStr{
-	//	TagStr{language.AmericanEnglish, "We're out of stock, but please check back later."},
-	//	TagStr{language.German, "Wir sind ausverkauft, aber Nachschub ist auf dem Weg."},
-	//},
+	"country-error": []TagStr{
+		TagStr{language.AmericanEnglish, "Please select a country from the list."},
+		TagStr{language.German, "Bitte wähle ein Land aus der Liste aus."},
+	},
 	"captcha-label": []TagStr{
 		TagStr{language.AmericanEnglish, "Please type the digits in order to solve the captcha:"},
 		TagStr{language.German, "Bitte tippe die Ziffern ab, um das Captcha zu lösen:"},
@@ -174,7 +181,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Diese Bestellung wurde nicht gefunden oder bereits gelöscht."},
 	},
 	"country-tax-question": []TagStr{
-		TagStr{language.AmericanEnglish, "In which country do you reside? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
+		TagStr{language.AmericanEnglish, "In which country do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
 		TagStr{language.German, "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"},
 	},
 	"country-BE": []TagStr{
@@ -326,12 +333,10 @@ func (lang Language) Translate(key string, args ...interface{}) string {
 }
 
 func (lang Language) TranslateEUCountries() []IDName {
-	// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
-	ids := [...]string{"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
-	result := make([]IDName, len(ids))
-	for i := range ids {
-		result[i].ID = ids[i]
-		result[i].Name = lang.Translate("country-" + ids[i])
+	result := make([]IDName, len(euCountryCodes))
+	for i := range euCountryCodes {
+		result[i].ID = euCountryCodes[i]
+		result[i].Name = lang.Translate("country-" + euCountryCodes[i])
 	}
 	// sort with diacritics etc. in the right order
 	collator := collate.New(language.Und, collate.Loose)
@@ -339,4 +344,16 @@ func (lang Language) TranslateEUCountries() []IDName {
 		return collator.CompareString(result[i].Name, result[j].Name) < 0
 	})
 	return result
+}
+
+func IsCountryCode(s string) bool {
+	if s == "non-EU" {
+		return true
+	}
+	for _, euCode := range euCountryCodes {
+		if euCode == s {
+			return true
+		}
+	}
+	return false
 }

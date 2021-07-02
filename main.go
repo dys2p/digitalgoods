@@ -145,8 +145,13 @@ func main() {
 }
 
 type custOrder struct {
-	CaptchaErr bool
-	CaptchaID  string
+	CaptchaAnswer string
+	CaptchaErr    bool
+	CaptchaID     string
+	Cart          map[string]int
+	CountryAnswer string
+	CountryErr    bool
+	OrderErr      bool
 	html.Language
 }
 
@@ -167,18 +172,14 @@ func custOrderGet(w http.ResponseWriter, r *http.Request) error {
 
 func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 
-	if !captcha.VerifyString(r.PostFormValue("captcha-id"), r.PostFormValue("captcha-solution")) {
-		// similar to custOrderGet
-		return html.CustOrder.Execute(w, &custOrder{
-			CaptchaErr: true,
-			CaptchaID:  captcha.NewLen(6),
-			Language:   html.GetLanguage(r),
-		})
-	}
+	// read user input
 
-	countryCode := r.PostFormValue("country")
-	if len(countryCode) > 10 {
-		countryCode = countryCode[:10]
+	co := &custOrder{
+		CaptchaAnswer: r.PostFormValue("captcha-answer"),
+		CaptchaID:     r.PostFormValue("captcha-id"),
+		Cart:          make(map[string]int),
+		CountryAnswer: r.PostFormValue("country"),
+		Language:      html.GetLanguage(r),
 	}
 
 	articles, err := database.GetArticles()
@@ -186,29 +187,46 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	var order = db.Order{}
-	// iterate over articles, not over post data
-	for _, article := range articles {
-		if article.Hide {
+	order := db.Order{}
+
+	for _, a := range articles {
+		if a.Hide {
 			continue
 		}
-		val := r.PostFormValue(article.ID)
+		val := r.PostFormValue(a.ID)
 		if val == "" {
 			continue
 		}
 		amount, _ := strconv.Atoi(val)
-		if amount > article.Stock {
-			amount = article.Stock // client must check their order before payment
+		if amount > a.Stock {
+			amount = a.Stock // client must check their order before payment
 		}
 		if amount <= 0 {
 			continue
 		}
-		order = append(order, db.OrderRow{Amount: amount, ArticleID: article.ID, ItemPrice: article.Price})
+		co.Cart[a.ID] = amount
+		order = append(order, db.OrderRow{Amount: amount, ArticleID: a.ID, ItemPrice: a.Price})
 	}
 
+	// validate user input
+
 	if len(order) == 0 {
-		http.Redirect(w, r, fmt.Sprintf("/%s", LangQuery(r)), http.StatusSeeOther)
-		return nil
+		co.OrderErr = true
+		return html.CustOrder.Execute(w, co)
+	}
+
+	if !html.IsCountryCode(co.CountryAnswer) {
+		co.CountryAnswer = ""
+		co.CountryErr = true
+		return html.CustOrder.Execute(w, co)
+	}
+
+	// VerifyString probably invalidates the captcha, so we check this last
+	if !captcha.VerifyString(co.CaptchaID, co.CaptchaAnswer) {
+		co.CaptchaAnswer = ""
+		co.CaptchaID = captcha.NewLen(6)
+		co.CaptchaErr = true
+		return html.CustOrder.Execute(w, co)
 	}
 
 	invoiceRequest := &btcpay.InvoiceRequest{
@@ -224,7 +242,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	if err := database.AddPurchase(btcInvoice.ID, order, countryCode); err != nil {
+	if err := database.AddPurchase(btcInvoice.ID, order, co.CountryAnswer); err != nil {
 		return err
 	}
 

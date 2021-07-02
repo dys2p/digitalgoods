@@ -8,6 +8,9 @@
 	<li>{{.Translate "how-4"}}</li>
 	<li>{{.Translate "how-5"}}</li>
 </ol>
+{{if .OrderErr}}
+	<div class="alert alert-danger">{{.Translate "order-error"}}</div>
+{{end}}
 <form method="post">
 	<table class="table">
 		<thead>
@@ -48,7 +51,7 @@
 					<td class="ps-4">{{.Name}}</td>
 					<td>
 						{{if gt .Stock 0}}
-							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="0">
+							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="{{index $.Cart .ID}}">
 						{{end}}
 					</td>
 					<td>{{.Stock}}</td>
@@ -62,25 +65,27 @@
 
 	<div class="mb-3">
 		<label class="form-label">{{.Translate "country-tax-question"}}</label>
-		<select class="form-select" name="country">
+		<select class="form-select {{if .CountryErr}}is-invalid{{end}}" name="country" required>
+			<option></option>
 			<optgroup label="{{.Translate "non-EU"}}">
-				<option value="non-EU">{{.Translate "non-EU"}}</option>
+				<option {{if eq .CountryAnswer "non-EU"}}selected{{end}} value="non-EU">{{.Translate "non-EU"}}</option>
 			</optgroup>
 			<optgroup label="{{.Translate "EU"}}">
 				{{range $.TranslateEUCountries}}
-					<option value="{{.ID}}">{{.Name}}</option>
+					<option {{if eq $.CountryAnswer .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
 				{{end}}
 			</optgroup>
 		</select>
+		<div class="invalid-feedback">{{.Translate "country-error"}}</div>
 	</div>
 
 	<p class="text-center">
 		<img id="captcha-image" src="/captcha/{{.CaptchaID}}.png" alt="Captcha image">
 	</p>
 	<div class="mb-3">
-		<label for="captcha-solution" class="form-label">{{.Translate "captcha-label"}}</label>
-		<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-solution" name="captcha-solution" required>
-		<div class="invalid-feedback" id="input-err">{{.Translate "captcha-error"}}</div>
+		<label for="captcha-answer" class="form-label">{{.Translate "captcha-label"}}</label>
+		<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-answer" name="captcha-answer" value="{{.CaptchaAnswer}}" required>
+		<div class="invalid-feedback">{{.Translate "captcha-error"}}</div>
 		<div class="form-text"><a class="text-muted" href="#" onclick="reloadCaptcha(); return false;">{{.Translate "captcha-reload"}}</a></div>
 	</div>
 	<input type="hidden" name="captcha-id" value="{{.CaptchaID}}">
