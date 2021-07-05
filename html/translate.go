@@ -300,6 +300,10 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "European Union"},
 		TagStr{language.German, "Europäische Union"},
 	},
+	"default-county": []TagStr{
+		TagStr{language.AmericanEnglish, "non-EU"},
+		TagStr{language.German, "DE"},
+	},
 }
 
 // Language is any string. It will be matched by golang.org/x/text/language.Make and golang.org/x/text/language.NewMatcher.

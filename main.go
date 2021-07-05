@@ -164,9 +164,11 @@ func (*custOrder) Categories() ([]*db.Category, error) {
 }
 
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
+	lang := html.GetLanguage(r)
 	return html.CustOrder.Execute(w, &custOrder{
-		CaptchaID: captcha.NewLen(6),
-		Language:  html.GetLanguage(r),
+		CaptchaID:     captcha.NewLen(6),
+		CountryAnswer: lang.Translate("default-county"),
+		Language:      lang,
 	})
 }
 
