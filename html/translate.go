@@ -181,7 +181,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Diese Bestellung wurde nicht gefunden oder bereits gelöscht."},
 	},
 	"country-tax-question": []TagStr{
-		TagStr{language.AmericanEnglish, "In which country do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
+		TagStr{language.AmericanEnglish, "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
 		TagStr{language.German, "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"},
 	},
 	"country-BE": []TagStr{
@@ -293,7 +293,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Zypern"},
 	},
 	"non-EU": []TagStr{
-		TagStr{language.AmericanEnglish, "Outside the European Union"},
+		TagStr{language.AmericanEnglish, "Not in the European Union"},
 		TagStr{language.German, "Außerhalb der Europäischen Union"},
 	},
 	"EU": []TagStr{
