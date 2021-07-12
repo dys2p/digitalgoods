@@ -41,8 +41,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen."},
 	},
 	"how-4": []TagStr{
-		TagStr{language.AmericanEnglish, "As soon as your payment is confirmed on the blockchain, the purchased codes are shown. In the unlikely case that your goods have become sold out in the meantime, they will appear as soon as they are back in stock."},
-		TagStr{language.German, "Sobald deine Zahlung in der Blockchain bestätigt wurde, werden dir die Codes für deine Produkte angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."},
+		TagStr{language.AmericanEnglish, "As soon as your payment is confirmed on the blockchain, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
+		TagStr{language.German, "Sobald deine Zahlung in der Blockchain bestätigt wurde, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."},
 	},
 	"how-5": []TagStr{
 		TagStr{language.AmericanEnglish, "Write down your codes. We will delete them after 30 days."},
