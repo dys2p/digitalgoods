@@ -1,13 +1,11 @@
 package main
 
 import (
-	"embed"
 	"errors"
 	"flag"
 	"fmt"
 	"html/template"
 	"io"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -24,6 +22,7 @@ import (
 	"github.com/dys2p/btcpay"
 	"github.com/dys2p/digitalgoods/db"
 	"github.com/dys2p/digitalgoods/html"
+	"github.com/dys2p/digitalgoods/static"
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
@@ -33,9 +32,6 @@ var database *db.DB
 var sessionManager *scs.SessionManager
 var store btcpay.Store
 var users userdb.Authenticator
-
-//go:embed static
-var static embed.FS
 
 func main() {
 
@@ -78,14 +74,10 @@ func main() {
 	var stop = make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
-	// assets for customer and staff routers
-
-	var substatic, _ = fs.Sub(fs.FS(static), "static")
-
 	// customer http server
 
 	var custRtr = httprouter.New()
-	custRtr.ServeFiles("/static/*filepath", http.FS(substatic))
+	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/", wrapTmpl(custOrderGet))
 	custRtr.HandlerFunc(http.MethodPost, "/", wrapTmpl(custOrderPost))
 	custRtr.HandlerFunc(http.MethodGet, "/i/:invoiceid", wrapTmpl(custPurchaseGet))
@@ -103,7 +95,7 @@ func main() {
 	sessionManager.Store = memstore.New()
 
 	var staffRtr = httprouter.New()
-	staffRtr.ServeFiles("/static/*filepath", http.FS(substatic))
+	staffRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	staffRtr.HandlerFunc(http.MethodGet, "/login", wrapTmpl(staffLoginGet))
 	staffRtr.HandlerFunc(http.MethodPost, "/login", wrapTmpl(staffLoginPost))
 	// with authentication:
