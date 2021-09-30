@@ -286,7 +286,10 @@ func (db *DB) GetCategories() ([]*Category, error) {
 			return nil, err
 		}
 		if c, ok := catMap[categoryID]; ok {
-			c.Description = append(c.Description, html.TagStr{language.Make(lang), htmltext})
+			c.Description = append(c.Description, html.TagStr{
+				Tag: language.Make(lang),
+				Str: htmltext,
+			})
 		}
 	}
 

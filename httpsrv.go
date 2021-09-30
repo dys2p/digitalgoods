@@ -38,6 +38,7 @@ func ListenAndServe(network, address string, handler http.Handler, stop chan os.
 }
 
 func (srv HTTPServer) Shutdown() {
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	srv.Server.Shutdown(ctx)
 }
