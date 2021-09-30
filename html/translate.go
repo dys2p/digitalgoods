@@ -300,7 +300,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "European Union"},
 		TagStr{language.German, "Europäische Union"},
 	},
-	"default-county": []TagStr{
+	"default-country": []TagStr{
 		TagStr{language.AmericanEnglish, "non-EU"},
 		TagStr{language.German, "DE"},
 	},
