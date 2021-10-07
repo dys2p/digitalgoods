@@ -382,6 +382,8 @@ func (db *DB) SetSettled(id string) error {
 		}
 		defer rows.Close()
 
+		var gotAmount = 0
+
 		for rows.Next() {
 			var itemID string
 			var image []byte
@@ -393,12 +395,15 @@ func (db *DB) SetSettled(id string) error {
 			}
 			log.Printf("delivering %s: %s", id, Mask(itemID, 4))
 			purchase.Delivered = append(purchase.Delivered, DeliveredItem{ArticleID: u.ArticleID, ID: itemID, Image: image, DeliveryDate: time.Now().Format(DateFmt)})
+			gotAmount++
 		}
 
 		// log VAT
 
-		if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, u.Amount, u.ItemPrice, purchase.CountryCode); err != nil {
-			return err
+		if gotAmount > 0 {
+			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+				return err
+			}
 		}
 	}
 
