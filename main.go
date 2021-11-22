@@ -248,13 +248,18 @@ type custPurchase struct {
 	Purchase         *db.Purchase
 	URL              string
 	PaysrvErr        error
+	PreferOnion      bool
 	IsNew            bool
 	IsUnderdelivered bool
 	html.Language
 }
 
 func (cp *custPurchase) CheckoutLink() template.URL {
-	return template.URL(store.InvoiceCheckoutLink(cp.Purchase.InvoiceID))
+	link := store.InvoiceCheckoutLink(cp.Purchase.InvoiceID)
+	if cp.PreferOnion {
+		link = store.InvoiceCheckoutLinkPreferOnion(cp.Purchase.InvoiceID)
+	}
+	return template.URL(link)
 }
 
 func (cp *custPurchase) GetArticleName(id string) string {
@@ -334,12 +339,13 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.CustPurchase.Execute(w, &custPurchase{
-		purchase,
-		AbsHost(r) + r.URL.String(),
-		paysrvErr,
-		purchase.Status == db.StatusNew,
-		purchase.Status == db.StatusUnderdelivered,
-		html.GetLanguage(r),
+		Purchase:         purchase,
+		URL:              AbsHost(r) + r.URL.String(),
+		PaysrvErr:        paysrvErr,
+		PreferOnion:      strings.HasSuffix(r.URL.Host, ".onion"),
+		IsNew:            purchase.Status == db.StatusNew,
+		IsUnderdelivered: purchase.Status == db.StatusUnderdelivered,
+		Language:         html.GetLanguage(r),
 	})
 }
 

@@ -2,8 +2,8 @@ github.com/alexedwards/scs/v2 v2.4.0 h1:XfnMamKnvp1muJVNr1WzikQTclopsBXWZtzz0NBj
 github.com/alexedwards/scs/v2 v2.4.0/go.mod h1:ToaROZxyKukJKT/xLcVQAChi5k6+Pn1Gvmdl7h3RRj8=
 github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f h1:q/DpyjJjZs94bziQ7YkBmIlpqbVP7yw179rnzoNVX1M=
 github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f/go.mod h1:QGrK8vMWWHQYQ3QU9bw9Y9OPNfxccGzfb41qjvVeXtY=
-github.com/dys2p/btcpay v0.3.2 h1:GY00NZkOF1IcUpCZx9GbLUAKYT0wa6uh0GJZNVuNxtM=
-github.com/dys2p/btcpay v0.3.2/go.mod h1:PhoRfQYTu1hAThbCh0dutuUonLf0WPb72huHr19ujgU=
+github.com/dys2p/btcpay v0.4.0 h1:UizbaTJav6FkTTGcVn+SEDWSL5w34AvML6JQLSQGmdg=
+github.com/dys2p/btcpay v0.4.0/go.mod h1:PhoRfQYTu1hAThbCh0dutuUonLf0WPb72huHr19ujgU=
 github.com/julienschmidt/httprouter v1.3.0 h1:U0609e9tgbseu3rBINet9P48AI/D3oJs4dN7jwJOQ1U=
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
 github.com/mattn/go-sqlite3 v1.14.8 h1:gDp86IdQsN/xWjIEmr9MF6o9mpksUgh0fu+9ByFxzIU=
