@@ -342,7 +342,7 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 		Purchase:         purchase,
 		URL:              AbsHost(r) + r.URL.String(),
 		PaysrvErr:        paysrvErr,
-		PreferOnion:      strings.HasSuffix(r.URL.Host, ".onion"),
+		PreferOnion:      strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		IsNew:            purchase.Status == db.StatusNew,
 		IsUnderdelivered: purchase.Status == db.StatusUnderdelivered,
 		Language:         html.GetLanguage(r),
