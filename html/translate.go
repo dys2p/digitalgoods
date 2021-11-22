@@ -37,8 +37,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. (Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast.)"},
 	},
 	"how-3": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay the requested amount of Monero (XMR) or Bitcoin (BTC) to the given address. The amount must be paid completely with a single transaction within 60 minutes."},
-		TagStr{language.German, "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen."},
+		TagStr{language.AmericanEnglish, "Pay the requested amount of Monero (XMR) or Bitcoin (BTC) to the given address. The amount must be paid completely with a single transaction within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us."},
+		TagStr{language.German, "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."},
 	},
 	"how-4": []TagStr{
 		TagStr{language.AmericanEnglish, "As soon as your payment is confirmed on the blockchain, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
