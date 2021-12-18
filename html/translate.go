@@ -160,9 +160,13 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "New: We are waiting for your payment."},
 		TagStr{language.German, "Neu: Wir warten auf den Eingang deiner Zahlung."},
 	},
-	"status-expired": []TagStr{
-		TagStr{language.AmericanEnglish, "Expired: The invoice has been paid late, partly or not at all."},
-		TagStr{language.German, "Abgelaufen: Die Rechnung wurde zu spät, unvollständig oder gar nicht bezahlt."},
+	"status-btcpay-created": []TagStr{
+		TagStr{language.AmericanEnglish, "BTCPay invoice created"},
+		TagStr{language.German, "BTCPay-Rechnung erzeugt"},
+	},
+	"status-btcpay-expired": []TagStr{
+		TagStr{language.AmericanEnglish, "BTCPay invoice expired: The invoice has been paid late, partly or not at all."},
+		TagStr{language.German, "BTCPay-Rechnung abgelaufen: Die Rechnung wurde zu spät, unvollständig oder gar nicht bezahlt."},
 	},
 	"status-underdelivered": []TagStr{
 		TagStr{language.AmericanEnglish, "Underdelivered: We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience."},
@@ -300,9 +304,17 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "European Union"},
 		TagStr{language.German, "Europäische Union"},
 	},
+
+	// We're using this translation mechanism for technical default values too:
+
 	"default-country": []TagStr{
 		TagStr{language.AmericanEnglish, "non-EU"},
 		TagStr{language.German, "DE"},
+	},
+	// values taken from our BTCPay instance at https://pay.example.com/misc/lang
+	"btcpay-defaultlanguage": []TagStr{
+		TagStr{language.AmericanEnglish, "en"},
+		TagStr{language.German, "de-DE"},
 	},
 }
 

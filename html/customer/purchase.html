@@ -1,6 +1,6 @@
 {{define "content"}}
-<h1>{{.Translate "purchase"}} {{.Purchase.InvoiceID}}</h1>
-<p>{{.Translate "status"}}: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}</p>
+<h1>{{.Translate "purchase"}} {{.Purchase.ID}}</h1>
+<p><strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}</p>
 {{with .PaysrvErr}}
 	<p class="alert alert-danger">Unser Payserver lieferte eine Fehlermeldung: {{.}}</p>
 {{end}}
@@ -28,7 +28,10 @@
 	</ol>
 </p>
 <p>
-	<a class="btn btn-success" href="{{.CheckoutLink}}" target="_blank">{{.Translate "pay-link"}}</a>
+	<!-- open in new window, in case you didn't bookmark the purchase url -->
+	<form method="post" target="_blank">
+		<button type="submit" class="btn btn-success">{{.Translate "pay-link"}}</button>
+	</form>
 </p>
 <h2>{{.Translate "your-order"}}</h2>
 <table class="table">

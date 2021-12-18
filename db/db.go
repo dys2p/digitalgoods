@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -14,22 +15,34 @@ import (
 const DateFmt = "2006-01-02"
 
 type DB struct {
-	sqlDB                   *sql.DB
+	sqlDB *sql.DB
+
+	// purchases
 	addPurchase             *sql.Stmt
-	addToStock              *sql.Stmt
 	cleanupPurchases        *sql.Stmt
-	deleteFromStock         *sql.Stmt
-	getArticle              *sql.Stmt
-	getArticles             *sql.Stmt
-	getArticlesByCategory   *sql.Stmt
+	getPurchaseByID         *sql.Stmt
+	getPurchaseByInvoiceID  *sql.Stmt
+	getPurchasesByStatus    *sql.Stmt
+	updatePurchase          *sql.Stmt
+	updatePurchaseInvoiceID *sql.Stmt
+	updateStatus            *sql.Stmt
+
+	// stock
+	addToStock      *sql.Stmt
+	deleteFromStock *sql.Stmt
+	getFromStock    *sql.Stmt // might return less than n rows
+
+	// article
+	getArticle            *sql.Stmt
+	getArticles           *sql.Stmt
+	getArticlesByCategory *sql.Stmt
+
+	// categories
 	getCategories           *sql.Stmt
 	getCategoryDescriptions *sql.Stmt
-	getFromStock            *sql.Stmt
-	getPurchase             *sql.Stmt
-	getPurchases            *sql.Stmt
-	logVAT                  *sql.Stmt
-	updatePurchase          *sql.Stmt
-	updateStatus            *sql.Stmt
+
+	// VAT
+	logVAT *sql.Stmt
 }
 
 func IsNotFound(err error) bool {
@@ -41,10 +54,6 @@ func OpenDB() (*DB, error) {
 	var sqlDB, err = sql.Open("sqlite3", "data/digitalgoods.sqlite3?_busy_timeout=10000&_journal=WAL&_sync=NORMAL&cache=shared")
 	if err != nil {
 		return nil, err
-	}
-
-	var db = &DB{
-		sqlDB: sqlDB,
 	}
 
 	_, err = sqlDB.Exec(`
@@ -69,7 +78,8 @@ func OpenDB() (*DB, error) {
 			foreign key (category) references category(id)
 		);
 		create table if not exists purchase (
-			invoiceid   text not null primary key,
+			id          text not null primary key,
+			invoiceid   text not null,
 			status      text not null,
 			ordered     text not null, -- json
 			delivered   text not null, -- json (codes removed from stock)
@@ -96,93 +106,60 @@ func OpenDB() (*DB, error) {
 		return nil, err
 	}
 
-	db.addPurchase, err = db.sqlDB.Prepare("insert into purchase (invoiceid, status, ordered, delivered, deletedate, countrycode) values (?, ?, ?, '[]', '', ?)")
-	if err != nil {
-		return nil, err
+	var db = &DB{
+		sqlDB: sqlDB,
 	}
 
-	db.addToStock, err = db.sqlDB.Prepare("insert into stock (article, itemid, image, addtime) values (?, ?, ?, ?)")
-	if err != nil {
-		return nil, err
+	mustPrepare := func(s string) *sql.Stmt {
+		stmt, err := sqlDB.Prepare(s)
+		if err != nil {
+			panic(err)
+		}
+		return stmt
 	}
 
-	db.cleanupPurchases, err = db.sqlDB.Prepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
-	if err != nil {
-		return nil, err
-	}
+	// purchase
+	db.addPurchase = mustPrepare("insert into purchase (id, invoiceid, status, ordered, delivered, deletedate, countrycode) values (?, ?, ?, ?, '[]', '', ?)")
+	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
+	db.getPurchaseByID = mustPrepare("select id, invoiceid, status, ordered, delivered, deletedate, countrycode from purchase where id = ? limit 1")
+	db.getPurchaseByInvoiceID = mustPrepare("select id, invoiceid, status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
+	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
+	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
+	db.updatePurchaseInvoiceID = mustPrepare("update purchase set invoiceid = ?, status = ? where id = ?")
+	db.updateStatus = mustPrepare("update purchase set status = ?, deletedate = ? where id = ?")
 
-	db.deleteFromStock, err = db.sqlDB.Prepare("delete from stock where itemid = ?")
-	if err != nil {
-		return nil, err
-	}
+	// stock
+	db.addToStock = mustPrepare("insert into stock (article, itemid, image, addtime) values (?, ?, ?, ?)")
+	db.deleteFromStock = mustPrepare("delete from stock where itemid = ?")
+	db.getFromStock = mustPrepare("select itemid, image from stock where article = ? order by addtime asc limit ?")
 
-	db.getArticle, err = db.sqlDB.Prepare("select a.id, a.category,a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
-	if err != nil {
-		return nil, err
-	}
+	// article
+	db.getArticle = mustPrepare("select a.id, a.category,a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
+	db.getArticles = mustPrepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article group by a.id order by a.name")
+	db.getArticlesByCategory = mustPrepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.price asc")
 
-	// left join
-	db.getArticles, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article group by a.id order by a.name")
-	if err != nil {
-		return nil, err
-	}
+	// categories
+	db.getCategories = mustPrepare("select id, name from category order by name")
+	db.getCategoryDescriptions = mustPrepare("select category, language, htmltext from category_description")
 
-	// left join
-	db.getArticlesByCategory, err = db.sqlDB.Prepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.price asc")
-	if err != nil {
-		return nil, err
-	}
-
-	db.getCategories, err = db.sqlDB.Prepare("select id, name from category order by name")
-	if err != nil {
-		return nil, err
-	}
-
-	db.getCategoryDescriptions, err = db.sqlDB.Prepare("select category, language, htmltext from category_description")
-	if err != nil {
-		return nil, err
-	}
-
-	db.getFromStock, err = db.sqlDB.Prepare("select itemid, image from stock where article = ? order by addtime asc limit ?") // might return less than n rows
-	if err != nil {
-		return nil, err
-	}
-
-	db.getPurchase, err = db.sqlDB.Prepare("select status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
-	if err != nil {
-		return nil, err
-	}
-
-	db.getPurchases, err = db.sqlDB.Prepare("select invoiceid from purchase where status = ?")
-	if err != nil {
-		return nil, err
-	}
-
-	db.logVAT, err = db.sqlDB.Prepare("insert into vat_log (deliverydate, article, amount, itemprice, countrycode) values (?, ?, ?, ?, ?)")
-	if err != nil {
-		return nil, err
-	}
-
-	db.updatePurchase, err = db.sqlDB.Prepare("update purchase set status = ?, delivered = ?, deletedate = ? where invoiceid = ?")
-	if err != nil {
-		return nil, err
-	}
-
-	db.updateStatus, err = db.sqlDB.Prepare("update purchase set status = ?, deletedate = ? where invoiceid = ?")
-	if err != nil {
-		return nil, err
-	}
+	// VAT
+	db.logVAT = mustPrepare("insert into vat_log (deliverydate, article, amount, itemprice, countrycode) values (?, ?, ?, ?, ?)")
 
 	return db, nil
 }
 
-func (db *DB) AddPurchase(invoiceID string, order Order, countryCode string) error {
+func (db *DB) AddPurchase(invoiceID string, order Order, countryCode string) (string, error) {
 	orderJson, err := json.Marshal(order)
 	if err != nil {
-		return err
+		return "", err
 	}
-	_, err = db.addPurchase.Exec(invoiceID, StatusNew, orderJson, countryCode)
-	return err
+	for i := 0; i < 2; i++ { // try again if purchase id already exists
+		id := NewID16()
+		if _, err := db.addPurchase.Exec(id, invoiceID, StatusNew, orderJson, countryCode); err == nil {
+			return id, nil
+		}
+	}
+	return "", errors.New("database ran out of purchase ids")
 }
 
 func (db *DB) AddToStock(articleID, itemID string, image []byte) error {
@@ -201,20 +178,24 @@ func (db *DB) Cleanup() error {
 	return nil
 }
 
-// FulfilUnderdelivered can be called at any time.
+// FulfilUnderdelivered calls SetSettled for all underdelivered purchases. It can be called at any time.
 func (db *DB) FulfilUnderdelivered() error {
 	// no transaction required because SetSettled is idempotent
-	rows, err := db.getPurchases.Query(StatusUnderdelivered)
+	rows, err := db.getPurchasesByStatus.Query(StatusUnderdelivered)
 	if err != nil {
 		return err
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var invoiceID string
-		if err := rows.Scan(&invoiceID); err != nil {
+		var id string
+		if err := rows.Scan(&id); err != nil {
 			return err
 		}
-		if err := db.SetSettled(invoiceID); err != nil {
+		purchase, err := db.GetPurchaseByID(id)
+		if err != nil {
+			return err
+		}
+		if err := db.SetSettled(purchase); err != nil {
 			return err
 		}
 	}
@@ -296,27 +277,21 @@ func (db *DB) GetCategories() ([]*Category, error) {
 	return categories, nil
 }
 
-func (db *DB) GetPurchase(id string) (*Purchase, error) {
-	return db.getPurchaseWithStmt(id, db.getPurchase)
+func (db *DB) GetPurchaseByID(id string) (*Purchase, error) {
+	return db.getPurchaseWithStmt(id, db.getPurchaseByID)
+}
+
+func (db *DB) GetPurchaseByInvoiceID(invoiceID string) (*Purchase, error) {
+	return db.getPurchaseWithStmt(invoiceID, db.getPurchaseByInvoiceID)
 }
 
 // can be used within or without a transaction
-func (db *DB) getPurchaseWithStmt(invoiceID string, stmt *sql.Stmt) (*Purchase, error) {
-
-	var status string
+func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*Purchase, error) {
+	var purchase = &Purchase{}
 	var ordered string
 	var delivered string
-	var deleteDate string
-	var countryCode string
-	if err := stmt.QueryRow(invoiceID).Scan(&status, &ordered, &delivered, &deleteDate, &countryCode); err != nil {
+	if err := stmt.QueryRow(whereArg).Scan(&purchase.ID, &purchase.InvoiceID, &purchase.Status, &ordered, &delivered, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
 		return nil, err
-	}
-
-	var purchase = &Purchase{
-		InvoiceID:   invoiceID,
-		Status:      status,
-		DeleteDate:  deleteDate,
-		CountryCode: countryCode,
 	}
 	if err := json.Unmarshal([]byte(ordered), &purchase.Ordered); err != nil {
 		return nil, fmt.Errorf("unmarshaling ordered: %w", err)
@@ -329,7 +304,7 @@ func (db *DB) getPurchaseWithStmt(invoiceID string, stmt *sql.Stmt) (*Purchase, 
 
 // GetPurchases returns the IDs of all purchases with the given status.
 func (db *DB) GetPurchases(status string) ([]string, error) {
-	rows, err := db.getPurchases.Query(status)
+	rows, err := db.getPurchasesByStatus.Query(status)
 	if err != nil {
 		return nil, err
 	}
@@ -345,24 +320,19 @@ func (db *DB) GetPurchases(status string) ([]string, error) {
 	return ids, nil
 }
 
-func (db *DB) SetExpired(id string) error {
-	_, err := db.updateStatus.Exec(StatusExpired, time.Now().AddDate(0, 0, 31).Format(DateFmt), id)
+func (db *DB) SetBTCPayInvoiceExpired(purchase *Purchase) error {
+	_, err := db.updateStatus.Exec(StatusBTCPayInvoiceExpired, time.Now().AddDate(0, 0, 31).Format(DateFmt), purchase.ID)
 	return err
 }
 
 // idempotent, must be called only if the invoice has been paid
-func (db *DB) SetSettled(id string) error {
+func (db *DB) SetSettled(purchase *Purchase) error {
 
 	tx, err := db.sqlDB.Begin()
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback() // no effect if tx has been committed
-
-	purchase, err := db.getPurchaseWithStmt(id, tx.Stmt(db.getPurchase))
-	if err != nil {
-		return err
-	}
 
 	unfulfilled, err := purchase.GetUnfulfilled()
 	if err != nil {
@@ -393,7 +363,7 @@ func (db *DB) SetSettled(id string) error {
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
 				return err
 			}
-			log.Printf("delivering %s: %s", id, Mask(itemID, 4))
+			log.Printf("delivering %s: %s", purchase.ID, Mask(itemID, 4))
 			purchase.Delivered = append(purchase.Delivered, DeliveredItem{ArticleID: u.ArticleID, ID: itemID, Image: image, DeliveryDate: time.Now().Format(DateFmt)})
 			gotAmount++
 		}
@@ -425,9 +395,18 @@ func (db *DB) SetSettled(id string) error {
 		newStatus = StatusUnderdelivered
 	}
 
-	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, id); err != nil {
+	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
 		return err
 	}
 
 	return tx.Commit()
+}
+
+// SetInvoiceID sets the invoice ID to the given value and the status to StatusBTCPayInvoiceCreated.
+func (db *DB) SetInvoiceID(purchase *Purchase, invoiceID string) error {
+	if purchase.InvoiceID != "" {
+		return errors.New("an invoice has already been created")
+	}
+	_, err := db.updatePurchaseInvoiceID.Exec(invoiceID, StatusBTCPayInvoiceCreated, purchase.ID)
+	return err
 }

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -80,7 +79,8 @@ func main() {
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/", wrapTmpl(custOrderGet))
 	custRtr.HandlerFunc(http.MethodPost, "/", wrapTmpl(custOrderPost))
-	custRtr.HandlerFunc(http.MethodGet, "/i/:invoiceid", wrapTmpl(custPurchaseGet))
+	custRtr.HandlerFunc(http.MethodGet, "/i/:purchaseid", wrapTmpl(custPurchaseGet))
+	custRtr.HandlerFunc(http.MethodPost, "/i/:purchaseid", wrapTmpl(custPurchasePost)) // redirect to btcpay server
 	custRtr.HandlerFunc(http.MethodGet, "/health", health)
 	custRtr.HandlerFunc(http.MethodPost, "/rpc", rpc)
 	custRtr.Handler("GET", "/captcha/:fn", captcha.Server(captcha.StdWidth, captcha.StdHeight))
@@ -223,24 +223,12 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return html.CustOrder.Execute(w, co)
 	}
 
-	invoiceRequest := &btcpay.InvoiceRequest{
-		Amount:   order.SumEUR(),
-		Currency: "EUR",
-	}
-	invoiceRequest.ExpirationMinutes = 60
-	invoiceRequest.DefaultLanguage = "de-DE"
-	invoiceRequest.OrderID = "digitalgoods"
-	invoiceRequest.RedirectURL = fmt.Sprintf("%s/i/{InvoiceId}%s", AbsHost(r), LangQuery(r)) // purchase ID is invoice ID
-	btcInvoice, err := store.CreateInvoice(invoiceRequest)
+	id, err := database.AddPurchase("", order, co.CountryAnswer)
 	if err != nil {
 		return err
 	}
 
-	if err := database.AddPurchase(btcInvoice.ID, order, co.CountryAnswer); err != nil {
-		return err
-	}
-
-	http.Redirect(w, r, fmt.Sprintf("/i/%s%s", btcInvoice.ID, LangQuery(r)), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/i/%s%s", id, LangQuery(r)), http.StatusSeeOther)
 	return nil
 }
 
@@ -252,14 +240,6 @@ type custPurchase struct {
 	IsNew            bool
 	IsUnderdelivered bool
 	html.Language
-}
-
-func (cp *custPurchase) CheckoutLink() template.URL {
-	link := store.InvoiceCheckoutLink(cp.Purchase.InvoiceID)
-	if cp.PreferOnion {
-		link = store.InvoiceCheckoutLinkPreferOnion(cp.Purchase.InvoiceID)
-	}
-	return template.URL(link)
 }
 
 func (cp *custPurchase) GetArticleName(id string) string {
@@ -304,32 +284,31 @@ func (cp *custPurchase) GroupedOrder() ([]orderGroup, error) {
 
 func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 
-	invoiceID := httprouter.ParamsFromContext(r.Context()).ByName("invoiceid")
-
-	purchase, err := database.GetPurchase(invoiceID)
+	purchaseID := httprouter.ParamsFromContext(r.Context()).ByName("purchaseid")
+	purchase, err := database.GetPurchaseByID(purchaseID)
 	if err != nil {
 		return err
 	}
 
 	var paysrvErr error
 
-	// Query payserver in case the webhook has been missed. Load is reduced by querying only if the purchase status is new.
-	if purchase.Status == db.StatusNew {
-		if invoice, err := store.GetInvoice(invoiceID); err == nil {
+	// Query payserver in case the webhook has been missed. Load is reduced by querying only if the purchase status is StatusBTCPayInvoiceCreated.
+	if purchase.Status == db.StatusBTCPayInvoiceCreated {
+		if invoice, err := store.GetInvoice(purchase.InvoiceID); err == nil {
 			// same as in webhook
 			switch invoice.Status {
 			case btcpay.InvoiceExpired:
-				if err := database.SetExpired(purchase.InvoiceID); err != nil {
+				if err := database.SetBTCPayInvoiceExpired(purchase); err != nil {
 					return err
 				}
 				// update purchase
-				purchase.Status = db.StatusExpired
+				purchase.Status = db.StatusBTCPayInvoiceExpired
 			case btcpay.InvoiceSettled:
-				if err := database.SetSettled(purchase.InvoiceID); err != nil {
+				if err := database.SetSettled(purchase); err != nil {
 					return err
 				}
 				// reload purchase
-				if purchase, err = database.GetPurchase(invoiceID); err != nil {
+				if purchase, err = database.GetPurchaseByID(purchase.ID); err != nil {
 					return err
 				}
 			}
@@ -349,6 +328,41 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
+func custPurchasePost(w http.ResponseWriter, r *http.Request) error {
+
+	purchaseID := httprouter.ParamsFromContext(r.Context()).ByName("purchaseid")
+	purchase, err := database.GetPurchaseByID(purchaseID)
+	if err != nil {
+		return err
+	}
+
+	if purchase.InvoiceID == "" {
+		invoiceRequest := &btcpay.InvoiceRequest{
+			Amount:   purchase.Ordered.SumEUR(),
+			Currency: "EUR",
+		}
+		invoiceRequest.DefaultLanguage = html.GetLanguage(r).Translate("btcpay-defaultlanguage")
+		invoiceRequest.ExpirationMinutes = 60
+		btcInvoice, err := store.CreateInvoice(invoiceRequest)
+		if err != nil {
+			return err
+		}
+
+		if err := database.SetInvoiceID(purchase, btcInvoice.ID); err != nil {
+			return err
+		}
+		purchase.InvoiceID = btcInvoice.ID
+	}
+
+	link := store.InvoiceCheckoutLink(purchase.InvoiceID)
+	if strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:") {
+		link = store.InvoiceCheckoutLinkPreferOnion(purchase.InvoiceID)
+	}
+
+	http.Redirect(w, r, link, http.StatusSeeOther)
+	return nil
+}
+
 func rpc(w http.ResponseWriter, r *http.Request) {
 
 	var event, err = store.ProcessWebhook(r)
@@ -357,14 +371,20 @@ func rpc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	purchase, err := database.GetPurchaseByInvoiceID(event.InvoiceID)
+	if err != nil {
+		log.Printf("rpc: purchase not found for invoice id: %s", event.InvoiceID)
+		return
+	}
+
 	switch event.Type {
 	case btcpay.EventInvoiceExpired:
-		if err := database.SetExpired(event.InvoiceID); err != nil {
-			log.Printf("rpc: error setting expired %s: %v", event.InvoiceID, err)
+		if err := database.SetBTCPayInvoiceExpired(purchase); err != nil {
+			log.Printf("rpc: error setting expired %s: %v", purchase.ID, err)
 		}
 	case btcpay.EventInvoiceSettled:
-		if err := database.SetSettled(event.InvoiceID); err != nil {
-			log.Printf("rpc: error fulfilling order %s: %v", event.InvoiceID, err)
+		if err := database.SetSettled(purchase); err != nil {
+			log.Printf("rpc: error fulfilling order %s: %v", purchase.ID, err)
 		}
 	default:
 		log.Printf("rpc: unknown event type: %s", event.Type)
@@ -406,7 +426,7 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 
 func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	id := r.PostFormValue("id")
-	purchase, err := database.GetPurchase(id)
+	purchase, err := database.GetPurchaseByID(id)
 	if err != nil {
 		return err
 	}
@@ -417,7 +437,12 @@ func staffMarkPaidConfirmPost(w http.ResponseWriter, r *http.Request) error {
 	if r.PostFormValue("confirm") == "" {
 		return errors.New("You did not confirm.")
 	}
-	if err := database.SetSettled(r.PostFormValue("id")); err != nil {
+	id := r.PostFormValue("id")
+	purchase, err := database.GetPurchaseByID(id)
+	if err != nil {
+		return err
+	}
+	if err := database.SetSettled(purchase); err != nil {
 		return err
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)

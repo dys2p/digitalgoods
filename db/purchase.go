@@ -9,14 +9,16 @@ import (
 )
 
 const (
-	StatusNew            string = "new"            // waiting for payment
-	StatusExpired        string = "expired"        // not paid properly
-	StatusUnderdelivered string = "underdelivered" // payment settled, but we had not had enough items on stock
-	StatusFinalized      string = "finalized"      // payment settled, codes delivered
+	StatusNew                  string = "new" // no BTCPay invoice created yet
+	StatusBTCPayInvoiceCreated string = "btcpay-created"
+	StatusBTCPayInvoiceExpired string = "btcpay-expired" // not paid properly
+	StatusUnderdelivered       string = "underdelivered" // payment settled, but we had not had enough items on stock
+	StatusFinalized            string = "finalized"      // payment settled, codes delivered
 )
 
 type Purchase struct {
-	InvoiceID   string
+	ID          string
+	InvoiceID   string // BTCPay
 	Status      string
 	Ordered     Order
 	Delivered   Delivery
