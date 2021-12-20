@@ -7,7 +7,7 @@
 {{if .Purchase.DeleteDate}}
 	<p class="alert alert-warning">{{.Translate "info-delete"}} {{.Purchase.DeleteDateStr}}</p>
 {{end}}
-{{if or .IsNew .IsUnderdelivered}}
+{{if or .IsUnpaid .IsUnderdelivered}}
 	<script>
 		scheduleReload();
 	</script>
@@ -27,12 +27,37 @@
 		<!-- end -->
 	</ol>
 </p>
-<p>
-	<!-- open in new window, in case you didn't bookmark the purchase url -->
-	<form method="post" target="_blank">
-		<button type="submit" class="btn btn-success">{{.Translate "pay-link"}}</button>
-	</form>
-</p>
+<h2>{{.Translate "payment"}}</h2>
+<div>
+	<ul class="nav nav-tabs my-3">
+		<li class="nav-item">
+			<a class="nav-link {{if eq .ActiveTab "btcpay"}}active{{end}}" href="{{.TabBTCPay}}">{{.Translate "payment-btcpay"}}</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link {{if eq .ActiveTab "cash"}}active{{end}}" href="{{.TabCash}}">{{.Translate "payment-cash"}}</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link {{if eq .ActiveTab "sepa"}}active{{end}}" href="{{.TabSepa}}">{{.Translate "payment-sepa"}}</a>
+		</li>
+	</ul>
+	{{if eq .ActiveTab "btcpay"}}
+		<p>{{.Translate "payment-btcpay-intro"}}</p>
+		<!-- open in new window, in case you didn't bookmark the purchase url -->
+		<form method="post" target="_blank" class="mb-3">
+			<button type="submit" class="btn btn-success">{{.Translate "btcpay-link"}}</button>
+		</form>
+	{{end}}
+	{{if eq .ActiveTab "cash"}}
+		<p>{{.Translate "payment-cash-intro"}}</p>
+		{{block "cash" .}}{{end}}
+		<p>{{.Translate "payment-cash-payid"}} <code>{{.Purchase.PayID}}</code></p>
+	{{end}}
+	{{if eq .ActiveTab "sepa"}}
+		<p>{{.Translate "payment-sepa-intro"}}</p>
+		{{block "sepa" .}}{{end}}
+		<p>{{.Translate "payment-sepa-payid"}} <code>{{.Purchase.PayID}}</code></p>
+	{{end}}
+</div>
 <h2>{{.Translate "your-order"}}</h2>
 <table class="table">
 	<thead>
@@ -109,9 +134,9 @@
 			{{end}}
 		</tr>
 		{{end}}
-		{{if .IsNew}}
+		{{if .IsUnpaid}}
 		<tr>
-			<td colspan="4">{{.Translate "info-waiting"}}</td>
+			<td colspan="4">{{.Translate "info-unpaid"}}</td>
 		</tr>
 		{{end}}
 		{{if .IsUnderdelivered}}

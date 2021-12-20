@@ -37,12 +37,28 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. (Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast.)"},
 	},
 	"how-3": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay the requested amount of Monero (XMR) or Bitcoin (BTC) to the given address. The amount must be paid completely with a single transaction within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us."},
-		TagStr{language.German, "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."},
+		TagStr{language.AmericanEnglish, "Pay your order using Monero or Bitcoin, cash, or SEPA bank transfer."},
+		TagStr{language.German, "Bezahle deine Bestellung mit Monero oder Bitcoin, Bargeld oder SEPA-Banküberweisung."},
+	},
+	"how-3abc": []TagStr{
+		TagStr{language.AmericanEnglish, "Pay your order using one of these methods:"},
+		TagStr{language.German, "Bezahle deine Bestellung mit einer dieser Zahlungsarten:"},
+	},
+	"how-3a": []TagStr{
+		TagStr{language.AmericanEnglish, "Monero (XMR) or Bitcoin (BTC): Send the requested amount to the given address. The amount must be paid completely with a single transaction within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us."},
+		TagStr{language.German, "Monero (XMR) oder Bitcoin (BTC): Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."},
+	},
+	"how-3b": []TagStr{
+		TagStr{language.AmericanEnglish, "Cash: Send us cash in an insured letter or package. Include a note with your payment code."},
+		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket. Lege einen Zettel mit dem Zahlungscode bei."},
+	},
+	"how-3c": []TagStr{
+		TagStr{language.AmericanEnglish, "SEPA bank transfer: Transfer the money to our bank account. We will be able to see the name of the bank account holder, so this is the least data-minimising payment method."},
+		TagStr{language.German, "SEPA-Überweisung: Überweise uns das Geld. Wir werden den Namen des Kontoinhabers auf unserem Kontoauszug sehen. Damit ist dies die am wenigsten datensparsame Bezahlmöglichkeit."},
 	},
 	"how-4": []TagStr{
-		TagStr{language.AmericanEnglish, "As soon as your payment is confirmed on the blockchain, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
-		TagStr{language.German, "Sobald deine Zahlung in der Blockchain bestätigt wurde, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."},
+		TagStr{language.AmericanEnglish, "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
+		TagStr{language.German, "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."},
 	},
 	"how-5": []TagStr{
 		TagStr{language.AmericanEnglish, "Write down your codes. We will delete them after 30 days."},
@@ -93,7 +109,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Bestellen"},
 	},
 	"purchase": []TagStr{
-		TagStr{language.AmericanEnglish, "Purchase"},
+		TagStr{language.AmericanEnglish, "Order"},
 		TagStr{language.German, "Bestellung"},
 	},
 	"status": []TagStr{
@@ -101,7 +117,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Status"},
 	},
 	"javascript-reload": []TagStr{
-		TagStr{language.AmericanEnglish, "JavaScript is disabled in your browser. In order to receive updates on your purchase, please reload this page from time to time."},
+		TagStr{language.AmericanEnglish, "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time."},
 		TagStr{language.German, "Du hast JavaScript deaktiviert. Um über Neuigkeiten informiert zu werden, lade die Seite bitte gelegentlich neu."},
 	},
 	"whats-next": []TagStr{
@@ -112,9 +128,45 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Check your order."},
 		TagStr{language.German, "Prüfe deine Bestellung."},
 	},
-	"pay-link": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay the invoice"},
-		TagStr{language.German, "Zur Bezahlung"},
+	"payment": []TagStr{
+		TagStr{language.AmericanEnglish, "Payment"},
+		TagStr{language.German, "Bezahlung"},
+	},
+	"payment-btcpay": []TagStr{
+		TagStr{language.AmericanEnglish, "Monero or Bitcoin"},
+		TagStr{language.German, "Monero oder Bitcoin"},
+	},
+	"payment-btcpay-intro": []TagStr{
+		TagStr{language.AmericanEnglish, "The amount must be paid completely with a single transaction within 60 minutes. As soon as your payment is confirmed on the blockchain, your voucher codes are shown. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us."},
+		TagStr{language.German, "Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Sobald deine Zahlung in der Blockchain bestätigt wurde, werden dir deine Gutscheincodes angezeigt. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."},
+	},
+	"payment-cash": []TagStr{
+		TagStr{language.AmericanEnglish, "Cash"},
+		TagStr{language.German, "Bargeld"},
+	},
+	"payment-cash-intro": []TagStr{
+		TagStr{language.AmericanEnglish, `You can send cash in an insured letter or package to our store address in Germany. Please check the cash shipment limits of your postal company (e. g. Deutsche Post "Einschreiben Wert" up to 100 Euros within Germany, or DHL Parcel up to 500 Euros). Send it to:`},
+		TagStr{language.German, `Schicke uns Bargeld in einem versichertem Brief oder Paket. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post "Einschreiben Wert" bis 100 Euro innerhalb von Deutschland, oder DHL Paket bis 500 Euro). Sende es an:`},
+	},
+	"payment-cash-payid": []TagStr{
+		TagStr{language.AmericanEnglish, "Please include a note with this payment code:"},
+		TagStr{language.German, "Bitte lege einen Zettel mit diesem Zahlungscode bei:"},
+	},
+	"payment-sepa": []TagStr{
+		TagStr{language.AmericanEnglish, "SEPA Bank Transfer"},
+		TagStr{language.German, "SEPA-Banküberweisung"},
+	},
+	"payment-sepa-intro": []TagStr{
+		TagStr{language.AmericanEnglish, "If you have a SEPA (Single Euro Payments Area) bank account, you can do a SEPA bank transfer to our German bank account. We will be able to see the name of the bank account holder, so this is the least data-minimising payment method."},
+		TagStr{language.German, "Falls du ein SEPA-Bankkonto (Europäischer Zahlungsraum) hast, kannst du den Betrag per SEPA-Überweisung auf unser deutsches Bankkonto überweisen. Wir werden den Namen des Kontoinhabers auf unserem Kontoauszug sehen. Damit ist dies die am wenigsten datensparsame Bezahlmöglichkeit."},
+	},
+	"payment-sepa-payid": []TagStr{
+		TagStr{language.AmericanEnglish, "Please enter this payment code in the payment reference field:"},
+		TagStr{language.German, "Gib als Verwendungszweck bitte diesen Zahlungscode an:"},
+	},
+	"btcpay-link": []TagStr{
+		TagStr{language.AmericanEnglish, "Pay using Monero or Bitcoin"},
+		TagStr{language.German, "Zur Bezahlung mit Monero oder Bitcoin"},
 	},
 	"your-order": []TagStr{
 		TagStr{language.AmericanEnglish, "Your Order"},
@@ -148,7 +200,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."},
 		TagStr{language.German, "Die fehlenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir bitten die Umstände zu entschuldigen."},
 	},
-	"info-waiting": []TagStr{
+	"info-unpaid": []TagStr{
 		TagStr{language.AmericanEnglish, "You will receive your codes as soon as you payment has arrived."},
 		TagStr{language.German, "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."},
 	},
@@ -181,7 +233,7 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Interner Fehler: "},
 	},
 	"error-purchase-not-found": []TagStr{
-		TagStr{language.AmericanEnglish, "There is no such purchase, or it has been deleted."},
+		TagStr{language.AmericanEnglish, "There is no such order, or it has been deleted."},
 		TagStr{language.German, "Diese Bestellung wurde nicht gefunden oder bereits gelöscht."},
 	},
 	"country-tax-question": []TagStr{

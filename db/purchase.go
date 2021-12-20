@@ -17,13 +17,14 @@ const (
 )
 
 type Purchase struct {
-	ID          string
-	InvoiceID   string // BTCPay
-	Status      string
-	Ordered     Order
-	Delivered   Delivery
-	DeleteDate  string
-	CountryCode string
+	ID              string
+	BTCPayInvoiceID string // defined by BTCPay server
+	PayID           string // defined by us
+	Status          string
+	Ordered         Order
+	Delivered       Delivery
+	DeleteDate      string
+	CountryCode     string
 }
 
 func (p *Purchase) DeleteDateStr() (string, error) {
