@@ -121,7 +121,7 @@ func OpenDB() (*DB, error) {
 	}
 
 	// purchase
-	db.addPurchase = mustPrepare("insert into purchase (id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode) values (?, '', ?, ?, ?, '[]', '', ?)")
+	db.addPurchase = mustPrepare("insert into purchase (id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode) values (?, '', ?, ?, ?, '[]', ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
 	db.getPurchaseByID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where id = ? limit 1")
 	db.getPurchaseByBTCPayInvoiceID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
@@ -150,7 +150,7 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-func (db *DB) AddPurchase(order Order, countryCode string) (string, error) {
+func (db *DB) AddPurchase(order Order, deleteDate, countryCode string) (string, error) {
 	orderJson, err := json.Marshal(order)
 	if err != nil {
 		return "", err
@@ -158,7 +158,7 @@ func (db *DB) AddPurchase(order Order, countryCode string) (string, error) {
 	for i := 0; i < 3; i++ { // try again if purchase id or pay id already exists
 		id := NewPurchaseID()
 		payID := NewPayID()
-		if _, err := db.addPurchase.Exec(id, payID, StatusNew, orderJson, countryCode); err == nil {
+		if _, err := db.addPurchase.Exec(id, payID, StatusNew, orderJson, deleteDate, countryCode); err == nil {
 			return id, nil
 		}
 	}
@@ -395,6 +395,7 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(DateFmt)
 		newStatus = StatusFinalized
 	} else {
+		newDeleteDate = "" // don't delete
 		newStatus = StatusUnderdelivered
 	}
 

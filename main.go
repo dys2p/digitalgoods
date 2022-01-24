@@ -90,6 +90,8 @@ func main() {
 	var custSrv = ListenAndServe("tcp", ":9002", custRtr, stop)
 	defer custSrv.Shutdown()
 
+	log.Println("listening to port 9002")
+
 	// staff http server with session management
 
 	sessionManager = scs.New()
@@ -225,7 +227,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return html.CustOrder.Execute(w, co)
 	}
 
-	id, err := database.AddPurchase(order, co.CountryAnswer)
+	id, err := database.AddPurchase(order, time.Now().AddDate(0, 0, 31).Format(db.DateFmt), co.CountryAnswer)
 	if err != nil {
 		return err
 	}
