@@ -1,5 +1,5 @@
 {{define "content"}}
-<h1>{{.Name}} (ID {{.ID}}, unit price {{printf "%.2f Euro" .PriceEUR}}, {{.Stock}} on stock)</h1>
+<h1>{{.Name}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} on stock)</h1>
 <!-- tabs -->
 <ul class="nav nav-tabs">
 	<li class="nav-item">

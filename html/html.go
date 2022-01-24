@@ -2,7 +2,9 @@ package html
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
+	"strings"
 )
 
 //go:embed *
@@ -10,7 +12,11 @@ var files embed.FS
 
 func parse(fn ...string) *template.Template {
 	fn = append([]string{"layout.html"}, fn...)
-	return template.Must(template.Must(template.New("layout.html").ParseFS(files, fn...)).ParseGlob("data/custom.html"))
+	return template.Must(template.Must(template.New("layout.html").Funcs(template.FuncMap{
+		"FmtEuro": func(cents int) template.HTML {
+			return template.HTML(strings.Replace(fmt.Sprintf("%.2f&nbsp;€", float64(cents)/100.0), ".", ",", 1))
+		},
+	}).ParseFS(files, fn...)).ParseGlob("data/custom.html"))
 }
 
 var (

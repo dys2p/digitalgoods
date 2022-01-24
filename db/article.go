@@ -8,7 +8,3 @@ type Article struct {
 	Stock      int
 	Hide       bool
 }
-
-func (a Article) PriceEUR() float64 {
-	return float64(a.Price) / 100.0
-}

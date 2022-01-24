@@ -258,36 +258,9 @@ func (cp *custPurchase) GetArticleName(id string) string {
 	return article.Name
 }
 
-type orderGroup struct {
-	Category *db.Category
-	Rows     []db.OrderRow
-}
-
 // returns empty orderGroups too
-func (cp *custPurchase) GroupedOrder() ([]orderGroup, error) {
-	categories, err := database.GetCategories()
-	if err != nil {
-		return nil, err
-	}
-	result := make([]orderGroup, len(categories))
-	for i := range categories {
-		result[i].Category = categories[i]
-		result[i].Rows = []db.OrderRow{}
-	}
-	for _, row := range cp.Purchase.Ordered {
-		article, err := database.GetArticle(row.ArticleID)
-		if err != nil {
-			return nil, err
-		}
-		// linear search, well...
-		for i := range categories {
-			if categories[i].ID == article.CategoryID {
-				result[i].Rows = append(result[i].Rows, row)
-			}
-		}
-		// don't check the unlikely case that no category is found because this is just the "ordered" section and not the "delivered goods" section
-	}
-	return result, nil
+func (cp *custPurchase) GroupedOrder() ([]db.OrderGroup, error) {
+	return database.GroupedOrder(cp.Purchase.Ordered)
 }
 
 func custPurchaseGetBTCPay(w http.ResponseWriter, r *http.Request) error {
@@ -362,11 +335,12 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request) error {
 
 	if purchase.BTCPayInvoiceID == "" {
 		invoiceRequest := &btcpay.InvoiceRequest{
-			Amount:   purchase.Ordered.SumEUR(),
+			Amount:   float64(purchase.Ordered.Sum()) / 100.0,
 			Currency: "EUR",
 		}
 		invoiceRequest.DefaultLanguage = html.GetLanguage(r).Translate("btcpay-defaultlanguage")
 		invoiceRequest.ExpirationMinutes = 60
+		invoiceRequest.OrderID = fmt.Sprintf("digitalgoods %s", purchase.PayID) // PayID only
 		btcInvoice, err := store.CreateInvoice(invoiceRequest)
 		if err != nil {
 			return err
@@ -449,20 +423,26 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
-	id := r.PostFormValue("id")
-	purchase, err := database.GetPurchaseByID(id)
+	id := r.PostFormValue("pay-id")
+	purchase, err := database.GetPurchaseByPayID(id)
 	if err != nil {
 		return err
 	}
-	return html.StaffMarkPaidConfirm.Execute(w, purchase)
+	return html.StaffMarkPaidConfirm.Execute(w, struct {
+		*db.Purchase
+		DB *db.DB
+	}{
+		purchase,
+		database,
+	})
 }
 
 func staffMarkPaidConfirmPost(w http.ResponseWriter, r *http.Request) error {
 	if r.PostFormValue("confirm") == "" {
 		return errors.New("You did not confirm.")
 	}
-	id := r.PostFormValue("id")
-	purchase, err := database.GetPurchaseByID(id)
+	payID := r.PostFormValue("pay-id")
+	purchase, err := database.GetPurchaseByPayID(payID)
 	if err != nil {
 		return err
 	}

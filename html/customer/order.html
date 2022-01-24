@@ -62,7 +62,7 @@
 						{{end}}
 					</td>
 					<td>{{.Stock}}</td>
-					<td>{{$.Translate "%.2f Euro" .PriceEUR}}</td>
+					<td>{{FmtEuro .Price}}</td>
 				</tr>
 				{{end}}
 			{{end}}

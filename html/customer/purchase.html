@@ -99,15 +99,15 @@
 				<tr>
 					<td>{{$.GetArticleName .ArticleID}}</td>
 					<td>{{.Amount}}</td>
-					<td>{{$.Translate "%.2f Euro" .ItemPriceEUR}}</td>
-					<td>{{$.Translate "%.2f Euro" .SumEUR}}</td>
+					<td>{{FmtEuro .ItemPrice}}</td>
+					<td>{{FmtEuro .Sum}}</td>
 				</tr>
 				{{end}}
 			{{end}}
 		{{end}}
 		<tr>
 			<td colspan="3">{{.Translate "overall-sum"}}</td>
-			<td>{{.Translate "%.2f Euro" .Purchase.Ordered.SumEUR}}</td>
+			<td>{{FmtEuro .Purchase.Ordered.Sum}}</td>
 		</tr>
 	</tbody>
 </table>

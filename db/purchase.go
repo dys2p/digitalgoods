@@ -73,26 +73,14 @@ func (order Order) Sum() int {
 	return sum
 }
 
-func (order Order) SumEUR() float64 {
-	return float64(order.Sum()) / 100.0
-}
-
 type OrderRow struct {
 	Amount    int    `json:"amount"`
 	ArticleID string `json:"article-id"`
 	ItemPrice int    `json:"item-price"` // euro cents, price at order time
 }
 
-func (o OrderRow) ItemPriceEUR() float64 {
-	return float64(o.ItemPrice) / 100.0
-}
-
 func (o OrderRow) Sum() int {
 	return o.Amount * o.ItemPrice
-}
-
-func (o OrderRow) SumEUR() float64 {
-	return float64(o.Sum()) / 100.0
 }
 
 type Delivery []DeliveredItem

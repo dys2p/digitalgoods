@@ -22,6 +22,7 @@ type DB struct {
 	cleanupPurchases              *sql.Stmt
 	getPurchaseByID               *sql.Stmt
 	getPurchaseByBTCPayInvoiceID  *sql.Stmt
+	getPurchaseByPayID            *sql.Stmt
 	getPurchasesByStatus          *sql.Stmt
 	updatePurchase                *sql.Stmt
 	updatePurchaseBTCPayInvoiceID *sql.Stmt
@@ -125,6 +126,7 @@ func OpenDB() (*DB, error) {
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
 	db.getPurchaseByID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where id = ? limit 1")
 	db.getPurchaseByBTCPayInvoiceID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
+	db.getPurchaseByPayID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where payid = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
 	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
 	db.updatePurchaseBTCPayInvoiceID = mustPrepare("update purchase set invoiceid = ?, status = ? where id = ?")
@@ -287,6 +289,9 @@ func (db *DB) GetPurchaseByID(id string) (*Purchase, error) {
 func (db *DB) GetPurchaseByBTCPayInvoiceID(btcpayInvoiceID string) (*Purchase, error) {
 	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByBTCPayInvoiceID)
 }
+func (db *DB) GetPurchaseByPayID(btcpayInvoiceID string) (*Purchase, error) {
+	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByPayID)
+}
 
 // can be used within or without a transaction
 func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*Purchase, error) {
@@ -413,4 +418,35 @@ func (db *DB) SetBTCPayInvoiceID(purchase *Purchase, btcpayInvoiceID string) err
 	}
 	_, err := db.updatePurchaseBTCPayInvoiceID.Exec(btcpayInvoiceID, StatusBTCPayInvoiceCreated, purchase.ID)
 	return err
+}
+
+type OrderGroup struct {
+	Category *Category
+	Rows     []OrderRow
+}
+
+func (db *DB) GroupedOrder(order Order) ([]OrderGroup, error) {
+	categories, err := db.GetCategories()
+	if err != nil {
+		return nil, err
+	}
+	result := make([]OrderGroup, len(categories))
+	for i := range categories {
+		result[i].Category = categories[i]
+		result[i].Rows = []OrderRow{}
+	}
+	for _, row := range order {
+		article, err := db.GetArticle(row.ArticleID)
+		if err != nil {
+			return nil, err
+		}
+		// linear search, well...
+		for i := range categories {
+			if categories[i].ID == article.CategoryID {
+				result[i].Rows = append(result[i].Rows, row)
+			}
+		}
+		// don't check the unlikely case that no category is found because this is just the "ordered" section and not the "delivered goods" section
+	}
+	return result, nil
 }
