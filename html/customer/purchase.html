@@ -29,17 +29,17 @@
 		<!-- end -->
 	</ol>
 </p>
-<h2>{{.Translate "payment"}}</h2>
+<h2 id="payment">{{.Translate "payment"}}</h2>
 <div>
 	<ul class="nav nav-tabs my-3">
 		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "btcpay"}}active{{end}}" href="{{.TabBTCPay}}">{{.Translate "payment-btcpay"}}</a>
+			<a class="nav-link {{if eq .ActiveTab "btcpay"}}active{{end}}" href="{{.TabBTCPay}}#payment">{{.Translate "payment-btcpay"}}</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "cash"}}active{{end}}" href="{{.TabCash}}">{{.Translate "payment-cash"}}</a>
+			<a class="nav-link {{if eq .ActiveTab "cash"}}active{{end}}" href="{{.TabCash}}#payment">{{.Translate "payment-cash"}}</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "sepa"}}active{{end}}" href="{{.TabSepa}}">{{.Translate "payment-sepa"}}</a>
+			<a class="nav-link {{if eq .ActiveTab "sepa"}}active{{end}}" href="{{.TabSepa}}#payment">{{.Translate "payment-sepa"}}</a>
 		</li>
 	</ul>
 	{{if eq .ActiveTab "btcpay"}}
