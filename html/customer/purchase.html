@@ -1,11 +1,13 @@
 {{define "content"}}
 <h1>{{.Translate "purchase"}} {{.Purchase.ID}}</h1>
-<p><strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}</p>
+<p>
+	<strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}
+	{{if .Purchase.DeleteDate}}
+		<br>{{.Translate "info-delete"}} {{.Purchase.DeleteDateStr}}</p>
+	{{end}}
+</p>
 {{with .PaysrvErr}}
 	<p class="alert alert-danger">Unser Payserver lieferte eine Fehlermeldung: {{.}}</p>
-{{end}}
-{{if .Purchase.DeleteDate}}
-	<p class="alert alert-warning">{{.Translate "info-delete"}} {{.Purchase.DeleteDateStr}}</p>
 {{end}}
 {{if or .IsUnpaid .IsUnderdelivered}}
 	<script>

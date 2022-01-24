@@ -33,24 +33,20 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."},
 	},
 	"how-2": []TagStr{
-		TagStr{language.AmericanEnglish, "Save the URL of your order. (You need it to access your goods if you closed the browser tab.)"},
-		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. (Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast.)"},
+		TagStr{language.AmericanEnglish, "Save the URL of your order. You need it to access your goods if you closed the browser tab."},
+		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."},
 	},
 	"how-3": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay your order using Monero or Bitcoin, cash, or SEPA bank transfer."},
-		TagStr{language.German, "Bezahle deine Bestellung mit Monero oder Bitcoin, Bargeld oder SEPA-Banküberweisung."},
-	},
-	"how-3abc": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay your order using. (Unpaid orders are deleted after 30 days.)"},
-		TagStr{language.German, "Bezahle deine Bestellung mit einer dieser Zahlungsarten. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"},
+		TagStr{language.AmericanEnglish, "Pay your order. (Unpaid orders are deleted after 30 days.)"},
+		TagStr{language.German, "Bezahle deine Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"},
 	},
 	"how-3a": []TagStr{
 		TagStr{language.AmericanEnglish, "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain."},
 		TagStr{language.German, "Monero (XMR) oder Bitcoin (BTC): Die schnellste Methode. Deine Gutscheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bestätigt ist."},
 	},
 	"how-3b": []TagStr{
-		TagStr{language.AmericanEnglish, "Cash: Send us cash in an insured letter or package. Include a note with your payment code."},
-		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket. Lege einen Zettel mit dem Zahlungscode bei."},
+		TagStr{language.AmericanEnglish, "Cash: Send us cash in an insured letter or package."},
+		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket."},
 	},
 	"how-3c": []TagStr{
 		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer: Transfer the money to our bank account. We will be able to see the name of the bank account holder."},
@@ -61,8 +57,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."},
 	},
 	"how-5": []TagStr{
-		TagStr{language.AmericanEnglish, "Write down your codes. We will delete them after 30 days."},
-		TagStr{language.German, "Notiere dir die Codes. Wir werden sie nach 30 Tagen löschen."},
+		TagStr{language.AmericanEnglish, "Write down your codes. We will delete them 30 days after delivery."},
+		TagStr{language.German, "Notiere dir die Codes. Wir werden sie 30 Tage nach der Auslieferung löschen."},
 	},
 	"order-error": []TagStr{
 		TagStr{language.AmericanEnglish, "Please select some products."},
@@ -205,8 +201,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."},
 	},
 	"info-delete": []TagStr{
-		TagStr{language.AmericanEnglish, "This data will be deleted on:"},
-		TagStr{language.German, "Diese Informationen werden gelöscht am:"},
+		TagStr{language.AmericanEnglish, "Current deletion date:"},
+		TagStr{language.German, "Derzeitiges Löschdatum:"},
 	},
 	"status-new": []TagStr{
 		TagStr{language.AmericanEnglish, "New: We are waiting for your payment."},
