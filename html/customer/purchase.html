@@ -25,43 +25,47 @@
 		{{end}}
 		<!-- same as in order.html -->
 		<li>{{.Translate "how-2"}} <code>{{.URL}}</code></li>
-		<li>{{.Translate "how-3"}}</li>
-		<li>{{.Translate "how-4"}}</li>
+		{{if .Purchase.Unpaid}}
+			<li>{{.Translate "how-3"}}</li>
+			<li>{{.Translate "how-4"}}</li>
+		{{end}}
 		<li>{{.Translate "how-5"}}</li>
 		<!-- end -->
 	</ol>
 </p>
-<h2 id="payment">{{.Translate "payment"}}</h2>
-<div>
-	<ul class="nav nav-tabs my-3">
-		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "btcpay"}}active{{end}}" href="{{.TabBTCPay}}#payment">{{.Translate "payment-btcpay"}}</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "cash"}}active{{end}}" href="{{.TabCash}}#payment">{{.Translate "payment-cash"}}</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link {{if eq .ActiveTab "sepa"}}active{{end}}" href="{{.TabSepa}}#payment">{{.Translate "payment-sepa"}}</a>
-		</li>
-	</ul>
-	{{if eq .ActiveTab "btcpay"}}
-		<p>{{.Translate "payment-btcpay-intro"}}</p>
-		<!-- open in new window, in case you didn't bookmark the purchase url -->
-		<form method="post" target="_blank" class="mb-3">
-			<button type="submit" class="btn btn-success">{{.Translate "btcpay-link"}}</button>
-		</form>
-	{{end}}
-	{{if eq .ActiveTab "cash"}}
-		<p>{{.Translate "payment-cash-intro"}}</p>
-		{{block "cash" .}}{{end}}
-		<p>{{.Translate "payment-cash-payid"}} <code>{{.Purchase.PayID}}</code></p>
-	{{end}}
-	{{if eq .ActiveTab "sepa"}}
-		<p>{{.Translate "payment-sepa-intro"}}</p>
-		{{block "sepa" .}}{{end}}
-		<p>{{.Translate "payment-sepa-payid"}} <code>{{.Purchase.PayID}}</code></p>
-	{{end}}
-</div>
+{{if .Purchase.Unpaid}}
+	<h2 id="payment">{{.Translate "payment"}}</h2>
+	<div>
+		<ul class="nav nav-tabs my-3">
+			<li class="nav-item">
+				<a class="nav-link {{if eq .ActiveTab "btcpay"}}active{{end}}" href="{{.TabBTCPay}}#payment">{{.Translate "payment-btcpay"}}</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {{if eq .ActiveTab "cash"}}active{{end}}" href="{{.TabCash}}#payment">{{.Translate "payment-cash"}}</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link {{if eq .ActiveTab "sepa"}}active{{end}}" href="{{.TabSepa}}#payment">{{.Translate "payment-sepa"}}</a>
+			</li>
+		</ul>
+		{{if eq .ActiveTab "btcpay"}}
+			<p>{{.Translate "payment-btcpay-intro"}}</p>
+			<!-- open in new window, in case you didn't bookmark the purchase url -->
+			<form method="post" target="_blank" class="mb-3">
+				<button type="submit" class="btn btn-success">{{.Translate "btcpay-link"}}</button>
+			</form>
+		{{end}}
+		{{if eq .ActiveTab "cash"}}
+			<p>{{.Translate "payment-cash-intro"}}</p>
+			{{block "cash" .}}{{end}}
+			<p>{{.Translate "payment-cash-payid"}} <code>{{.Purchase.PayID}}</code></p>
+		{{end}}
+		{{if eq .ActiveTab "sepa"}}
+			<p>{{.Translate "payment-sepa-intro"}}</p>
+			{{block "sepa" .}}{{end}}
+			<p>{{.Translate "payment-sepa-payid"}} <code>{{.Purchase.PayID}}</code></p>
+		{{end}}
+	</div>
+{{end}}
 <h2>{{.Translate "your-order"}}</h2>
 <table class="table">
 	<thead>
