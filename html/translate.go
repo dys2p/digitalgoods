@@ -213,8 +213,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "BTCPay-Rechnung erzeugt"},
 	},
 	"status-btcpay-expired": []TagStr{
-		TagStr{language.AmericanEnglish, "BTCPay invoice expired: The invoice has been paid late, partly or not at all."},
-		TagStr{language.German, "BTCPay-Rechnung abgelaufen: Die Rechnung wurde zu spät, unvollständig oder gar nicht bezahlt."},
+		TagStr{language.AmericanEnglish, "BTCPay invoice expired: The BTCPay invoice has been paid late, partly or not at all. You can still pay cash or by SEPA bank transfer."},
+		TagStr{language.German, "BTCPay-Rechnung abgelaufen: Die BTCPay-Rechnung wurde zu spät, unvollständig oder gar nicht bezahlt. Du kannst immer noch bar oder per SEPA-Überweisung bezahlen."},
 	},
 	"status-underdelivered": []TagStr{
 		TagStr{language.AmericanEnglish, "Underdelivered: We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience."},
