@@ -9,7 +9,7 @@
 {{with .PaysrvErr}}
 	<p class="alert alert-danger">Unser Payserver lieferte eine Fehlermeldung: {{.}}</p>
 {{end}}
-{{if or .IsUnpaid .IsUnderdelivered}}
+{{if or .Purchase.WaitingForBTCPayment .Purchase.Underdelivered}}
 	<script>
 		scheduleReload();
 	</script>
@@ -20,7 +20,9 @@
 <h2>{{.Translate "whats-next"}}</h2>
 <p>
 	<ol>
-		<li>{{.Translate "next-1"}}</li>
+		{{if .Purchase.Unpaid}}
+			<li>{{.Translate "next-1"}}</li>
+		{{end}}
 		<!-- same as in order.html -->
 		<li>{{.Translate "how-2"}} <code>{{.URL}}</code></li>
 		<li>{{.Translate "how-3"}}</li>
@@ -136,14 +138,14 @@
 			{{end}}
 		</tr>
 		{{end}}
-		{{if .IsUnpaid}}
-		<tr>
-			<td colspan="4">{{.Translate "info-unpaid"}}</td>
-		</tr>
-		{{end}}
-		{{if .IsUnderdelivered}}
+		{{if .Purchase.Underdelivered}}
 		<tr>
 			<td colspan="4">{{.Translate "sorry-underdelivered"}}</td>
+		</tr>
+		{{end}}
+		{{if .Purchase.Unpaid}}
+		<tr>
+			<td colspan="4">{{.Translate "info-unpaid"}}</td>
 		</tr>
 		{{end}}
 	</tbody>

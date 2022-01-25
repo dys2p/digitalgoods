@@ -237,12 +237,10 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type custPurchase struct {
-	Purchase         *db.Purchase
-	URL              string
-	PaysrvErr        error
-	PreferOnion      bool
-	IsUnpaid         bool
-	IsUnderdelivered bool
+	Purchase    *db.Purchase
+	URL         string
+	PaysrvErr   error
+	PreferOnion bool
 	html.Language
 	ActiveTab string
 	TabBTCPay string
@@ -311,17 +309,15 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 	}
 
 	return html.CustPurchase.Execute(w, &custPurchase{
-		Purchase:         purchase,
-		URL:              fmt.Sprintf("%s/i/%s%s", AbsHost(r), purchase.ID, LangQuery(r)),
-		PaysrvErr:        paysrvErr,
-		PreferOnion:      strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
-		IsUnpaid:         purchase.Status == db.StatusNew || purchase.Status == db.StatusBTCPayInvoiceCreated,
-		IsUnderdelivered: purchase.Status == db.StatusUnderdelivered,
-		Language:         html.GetLanguage(r),
-		ActiveTab:        activeTab,
-		TabBTCPay:        fmt.Sprintf("/i/%s%s", purchase.ID, LangQuery(r)),
-		TabCash:          fmt.Sprintf("/i/%s/cash%s", purchase.ID, LangQuery(r)),
-		TabSepa:          fmt.Sprintf("/i/%s/sepa%s", purchase.ID, LangQuery(r)),
+		Purchase:    purchase,
+		URL:         fmt.Sprintf("%s/i/%s%s", AbsHost(r), purchase.ID, LangQuery(r)),
+		PaysrvErr:   paysrvErr,
+		PreferOnion: strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
+		Language:    html.GetLanguage(r),
+		ActiveTab:   activeTab,
+		TabBTCPay:   fmt.Sprintf("/i/%s%s", purchase.ID, LangQuery(r)),
+		TabCash:     fmt.Sprintf("/i/%s/cash%s", purchase.ID, LangQuery(r)),
+		TabSepa:     fmt.Sprintf("/i/%s/sepa%s", purchase.ID, LangQuery(r)),
 	})
 }
 

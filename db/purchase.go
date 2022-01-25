@@ -45,14 +45,27 @@ func (p *Purchase) GetUnfulfilled() (Order, error) {
 	return unfulfilled, nil
 }
 
+func (p *Purchase) Underdelivered() bool {
+	return p.Status == StatusUnderdelivered
+}
+
+func (p *Purchase) Unpaid() bool {
+	return p.Status == StatusNew || p.Status == StatusBTCPayInvoiceCreated || p.Status == StatusBTCPayInvoiceExpired
+}
+
+func (p *Purchase) WaitingForBTCPayment() bool {
+	return p.Status == StatusBTCPayInvoiceCreated
+}
+
 type Order []OrderRow
 
-func (order Order) Count() int {
-	var count = 0
-	for _, o := range order {
-		count += o.Amount
+func (order Order) Empty() bool {
+	for _, row := range order {
+		if row.Amount > 0 {
+			return false
+		}
 	}
-	return count
+	return true
 }
 
 func (order *Order) Decrement(articleID string) error {

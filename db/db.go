@@ -396,7 +396,7 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 	if err != nil {
 		return err
 	}
-	if unfulfilled.Count() == 0 {
+	if unfulfilled.Empty() {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(DateFmt)
 		newStatus = StatusFinalized
 	} else {
