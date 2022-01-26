@@ -37,8 +37,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."},
 	},
 	"how-3": []TagStr{
-		TagStr{language.AmericanEnglish, "Pay your order. (Unpaid orders are deleted after 30 days.)"},
-		TagStr{language.German, "Bezahle deine Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"},
+		TagStr{language.AmericanEnglish, "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)"},
+		TagStr{language.German, "Bezahle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"},
 	},
 	"how-3a": []TagStr{
 		TagStr{language.AmericanEnglish, "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain."},
@@ -49,8 +49,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket."},
 	},
 	"how-3c": []TagStr{
-		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer to our German bank account."},
-		TagStr{language.German, "SEPA-Überweisung auf unser deutsches Bankkonto."},
+		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer to our German bank account"},
+		TagStr{language.German, "SEPA-Überweisung auf unser deutsches Bankkonto"},
 	},
 	"how-4": []TagStr{
 		TagStr{language.AmericanEnglish, "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
