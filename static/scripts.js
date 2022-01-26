@@ -19,16 +19,15 @@ function updateHealth(url) {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if(xhr.readyState == 4) {
-			let id = btoa(url); // base64(url) is used as DOM id
 			if(xhr.status == 200) {
 				let data = JSON.parse(xhr.responseText);
 				let text = "";
 				for(d of data) {
 					text = text + `<span class="badge bg-${d.Synced ? 'success' : 'danger'}">${d.CryptoCode}: ${d.Synced ? 'synced' : 'out of sync'}</span> `;
 				}
-				document.getElementById(id).innerHTML = text;
+				document.getElementById("health-widget").innerHTML = text;
 			} else {
-				document.getElementById(id).innerHTML = '<span class="badge bg-warning">could not connect</span>';
+				document.getElementById("health-widget").innerHTML = '<span class="badge bg-warning">could not connect</span>';
 			}
 		}
 	}

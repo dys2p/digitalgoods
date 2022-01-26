@@ -19,7 +19,16 @@
 				<!-- center -->
 				<div class="equal-width-lg text-lg-center">
 					{{block "menu" .}}{{end}}
-					{{block "health" .}}{{end}}
+					<div>
+						BTCPay status:
+						<script>
+							document.write(` <span id="health-widget"></span>`);
+							updateHealth("/health");
+						</script>
+						<noscript>
+							<div class="badge bg-secondary">requires JavaScript</div>
+						</noscript>
+					</div>
 				</div>
 				<!-- right -->
 				<div class="equal-width-lg text-lg-end">
@@ -35,15 +44,3 @@
 	{{block "footer" .}}{{end}}
 </body>
 </html>
-
-{{define "health-widget"}}
-<script>
-/* own namespace */
-{
-	let url = {{.}};
-	let id = btoa(url); // use base64(url) as DOM id
-	document.write(` <span id="${id}"></span>`);
-	updateHealth(url);
-}
-</script>
-{{end}}
