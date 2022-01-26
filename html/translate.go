@@ -49,8 +49,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket."},
 	},
 	"how-3c": []TagStr{
-		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer: Transfer the money to our bank account. We will be able to see the name of the bank account holder."},
-		TagStr{language.German, "SEPA-Überweisung: Überweise uns das Geld. Wir werden den Namen des Kontoinhabers auf unserem Kontoauszug sehen."},
+		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer to our German bank account."},
+		TagStr{language.German, "SEPA-Überweisung auf unser deutsches Bankkonto."},
 	},
 	"how-4": []TagStr{
 		TagStr{language.AmericanEnglish, "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},
@@ -153,8 +153,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "SEPA-Banküberweisung"},
 	},
 	"payment-sepa-intro": []TagStr{
-		TagStr{language.AmericanEnglish, "If you have a SEPA (Single Euro Payments Area) bank account, you can do a SEPA bank transfer to our German bank account. We will be able to see the name of the bank account holder."},
-		TagStr{language.German, "Falls du ein SEPA-Bankkonto (Europäischer Zahlungsraum) hast, kannst du den Betrag per SEPA-Überweisung auf unser deutsches Bankkonto überweisen. Wir werden den Namen des Kontoinhabers auf unserem Kontoauszug sehen."},
+		TagStr{language.AmericanEnglish, "If you have a SEPA (Single Euro Payments Area) bank account, you can do a SEPA bank transfer to our German bank account. We will see your name and bank account number on our account statement."},
+		TagStr{language.German, "Falls du ein SEPA-Bankkonto (Europäischer Zahlungsraum) hast, kannst du den Betrag per SEPA-Überweisung auf unser deutsches Bankkonto überweisen. Wir werden deinen Namen und deine IBAN auf unserem Kontoauszug sehen."},
 	},
 	"payment-sepa-payid": []TagStr{
 		TagStr{language.AmericanEnglish, "Please enter this payment code in the payment reference field:"},
