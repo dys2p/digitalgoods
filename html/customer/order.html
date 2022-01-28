@@ -58,7 +58,7 @@
 					<td class="ps-4">{{.Name}}</td>
 					<td>
 						{{if gt .Stock 0}}
-							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="{{index $.Cart .ID}}">
+							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="{{index $.Cart .ID}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
 						{{end}}
 					</td>
 					<td>{{.Stock}}</td>
