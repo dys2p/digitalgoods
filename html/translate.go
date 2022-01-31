@@ -45,8 +45,8 @@ var translations = map[string][]TagStr{
 		TagStr{language.German, "Monero (XMR) oder Bitcoin (BTC): Die schnellste Methode. Deine Gutscheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bestätigt ist."},
 	},
 	"how-3b": []TagStr{
-		TagStr{language.AmericanEnglish, "Cash: Send us cash in an insured letter or package."},
-		TagStr{language.German, "Bargeld: Schicke uns Bargeld in einem versichertem Brief oder Paket."},
+		TagStr{language.AmericanEnglish, "Cash: Send an insured letter or package with cash to our office in Germany."},
+		TagStr{language.German, "Bargeld: Schicke Bargeld in einem versichertem Brief oder Paket an unsere Adresse in Deutschland."},
 	},
 	"how-3c": []TagStr{
 		TagStr{language.AmericanEnglish, "SEPA (Single Euro Payments Area) bank transfer to our German bank account"},
