@@ -1,13 +1,48 @@
 {{define "content"}}
 <h1>Manually mark a purchase paid</h1>
-<p class="alert alert-danger">Danger zone!</p>
 <form method="post">
 	<div class="mb-3">
 		<label for="pay-id" class="form-label">PayID</label>
-		<input id="pay-id" class="form-control" name="pay-id">
+		<input id="pay-id" class="form-control" name="pay-id" value="{{.PayID}}" readonly>
 	</div>
-	<div class="text-end">
-		<button type="submit" class="btn btn-success">Mark as paid and deliver the goods</button>
-	</div>
+	<p>Amount: {{FmtEuro .Ordered.Sum}}</p>
+	<p>Status: {{.Status}}</p>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Amount</th>
+				<th>Item Price</th>
+				<th>Sum</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .DB.GroupedOrder .Ordered}}
+				{{range .Rows}}
+					<tr>
+						<td>{{($.DB.GetArticle .ArticleID).Name}}</td>
+						<td>{{.Amount}}</td>
+						<td>{{FmtEuro .ItemPrice}}</td>
+						<td>{{FmtEuro .Sum}}</td>
+					</tr>
+				{{end}}
+			{{end}}
+			<tr>
+				<td colspan="3">Overall sum</td>
+				<td><strong>{{FmtEuro .Purchase.Ordered.Sum}}</strong></td>
+			</tr>
+		</tbody>
+	</table>
+
+	{{if .Unpaid}}
+		<div class="mb-3 form-check">
+			<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
+			<label for="confirm" class="form-check-label">Yes, I am sure. We have received <strong>{{FmtEuro .Ordered.Sum}}</strong>.</label>
+		</div>
+		<div class="text-end">
+			<button type="submit" class="btn btn-success">Mark as paid and deliver the goods</button>
+		</div>
+	{{end}}
 </form>
 {{end}}

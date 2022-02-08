@@ -105,9 +105,10 @@ func main() {
 	// with authentication:
 	staffRtr.HandlerFunc(http.MethodGet, "/", auth(wrapTmpl(staffIndexGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/logout", auth(wrapTmpl(staffLogoutGet)))
-	staffRtr.HandlerFunc(http.MethodGet, "/mark-paid", auth(wrapTmpl(staffMarkPaidGet)))
-	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid", auth(wrapTmpl(staffMarkPaidPost)))
-	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid-confirm", auth(wrapTmpl(staffMarkPaidConfirmPost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/view", auth(wrapTmpl(staffViewGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/view", auth(wrapTmpl(staffViewPost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidPost)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload", auth(wrapTmpl(staffSelectGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid", auth(wrapTmpl(staffUploadGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/image", auth(wrapTmpl(staffUploadImageGet)))
@@ -414,17 +415,27 @@ func staffLogoutGet(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffMarkPaid.Execute(w, nil)
+func staffViewGet(w http.ResponseWriter, r *http.Request) error {
+	return html.StaffView.Execute(w, nil)
 }
 
-func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
-	id := r.PostFormValue("pay-id")
-	purchase, err := database.GetPurchaseByPayID(id)
+func staffViewPost(w http.ResponseWriter, r *http.Request) error {
+	payID := r.PostFormValue("pay-id")
+	purchase, err := database.GetPurchaseByPayID(payID)
 	if err != nil {
 		return err
 	}
-	return html.StaffMarkPaidConfirm.Execute(w, struct {
+	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.PayID), http.StatusSeeOther)
+	return nil
+}
+
+func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
+	payID := httprouter.ParamsFromContext(r.Context()).ByName("payid")
+	purchase, err := database.GetPurchaseByPayID(payID)
+	if err != nil {
+		return err
+	}
+	return html.StaffMarkPaid.Execute(w, struct {
 		*db.Purchase
 		DB *db.DB
 	}{
@@ -433,7 +444,7 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-func staffMarkPaidConfirmPost(w http.ResponseWriter, r *http.Request) error {
+func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	if r.PostFormValue("confirm") == "" {
 		return errors.New("You did not confirm.")
 	}
@@ -445,7 +456,7 @@ func staffMarkPaidConfirmPost(w http.ResponseWriter, r *http.Request) error {
 	if err := database.SetSettled(purchase); err != nil {
 		return err
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.PayID), http.StatusSeeOther)
 	return nil
 }
 
