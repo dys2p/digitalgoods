@@ -143,7 +143,7 @@ func OpenDB() (*DB, error) {
 	db.getArticlesByCategory = mustPrepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.price asc")
 
 	// categories
-	db.getCategories = mustPrepare("select id, name from category order by name")
+	db.getCategories = mustPrepare("select id, name from category order by case when id = 'tutanota' then 0 else 1 end, name")
 	db.getCategoryDescriptions = mustPrepare("select category, language, htmltext from category_description")
 
 	// VAT
