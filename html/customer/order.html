@@ -86,10 +86,7 @@
 								</select>
 							</td>
 							<td>
-								{{$max := $article.Max .ID}}
-								{{if gt $max 0}}
-									<input name="{{$article.ID}}-other-amount" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-other-amount" $article.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-								{{end}}
+								<input name="{{$article.ID}}-other-amount" type="number" min="0" max="100" value="{{index $.Cart (printf "%s-other-amount" $article.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
 							</td>
 							<td>0</td><!-- assuming non-featured items are not on stock -->
 							<td>{{FmtEuro $article.Price}}</td>
