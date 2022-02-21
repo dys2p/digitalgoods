@@ -110,11 +110,11 @@ func main() {
 	staffRtr.HandlerFunc(http.MethodGet, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidGet)))
 	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidPost)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload", auth(wrapTmpl(staffSelectGet)))
-	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid", auth(wrapTmpl(staffUploadGet)))
-	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/image", auth(wrapTmpl(staffUploadImageGet)))
-	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/image", auth(wrapAPI(staffUploadImagePost)))
-	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/text", auth(wrapTmpl(staffUploadTextGet)))
-	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/text", auth(wrapAPI(staffUploadTextPost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country", auth(wrapTmpl(staffUploadGet)))
+	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/image", auth(wrapTmpl(staffUploadImageGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/image", auth(wrapAPI(staffUploadImagePost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/text", auth(wrapTmpl(staffUploadTextGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/text", auth(wrapAPI(staffUploadTextPost)))
 
 	var staffSrv = ListenAndServe("tcp", "127.0.0.1:9003", sessionManager.LoadAndSave(staffRtr), stop)
 	defer staffSrv.Shutdown()
@@ -145,7 +145,8 @@ type custOrder struct {
 	CaptchaAnswer string
 	CaptchaErr    bool
 	CaptchaID     string
-	Cart          map[string]int
+	Cart          map[string]int    // user input, in case of errors: HTML input name -> amount
+	OtherCountry  map[string]string // user input, in case of errors: article ID -> country ID
 	CountryAnswer string
 	CountryErr    bool
 	OrderErr      bool
@@ -160,11 +161,44 @@ func (*custOrder) Categories() ([]*db.Category, error) {
 	return database.GetCategories()
 }
 
+func (*custOrder) EUCountryCodes() []string {
+	return html.EUCountryCodes[:]
+}
+
+func (*custOrder) FeaturedCountryIDs(article db.Article) []string {
+	if !article.HasCountry {
+		return []string{"all"}
+	}
+	ids := []string{}
+	for _, countryID := range html.ISOCountryCodes {
+		if stock := article.Stock[countryID]; stock > 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}
+
+func (*custOrder) OtherCountryIDs(article db.Article) []string {
+	if !article.HasCountry {
+		return nil
+	}
+	if !article.OnDemand {
+		return nil
+	}
+	ids := []string{}
+	for _, countryID := range html.ISOCountryCodes {
+		if stock := article.Stock[countryID]; stock == 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}
+
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
 	lang := html.GetLanguage(r)
 	return html.CustOrder.Execute(w, &custOrder{
 		CaptchaID:     captcha.NewLen(6),
-		CountryAnswer: lang.Translate("default-country"),
+		CountryAnswer: lang.Translate("default-eu-country"),
 		Language:      lang,
 	})
 }
@@ -177,6 +211,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		CaptchaAnswer: r.PostFormValue("captcha-answer"),
 		CaptchaID:     r.PostFormValue("captcha-id"),
 		Cart:          make(map[string]int),
+		OtherCountry:  make(map[string]string),
 		CountryAnswer: r.PostFormValue("country"),
 		Language:      html.GetLanguage(r),
 	}
@@ -186,25 +221,51 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	order := db.Order{}
+	order := db.Order{} // in case of no errors
 
+	// same logic as in order template
 	for _, a := range articles {
-		if a.Hide {
+		if !a.Portfolio() {
 			continue
 		}
-		val := r.PostFormValue(a.ID)
-		if val == "" {
-			continue
+		// featured countries
+		for _, countryID := range co.FeaturedCountryIDs(a) {
+			val := r.PostFormValue(a.ID + "-" + countryID)
+			if val == "" {
+				continue
+			}
+			amount, _ := strconv.Atoi(val)
+			if max := a.Max(countryID); amount > max {
+				amount = max // client must check their order before payment
+			}
+			if amount > 0 {
+				co.Cart[a.ID+"-"+countryID] = amount
+				order = append(order, db.OrderRow{
+					Amount:    amount,
+					ArticleID: a.ID,
+					CountryID: countryID,
+					ItemPrice: a.Price,
+				})
+			}
 		}
-		amount, _ := strconv.Atoi(val)
-		if amount > a.Stock {
-			amount = a.Stock // client must check their order before payment
+		// other country
+		if amount, _ := strconv.Atoi(r.PostFormValue(a.ID + "-other-amount")); amount > 0 {
+			countryID := r.PostFormValue(a.ID + "-other-country")
+			if max := a.Max(countryID); amount > max {
+				amount = max // client must check their order before payment
+			}
+			// TODO complain if countryID == "" or invalid
+			if amount > 0 {
+				co.Cart[a.ID+"-other-amount"] = amount
+				co.OtherCountry[a.ID] = countryID
+				order = append(order, db.OrderRow{
+					Amount:    amount,
+					ArticleID: a.ID,
+					CountryID: countryID,
+					ItemPrice: a.Price,
+				})
+			}
 		}
-		if amount <= 0 {
-			continue
-		}
-		co.Cart[a.ID] = amount
-		order = append(order, db.OrderRow{Amount: amount, ArticleID: a.ID, ItemPrice: a.Price})
 	}
 
 	// validate user input
@@ -460,17 +521,75 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+type staffSelect struct {
+	Articles       []db.Article
+	Underdelivered map[string]int // key: articleID-countryID
+	html.Language
+}
+
+func (s *staffSelect) ISOCountryCodes() []string {
+	return html.ISOCountryCodes[:]
+}
+
+func (s *staffSelect) FeaturedCountryIDs(article db.Article) []string {
+	if !article.HasCountry {
+		return []string{"all"}
+	}
+	ids := []string{}
+	for _, countryID := range html.ISOCountryCodes {
+		if stock := article.Stock[countryID]; stock > 0 || s.Underdelivered[article.ID+"-"+countryID] > 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}
+
+func (s *staffSelect) OtherCountryIDs(article db.Article) []string {
+	if !article.HasCountry {
+		return nil
+	}
+	ids := []string{}
+	for _, countryID := range html.ISOCountryCodes {
+		if stock := article.Stock[countryID]; stock == 0 && s.Underdelivered[article.ID+"-"+countryID] == 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}
+
 func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	articles, err := database.GetArticles()
 	if err != nil {
-		return nil
+		return err
 	}
-	return html.StaffSelect.Execute(w, articles)
+	underdeliveredPurchaseIDs, err := database.GetPurchases(db.StatusUnderdelivered)
+	if err != nil {
+		return err
+	}
+	underdelivered := make(map[string]int)
+	for _, purchaseID := range underdeliveredPurchaseIDs {
+		purchase, err := database.GetPurchaseByID(purchaseID)
+		if err != nil {
+			return err
+		}
+		unfulfilled, err := purchase.GetUnfulfilled()
+		if err != nil {
+			return err
+		}
+		for _, uf := range unfulfilled {
+			underdelivered[uf.ArticleID+"-"+uf.CountryID] += uf.Amount
+		}
+	}
+	return html.StaffSelect.Execute(w, &staffSelect{
+		articles,
+		underdelivered,
+		html.GetLanguage(r),
+	})
 }
 
 func staffUploadGet(w http.ResponseWriter, r *http.Request) error {
 	// redirect to image upload
-	http.Redirect(w, r, fmt.Sprintf("/upload/%s/image", httprouter.ParamsFromContext(r.Context()).ByName("articleid")), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/upload/%s/%s/image", httprouter.ParamsFromContext(r.Context()).ByName("articleid"), httprouter.ParamsFromContext(r.Context()).ByName("country")), http.StatusSeeOther)
 	return nil
 }
 
@@ -479,12 +598,19 @@ func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return html.StaffUploadImage.Execute(w, article)
+	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
+	return html.StaffUploadImage.Execute(w, struct {
+		db.Article
+		Country string
+		html.Language
+	}{
+		article,
+		countryID,
+		html.GetLanguage(r),
+	})
 }
 
 func staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
-
-	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
 
 	file, header, err := r.FormFile("file") // name="file" from dropzonejs
 	if err != nil {
@@ -500,11 +626,14 @@ func staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	if err := database.AddToStock(articleID, header.Filename, data); err != nil {
+	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
+	var countryID = httprouter.ParamsFromContext(r.Context()).ByName("country")
+
+	if err := database.AddToStock(articleID, countryID, header.Filename, data); err != nil {
 		return err
 	}
 
-	log.Printf("added image to stock: %s %s", articleID, db.Mask(header.Filename, 4))
+	log.Printf("added image to stock: %s %s %s", articleID, countryID, db.Mask(header.Filename, 4))
 
 	return database.FulfilUnderdelivered()
 }
@@ -514,16 +643,26 @@ func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	return html.StaffUploadText.Execute(w, article)
+	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
+	return html.StaffUploadText.Execute(w, struct {
+		db.Article
+		Country string
+		html.Language
+	}{
+		article,
+		countryID,
+		html.GetLanguage(r),
+	})
 }
 
 func staffUploadTextPost(w http.ResponseWriter, r *http.Request) error {
 
 	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
+	var countryID = httprouter.ParamsFromContext(r.Context()).ByName("country")
 
 	for _, code := range strings.Fields(r.PostFormValue("codes")) {
-		if err := database.AddToStock(articleID, code, nil); err == nil {
-			log.Printf("added code to stock: %s %s", articleID, db.Mask(code, 20))
+		if err := database.AddToStock(articleID, countryID, code, nil); err == nil {
+			log.Printf("added code to stock: %s %s %s", articleID, countryID, db.Mask(code, 20))
 		} else {
 			log.Println(err)
 			return err

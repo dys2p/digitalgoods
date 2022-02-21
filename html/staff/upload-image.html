@@ -3,12 +3,15 @@
 <!-- tabs -->
 <ul class="nav nav-tabs">
 	<li class="nav-item">
-		<a class="nav-link active" href="/upload/{{.ID}}/image">Image</a>
+		<a class="nav-link active" href="/upload/{{.ID}}/{{.Country}}/image">Image</a>
 	</li>
 	<li class="nav-item">
-		<a class="nav-link" href="/upload/{{.ID}}/text">Text</a>
+		<a class="nav-link" href="/upload/{{.ID}}/{{.Country}}/text">Text</a>
 	</li>
 </ul>
+{{if .HasCountry}}
+	<div class="alert alert-warning mt-3">Land: {{$.Translate .Country}}</div>
+{{end}}
 <!-- image dropzone -->
 <link rel="stylesheet" href="/static/dropzone-min/basic.min.css">
 <link rel="stylesheet" href="/static/dropzone-min/dropzone.min.css">
@@ -21,7 +24,7 @@
 	fill: #009900;
 }
 </style>
-<form action="/upload/{{.ID}}/image" class="dropzone my-4" id="my-awesome-dropzone"></form>
+<form action="/upload/{{.ID}}/{{.Country}}/image" class="dropzone my-4" id="my-awesome-dropzone"></form>
 <div class="text-end">
 	<a class="btn btn-secondary" href="/">Back</a>
 </div>

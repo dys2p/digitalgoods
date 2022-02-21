@@ -23,6 +23,7 @@
 		<thead>
 			<tr>
 				<th>{{.Translate "product"}}</th>
+				<th></th>
 				<th>{{.Translate "amount"}}</th>
 				<th>{{.Translate "in-stock"}}</th>
 				<th>{{.Translate "item-price"}}</th>
@@ -31,7 +32,7 @@
 		<tbody>
 		{{range .Categories}}
 			<tr>
-				<td colspan="4">
+				<td colspan="5">
 					<!-- same as in purchase.html -->
 					<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
 					<label for="toggle-{{.ID}}">
@@ -53,17 +54,47 @@
 				</td>
 			</tr>
 			{{range $.ArticlesByCategory .}}
-				{{if not .Hide}}
-				<tr>
-					<td class="ps-4">{{.Name}}</td>
-					<td>
-						{{if gt .Stock 0}}
-							<input name="{{.ID}}" type="number" min="0" max="{{.Stock}}" value="{{index $.Cart .ID}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+				{{if .Portfolio}}
+					{{$article := .}}
+					{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
+						<tr>
+							<td class="ps-4">{{$article.Name}}</td>
+							<td>{{.Name}}</td>
+							<td>
+								{{$max := $article.Max .ID}}
+								{{if gt $max 0}}
+									<input name="{{$article.ID}}-{{.ID}}" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-%s" $article.ID .ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+								{{end}}
+							</td>
+							<td>{{index $article.Stock .ID}}</td>
+							<td>{{FmtEuro $article.Price}}</td>
+						</tr>
+					{{end}}
+					{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
+						{{$selectedCountryID := $.Translate "default-iso-country"}}
+						{{with index $.OtherCountry $article.ID}}
+							{{$selectedCountryID = .}}
 						{{end}}
-					</td>
-					<td>{{.Stock}}</td>
-					<td>{{FmtEuro .Price}}</td>
-				</tr>
+						<tr>
+							<td class="ps-4">{{$article.Name}}</td>
+							<td>
+								<select name="{{$article.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+									<option><!-- if selectedCountryID is among the featured countries --></option>
+									{{range .}}
+										<option {{if eq $selectedCountryID .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
+									{{end}}
+								</select>
+							</td>
+							<td>
+								{{$max := $article.Max .ID}}
+								{{if gt $max 0}}
+									<input name="{{$article.ID}}-other-amount" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-other-amount" $article.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+								{{end}}
+							</td>
+							<td>0</td><!-- assuming non-featured items are not on stock -->
+							<td>{{FmtEuro $article.Price}}</td>
+						</tr>
+					{{end}}
 				{{end}}
 			{{end}}
 		{{end}}
@@ -77,7 +108,7 @@
 				<option {{if eq .CountryAnswer "non-EU"}}selected{{end}} value="non-EU">{{.Translate "non-EU"}}</option>
 			</optgroup>
 			<optgroup label="{{.Translate "EU"}}">
-				{{range $.TranslateEUCountries}}
+				{{range $.TranslateAndSort $.EUCountryCodes}}
 					<option {{if eq $.CountryAnswer .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
 				{{end}}
 			</optgroup>
@@ -90,7 +121,7 @@
 	</p>
 	<div class="mb-3">
 		<label for="captcha-answer" class="form-label">{{.Translate "captcha-label"}}</label>
-		<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-answer" name="captcha-answer" value="{{.CaptchaAnswer}}" required>
+		<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-answer" name="captcha-answer" value="{{.CaptchaAnswer}}" type="number" required>
 		<div class="invalid-feedback">{{.Translate "captcha-error"}}</div>
 		<div class="form-text"><a class="text-muted" href="#" onclick="reloadCaptcha(); return false;">{{.Translate "captcha-reload"}}</a></div>
 	</div>

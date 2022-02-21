@@ -32,6 +32,7 @@ type DB struct {
 	addToStock      *sql.Stmt
 	deleteFromStock *sql.Stmt
 	getFromStock    *sql.Stmt // might return less than n rows
+	getStock        *sql.Stmt
 
 	// article
 	getArticle            *sql.Stmt
@@ -71,11 +72,13 @@ func OpenDB() (*DB, error) {
 			primary key (category, language)
 		);
 		create table if not exists article (
-			id       text    not null primary key,
-			category text    not null,
-			name     text    not null,
-			price    integer not null, -- euro cents
-			hide     boolean not null, -- article is no longer sold, but we don't delete it from the database because that would break purchases
+			id          text    not null primary key,
+			category    text    not null,
+			name        text    not null,
+			price       integer not null, -- euro cents
+			ondemand    boolean not null,
+			hide        boolean not null, -- article is no longer sold, but we don't delete it from the database because that would break purchases
+			has_country boolean not null, -- taxed separately
 			foreign key (category) references category(id)
 		);
 		create table if not exists purchase (
@@ -90,18 +93,20 @@ func OpenDB() (*DB, error) {
 			unique(payid)
 		);
 		create table if not exists stock (
-			article text    not null,
-			itemid  text    not null primary key,
+			article text not null,
+			country text not null,
+			itemid  text not null primary key,
 			image   blob,
-			addtime integer not null, -- yyyy-mm-dd, sell oldest first
+			addtime int  not null, -- yyyy-mm-dd, sell oldest first
 			foreign key (article) references article(id)
 		);
 		create table if not exists vat_log (
-			deliverydate text not null, -- yyyy-mm-dd
-			article      text not null,
-			amount       int  not null,
-			itemprice    int  not null, -- euro cents
-			countrycode  text not null,
+			deliverydate   text not null, -- yyyy-mm-dd
+			article        text not null,
+			articlecountry text not null,
+			amount         int  not null,
+			itemprice      int  not null, -- euro cents
+			countrycode    text not null,
 			foreign key (article) references article(id)
 		);
 	`)
@@ -133,21 +138,22 @@ func OpenDB() (*DB, error) {
 	db.updateStatus = mustPrepare("update purchase set status = ?, deletedate = ? where id = ?")
 
 	// stock
-	db.addToStock = mustPrepare("insert into stock (article, itemid, image, addtime) values (?, ?, ?, ?)")
-	db.deleteFromStock = mustPrepare("delete from stock where itemid = ?")
-	db.getFromStock = mustPrepare("select itemid, image from stock where article = ? order by addtime asc limit ?")
+	db.addToStock = mustPrepare("insert into stock (article, country, itemid, image, addtime) values (?, ?, ?, ?, ?)")
+	db.deleteFromStock = mustPrepare("delete from stock where itemid = ?") // itemid is primary key
+	db.getFromStock = mustPrepare("select itemid, image from stock where article = ? and country = ? order by addtime asc limit ?")
+	db.getStock = mustPrepare("select country, count(1) from stock where article = ? group by country")
 
 	// article
-	db.getArticle = mustPrepare("select a.id, a.category,a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where id = ?")
-	db.getArticles = mustPrepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article group by a.id order by a.name")
-	db.getArticlesByCategory = mustPrepare("select a.id, a.name, a.price, count(s.article), a.hide from article a left join stock s on a.id = s.article where a.category = ? group by a.id order by a.price asc")
+	db.getArticle = mustPrepare("select id, category, name, price, ondemand, hide, has_country from article where id = ?")
+	db.getArticles = mustPrepare("select id, name, price, ondemand, hide, has_country from article group by id order by name")
+	db.getArticlesByCategory = mustPrepare("select id, name, price, ondemand, hide, has_country from article where category = ? group by id order by price asc")
 
 	// categories
 	db.getCategories = mustPrepare("select id, name from category order by name")
 	db.getCategoryDescriptions = mustPrepare("select category, language, htmltext from category_description")
 
 	// VAT
-	db.logVAT = mustPrepare("insert into vat_log (deliverydate, article, amount, itemprice, countrycode) values (?, ?, ?, ?, ?)")
+	db.logVAT = mustPrepare("insert into vat_log (deliverydate, article, articlecountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -167,8 +173,8 @@ func (db *DB) AddPurchase(order Order, deleteDate, countryCode string) (string, 
 	return "", errors.New("database ran out of IDs")
 }
 
-func (db *DB) AddToStock(articleID, itemID string, image []byte) error {
-	_, err := db.addToStock.Exec(articleID, itemID, image, time.Now().Format(DateFmt))
+func (db *DB) AddToStock(articleID, countryID, itemID string, image []byte) error {
+	_, err := db.addToStock.Exec(articleID, countryID, itemID, image, time.Now().Format(DateFmt))
 	return err
 }
 
@@ -209,7 +215,13 @@ func (db *DB) FulfilUnderdelivered() error {
 
 func (db *DB) GetArticle(id string) (Article, error) {
 	var article = Article{}
-	return article, db.getArticle.QueryRow(id).Scan(&article.ID, &article.CategoryID, &article.Name, &article.Price, &article.Stock, &article.Hide)
+	if err := db.getArticle.QueryRow(id).Scan(&article.ID, &article.CategoryID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
+		return article, err
+	}
+	if err := db.readStock(&article); err != nil {
+		return article, err
+	}
+	return article, nil
 }
 
 func (db *DB) GetArticles() ([]Article, error) {
@@ -229,12 +241,35 @@ func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]Article, error) {
 	var articles = []Article{}
 	for rows.Next() {
 		var article = Article{}
-		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.Stock, &article.Hide); err != nil {
+		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
+			return nil, err
+		}
+		if err := db.readStock(&article); err != nil {
 			return nil, err
 		}
 		articles = append(articles, article)
 	}
 	return articles, nil
+}
+
+func (db *DB) readStock(article *Article) error {
+	rows, err := db.getStock.Query(article.ID)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	article.Stock = make(map[string]int)
+	for rows.Next() {
+		var country string
+		var count int
+		if err := rows.Scan(&country, &count); err != nil {
+			return err
+		}
+		if count > 0 {
+			article.Stock[country] = count
+		}
+	}
+	return nil
 }
 
 func (db *DB) GetCategories() ([]*Category, error) {
@@ -307,6 +342,12 @@ func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*Purchase, e
 	if err := json.Unmarshal([]byte(delivered), &purchase.Delivered); err != nil {
 		return nil, fmt.Errorf("unmarshaling delivered: %w", err)
 	}
+	// backwards compatibility
+	for i := range purchase.Delivered {
+		if purchase.Delivered[i].CountryID == "" {
+			purchase.Delivered[i].CountryID = "all"
+		}
+	}
 	return purchase, nil
 }
 
@@ -354,7 +395,7 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 
 		// get from stock
 
-		rows, err := tx.Stmt(db.getFromStock).Query(u.ArticleID, u.Amount)
+		rows, err := tx.Stmt(db.getFromStock).Query(u.ArticleID, u.CountryID, u.Amount)
 		if err != nil {
 			return err
 		}
@@ -371,15 +412,21 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
 				return err
 			}
-			log.Printf("delivering %s: %s", purchase.ID, Mask(itemID, 4))
-			purchase.Delivered = append(purchase.Delivered, DeliveredItem{ArticleID: u.ArticleID, ID: itemID, Image: image, DeliveryDate: time.Now().Format(DateFmt)})
+			log.Printf("delivering %s: %s", Mask(purchase.ID, 4), Mask(itemID, 4))
+			purchase.Delivered = append(purchase.Delivered, DeliveredItem{
+				ArticleID:    u.ArticleID,
+				CountryID:    u.CountryID,
+				ID:           itemID,
+				Image:        image,
+				DeliveryDate: time.Now().Format(DateFmt),
+			})
 			gotAmount++
 		}
 
 		// log VAT
 
 		if gotAmount > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}

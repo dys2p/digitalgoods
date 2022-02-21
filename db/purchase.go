@@ -38,7 +38,11 @@ func (p *Purchase) GetUnfulfilled() (Order, error) {
 	copy(unfulfilled, p.Ordered)
 	// decrement
 	for _, d := range p.Delivered {
-		if err := unfulfilled.Decrement(d.ArticleID); err != nil { // there is no d.Amount
+		if d.CountryID == "" {
+			// backwards compatibility: rather fail than risk double fulfilment
+			return nil, nil
+		}
+		if err := unfulfilled.Decrement(d.ArticleID, d.CountryID); err != nil {
 			return nil, err
 		}
 	}
@@ -68,14 +72,14 @@ func (order Order) Empty() bool {
 	return true
 }
 
-func (order *Order) Decrement(articleID string) error {
+func (order *Order) Decrement(articleID, countryID string) error {
 	for i := range *order {
-		if (*order)[i].ArticleID == articleID {
+		if (*order)[i].ArticleID == articleID && (*order)[i].CountryID == countryID {
 			(*order)[i].Amount--
 			return nil
 		}
 	}
-	return fmt.Errorf("article %s not found in order", articleID)
+	return fmt.Errorf("article %s with country %s not found in order", articleID, countryID)
 }
 
 func (order Order) Sum() int {
@@ -89,6 +93,7 @@ func (order Order) Sum() int {
 type OrderRow struct {
 	Amount    int    `json:"amount"`
 	ArticleID string `json:"article-id"`
+	CountryID string `json:"country-id"`
 	ItemPrice int    `json:"item-price"` // euro cents, price at order time
 }
 
@@ -100,6 +105,7 @@ type Delivery []DeliveredItem
 
 type DeliveredItem struct {
 	ArticleID    string `json:"article-id"`
+	CountryID    string `json:"country-id"`
 	ID           string `json:"id"` // can be the code, but not necessarily
 	Image        []byte `json:"image"`
 	DeliveryDate string `json:"delivery-date"`

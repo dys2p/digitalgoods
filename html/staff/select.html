@@ -1,11 +1,50 @@
 {{define "content"}}
-<h1>Upload</h1>
-<p>What article are you uploading?</p>
-<ul>
-	{{range .}}
-	<li>
-		<a href="/upload/{{.ID}}">{{.Name}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} on stock)</a>
-	</li>
-	{{end}}
-</ul>
+	<script>
+		function go(articleID, optionElement) {
+			location.href = "/upload/" + articleID + "/" + optionElement.value;
+		}
+	</script>
+
+	<h1>Upload</h1>
+	<p>What article are you uploading?</p>
+	<table class="table">
+		<tr>
+			<th>Name</th>
+			<th>ID</th>
+			<th>Unit price</th>
+			<th>On stock</th>
+			<th>Underdelivered</th>
+			<th>Upload</th>
+		</tr>
+		{{range .Articles}}
+			{{$article := .}}
+			{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
+				<tr>
+					<td>{{$article.Name}}</td>
+					<td>{{$article.ID}}</td>
+					<td>{{FmtEuro $article.Price}}</td>
+					<td>{{index $article.Stock .ID}}</td>
+					<td>{{index $.Underdelivered (printf "%s-%s" $article.ID .ID)}}</td>
+					<td><a href="/upload/{{$article.ID}}/{{.ID}}">{{.Name}}</a></td>
+				</tr>
+			{{end}}
+			{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
+				<tr>
+					<td>{{$article.Name}}</td>
+					<td>{{$article.ID}}</td>
+					<td>{{FmtEuro $article.Price}}</td>
+					<td>0</td><!-- assuming non-featured items are not on stock -->
+					<td>0</td><!-- assuming non-featured items are not underdelivered -->
+					<td>
+						<select onchange="go('{{$article.ID}}', this)" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+							<option></option>
+							{{range $.TranslateAndSort $.ISOCountryCodes}}
+								<option value="{{.ID}}">{{.Name}}</a>
+							{{end}}
+						</select>
+					</td>
+				</tr>
+			{{end}}
+		{{end}}
+	</table>
 {{end}}
