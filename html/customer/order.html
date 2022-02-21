@@ -59,7 +59,7 @@
 					{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
 						<tr>
 							<td class="ps-4">{{$article.Name}}</td>
-							<td>{{.Name}}</td>
+							<td>{{if ne .Name "all"}}{{.Name}}{{end}}</td>
 							<td>
 								{{$max := $article.Max .ID}}
 								{{if gt $max 0}}

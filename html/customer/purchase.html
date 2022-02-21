@@ -105,7 +105,7 @@
 			</tr>
 				{{range .Rows}}
 				<tr>
-					<td>{{$.GetArticleName .ArticleID}}{{with .CountryID}} ({{$.Translate .}}){{end}}</td>
+					<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 					<td>{{.Amount}}</td>
 					<td>{{FmtEuro .ItemPrice}}</td>
 					<td>{{FmtEuro .Sum}}</td>
@@ -131,7 +131,7 @@
 	<tbody>
 		{{range .Purchase.Delivered}}
 		<tr>
-			<td>{{$.GetArticleName .ArticleID}}{{with .CountryID}} ({{$.Translate .}}){{end}}</td>
+			<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 			<td>{{.DeliveryDateStr}}</td>
 			{{if .Image}}
 				<!-- use image as code -->
