@@ -499,9 +499,11 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffMarkPaid.Execute(w, struct {
 		*db.Purchase
 		DB *db.DB
+		html.Language
 	}{
 		purchase,
 		database,
+		html.GetLanguage(r),
 	})
 }
 

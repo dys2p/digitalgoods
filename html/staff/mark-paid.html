@@ -21,7 +21,7 @@
 			{{range .DB.GroupedOrder .Ordered}}
 				{{range .Rows}}
 					<tr>
-						<td>{{($.DB.GetArticle .ArticleID).Name}}</td>
+						<td>{{($.DB.GetArticle .ArticleID).Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 						<td>{{.Amount}}</td>
 						<td>{{FmtEuro .ItemPrice}}</td>
 						<td>{{FmtEuro .Sum}}</td>
