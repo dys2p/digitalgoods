@@ -345,7 +345,17 @@ func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*Purchase, e
 	// backwards compatibility
 	for i := range purchase.Delivered {
 		if purchase.Delivered[i].CountryID == "" {
-			purchase.Delivered[i].CountryID = "all"
+			switch purchase.Delivered[i].ArticleID {
+			case "tutanota12":
+				fallthrough
+			case "tutanota24":
+				fallthrough
+			case "tutanota48":
+				// backwards compatibility, can be removed in one month
+				purchase.Delivered[i].CountryID = "DE"
+			default:
+				purchase.Delivered[i].CountryID = "all"
+			}
 		}
 	}
 	return purchase, nil
