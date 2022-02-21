@@ -20,6 +20,10 @@ func (a Article) Max(countryID string) int {
 	return max
 }
 
+func (a Article) OnDemandOnly(countryID string) bool {
+	return a.Stock[countryID] == 0 && a.OnDemand
+}
+
 // Portfolio determines whether an article is shown in the portfolio. It might be still sold out at the moment.
 func (a Article) Portfolio() bool {
 	if len(a.Stock) > 0 || a.OnDemand {

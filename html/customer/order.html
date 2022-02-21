@@ -58,7 +58,7 @@
 					{{$article := .}}
 					{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
 						<tr>
-							<td class="ps-4">{{$article.Name}}</td>
+							<td class="ps-4">{{$article.Name}} {{if $article.OnDemandOnly .ID}}(on demand){{end}}</td>
 							<td>{{if ne .Name "all"}}{{.Name}}{{end}}</td>
 							<td>
 								{{$max := $article.Max .ID}}
@@ -76,7 +76,7 @@
 							{{$selectedCountryID = .}}
 						{{end}}
 						<tr>
-							<td class="ps-4">{{$article.Name}}</td>
+							<td class="ps-4">{{$article.Name}} {{if $article.OnDemand}}(on demand){{end}}</td><!-- assuming other country IDs are always on demand -->
 							<td>
 								<select name="{{$article.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
 									<option><!-- if selectedCountryID is among the featured countries --></option>
