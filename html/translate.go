@@ -3,22 +3,12 @@ package html
 import (
 	"net/http"
 	"sort"
+	"time"
 
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
-
-// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
-//
-// TODO move to root/domain package
-var EUCountryCodes = [...]string{"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
-
-// ISO-3166-1
-//
-// TODO move to root/domain package
-var ISOCountryCodes = [...]string{
-	"AF", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ", "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BQ", "BA", "BW", "BV", "BR", "IO", "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC", "CO", "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CW", "CY", "CZ", "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW", "BL", "SH", "KN", "LC", "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "US", "UM", "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW"}
 
 type TagStr struct {
 	Tag language.Tag
@@ -30,8 +20,7 @@ type IDName struct {
 	Name string // sort by name
 }
 
-// global variable used by type Language
-var translations = map[string][]TagStr{
+var uiTranslations = map[string][]TagStr{
 	"how": []TagStr{
 		TagStr{language.AmericanEnglish, "How does it work?"},
 		TagStr{language.German, "Wie funktioniert die Bestellung?"},
@@ -370,6 +359,10 @@ var translations = map[string][]TagStr{
 	"default-iso-country": []TagStr{
 		TagStr{language.AmericanEnglish, "US"},
 		TagStr{language.German, "DE"},
+	},
+	"date-format": []TagStr{
+		TagStr{language.AmericanEnglish, "January 2, 2006"},
+		TagStr{language.German, "02.01.2006"},
 	},
 	// values taken from our BTCPay instance at https://pay.example.com/misc/lang
 	"btcpay-defaultlanguage": []TagStr{
@@ -1387,18 +1380,28 @@ func GetLanguage(r *http.Request) Language {
 	return Language(r.Header.Get("Accept-Language"))
 }
 
+func (lang Language) FmtDate(t time.Time) string {
+	return t.Format(lang.Translate("date-format"))
+}
+
 func (lang Language) Translate(key string, args ...interface{}) string {
-	item, ok := translations[key]
+	item, ok := uiTranslations[key]
 	if !ok {
 		// key not found, create language tag and print key
 		return message.NewPrinter(language.Make(string(lang))).Sprintf(key, args...)
 	}
-	// choose language tag from list of translations
-	langs := make([]language.Tag, len(item))
-	for i := range item {
-		langs[i] = item[i].Tag
+	return lang.TranslateItem(item, args...)
+}
+
+func (lang Language) TranslateItem(item []TagStr, args ...interface{}) string {
+	if len(item) == 0 {
+		return ""
 	}
-	tag, i := language.MatchStrings(language.NewMatcher(langs), string(lang))
+	tags := make([]language.Tag, len(item))
+	for i := range item {
+		tags[i] = item[i].Tag
+	}
+	tag, i := language.MatchStrings(language.NewMatcher(tags), string(lang))
 	return message.NewPrinter(tag).Sprintf(item[i].Str, args...)
 }
 
@@ -1414,16 +1417,4 @@ func (lang Language) TranslateAndSort(ids []string) []IDName {
 		return collator.CompareString(result[i].Name, result[j].Name) < 0
 	})
 	return result
-}
-
-func IsCountryCode(s string) bool {
-	if s == "non-EU" {
-		return true
-	}
-	for _, euCode := range EUCountryCodes {
-		if euCode == s {
-			return true
-		}
-	}
-	return false
 }

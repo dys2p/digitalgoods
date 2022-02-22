@@ -19,6 +19,7 @@ import (
 	"github.com/alexedwards/scs/v2/memstore"
 	"github.com/dchest/captcha"
 	"github.com/dys2p/btcpay"
+	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/digitalgoods/db"
 	"github.com/dys2p/digitalgoods/html"
 	"github.com/dys2p/digitalgoods/static"
@@ -153,24 +154,24 @@ type custOrder struct {
 	html.Language
 }
 
-func (*custOrder) ArticlesByCategory(category db.Category) ([]db.Article, error) {
+func (*custOrder) ArticlesByCategory(category digitalgoods.Category) ([]digitalgoods.Article, error) {
 	return database.GetArticlesByCategory(category)
 }
 
-func (*custOrder) Categories() ([]*db.Category, error) {
+func (*custOrder) Categories() ([]*digitalgoods.Category, error) {
 	return database.GetCategories()
 }
 
 func (*custOrder) EUCountryCodes() []string {
-	return html.EUCountryCodes[:]
+	return digitalgoods.EUCountryCodes[:]
 }
 
-func (*custOrder) FeaturedCountryIDs(article db.Article) []string {
+func (*custOrder) FeaturedCountryIDs(article digitalgoods.Article) []string {
 	if !article.HasCountry {
 		return []string{"all"}
 	}
 	ids := []string{}
-	for _, countryID := range html.ISOCountryCodes {
+	for _, countryID := range digitalgoods.ISOCountryCodes {
 		if stock := article.Stock[countryID]; stock > 0 {
 			ids = append(ids, countryID)
 		}
@@ -178,7 +179,7 @@ func (*custOrder) FeaturedCountryIDs(article db.Article) []string {
 	return ids
 }
 
-func (*custOrder) OtherCountryIDs(article db.Article) []string {
+func (*custOrder) OtherCountryIDs(article digitalgoods.Article) []string {
 	if !article.HasCountry {
 		return nil
 	}
@@ -186,7 +187,7 @@ func (*custOrder) OtherCountryIDs(article db.Article) []string {
 		return nil
 	}
 	ids := []string{}
-	for _, countryID := range html.ISOCountryCodes {
+	for _, countryID := range digitalgoods.ISOCountryCodes {
 		if stock := article.Stock[countryID]; stock == 0 {
 			ids = append(ids, countryID)
 		}
@@ -221,7 +222,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	order := db.Order{} // in case of no errors
+	order := digitalgoods.Order{} // in case of no errors
 
 	// same logic as in order template
 	for _, a := range articles {
@@ -240,7 +241,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 			}
 			if amount > 0 {
 				co.Cart[a.ID+"-"+countryID] = amount
-				order = append(order, db.OrderRow{
+				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
 					ArticleID: a.ID,
 					CountryID: countryID,
@@ -258,7 +259,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 			if amount > 0 {
 				co.Cart[a.ID+"-other-amount"] = amount
 				co.OtherCountry[a.ID] = countryID
-				order = append(order, db.OrderRow{
+				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
 					ArticleID: a.ID,
 					CountryID: countryID,
@@ -275,7 +276,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return html.CustOrder.Execute(w, co)
 	}
 
-	if !html.IsCountryCode(co.CountryAnswer) {
+	if !digitalgoods.IsEUCountryCode(co.CountryAnswer) {
 		co.CountryAnswer = ""
 		co.CountryErr = true
 		return html.CustOrder.Execute(w, co)
@@ -289,7 +290,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		return html.CustOrder.Execute(w, co)
 	}
 
-	id, err := database.AddPurchase(order, time.Now().AddDate(0, 0, 31).Format(db.DateFmt), co.CountryAnswer)
+	id, err := database.AddPurchase(order, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), co.CountryAnswer)
 	if err != nil {
 		return err
 	}
@@ -299,7 +300,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type custPurchase struct {
-	Purchase    *db.Purchase
+	Purchase    *digitalgoods.Purchase
 	URL         string
 	PaysrvErr   error
 	PreferOnion bool
@@ -346,7 +347,7 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 	var paysrvErr error
 
 	// Query payserver in case the webhook has been missed. Load is reduced by querying only if the purchase status is StatusBTCPayInvoiceCreated.
-	if purchase.Status == db.StatusBTCPayInvoiceCreated {
+	if purchase.Status == digitalgoods.StatusBTCPayInvoiceCreated {
 		if invoice, err := store.GetInvoice(purchase.BTCPayInvoiceID); err == nil {
 			// same as in webhook
 			switch invoice.Status {
@@ -355,7 +356,7 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 					return err
 				}
 				// update purchase
-				purchase.Status = db.StatusBTCPayInvoiceExpired
+				purchase.Status = digitalgoods.StatusBTCPayInvoiceExpired
 			case btcpay.InvoiceSettled:
 				if err := database.SetSettled(purchase); err != nil {
 					return err
@@ -448,7 +449,7 @@ func rpc(w http.ResponseWriter, r *http.Request) {
 }
 
 func staffIndexGet(w http.ResponseWriter, r *http.Request) error {
-	unfulfilled, err := database.GetPurchases(db.StatusUnderdelivered)
+	unfulfilled, err := database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return html.StaffMarkPaid.Execute(w, struct {
-		*db.Purchase
+		*digitalgoods.Purchase
 		DB *db.DB
 		html.Language
 	}{
@@ -524,7 +525,7 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type staffSelect struct {
-	Articles       []db.Article
+	Articles       []digitalgoods.Article
 	Underdelivered map[string]int // key: articleID-countryID
 	html.Language
 }
@@ -533,12 +534,12 @@ func (s *staffSelect) ISOCountryCodes() []string {
 	return html.ISOCountryCodes[:]
 }
 
-func (s *staffSelect) FeaturedCountryIDs(article db.Article) []string {
+func (s *staffSelect) FeaturedCountryIDs(article digitalgoods.Article) []string {
 	if !article.HasCountry {
 		return []string{"all"}
 	}
 	ids := []string{}
-	for _, countryID := range html.ISOCountryCodes {
+	for _, countryID := range digitalgoods.ISOCountryCodes {
 		if stock := article.Stock[countryID]; stock > 0 || s.Underdelivered[article.ID+"-"+countryID] > 0 {
 			ids = append(ids, countryID)
 		}
@@ -546,12 +547,12 @@ func (s *staffSelect) FeaturedCountryIDs(article db.Article) []string {
 	return ids
 }
 
-func (s *staffSelect) OtherCountryIDs(article db.Article) []string {
+func (s *staffSelect) OtherCountryIDs(article digitalgoods.Article) []string {
 	if !article.HasCountry {
 		return nil
 	}
 	ids := []string{}
-	for _, countryID := range html.ISOCountryCodes {
+	for _, countryID := range digitalgoods.ISOCountryCodes {
 		if stock := article.Stock[countryID]; stock == 0 && s.Underdelivered[article.ID+"-"+countryID] == 0 {
 			ids = append(ids, countryID)
 		}
@@ -564,7 +565,7 @@ func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	underdeliveredPurchaseIDs, err := database.GetPurchases(db.StatusUnderdelivered)
+	underdeliveredPurchaseIDs, err := database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
 	}

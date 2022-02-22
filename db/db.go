@@ -8,11 +8,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/digitalgoods/html"
 	"golang.org/x/text/language"
 )
-
-const DateFmt = "2006-01-02"
 
 type DB struct {
 	sqlDB *sql.DB
@@ -158,15 +157,15 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-func (db *DB) AddPurchase(order Order, deleteDate, countryCode string) (string, error) {
+func (db *DB) AddPurchase(order digitalgoods.Order, deleteDate, countryCode string) (string, error) {
 	orderJson, err := json.Marshal(order)
 	if err != nil {
 		return "", err
 	}
 	for i := 0; i < 3; i++ { // try again if purchase id or pay id already exists
-		id := NewPurchaseID()
-		payID := NewPayID()
-		if _, err := db.addPurchase.Exec(id, payID, StatusNew, orderJson, deleteDate, countryCode); err == nil {
+		id := digitalgoods.NewPurchaseID()
+		payID := digitalgoods.NewPayID()
+		if _, err := db.addPurchase.Exec(id, payID, digitalgoods.StatusNew, orderJson, deleteDate, countryCode); err == nil {
 			return id, nil
 		}
 	}
@@ -174,12 +173,12 @@ func (db *DB) AddPurchase(order Order, deleteDate, countryCode string) (string, 
 }
 
 func (db *DB) AddToStock(articleID, countryID, itemID string, image []byte) error {
-	_, err := db.addToStock.Exec(articleID, countryID, itemID, image, time.Now().Format(DateFmt))
+	_, err := db.addToStock.Exec(articleID, countryID, itemID, image, time.Now().Format(digitalgoods.DateFmt))
 	return err
 }
 
 func (db *DB) Cleanup() error {
-	result, err := db.cleanupPurchases.Exec(StatusFinalized, time.Now().Format(DateFmt))
+	result, err := db.cleanupPurchases.Exec(digitalgoods.StatusFinalized, time.Now().Format(digitalgoods.DateFmt))
 	if err != nil {
 		return err
 	}
@@ -192,7 +191,7 @@ func (db *DB) Cleanup() error {
 // FulfilUnderdelivered calls SetSettled for all underdelivered purchases. It can be called at any time.
 func (db *DB) FulfilUnderdelivered() error {
 	// no transaction required because SetSettled is idempotent
-	rows, err := db.getPurchasesByStatus.Query(StatusUnderdelivered)
+	rows, err := db.getPurchasesByStatus.Query(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
 	}
@@ -213,8 +212,8 @@ func (db *DB) FulfilUnderdelivered() error {
 	return nil
 }
 
-func (db *DB) GetArticle(id string) (Article, error) {
-	var article = Article{}
+func (db *DB) GetArticle(id string) (digitalgoods.Article, error) {
+	var article = digitalgoods.Article{}
 	if err := db.getArticle.QueryRow(id).Scan(&article.ID, &article.CategoryID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
 		return article, err
 	}
@@ -224,23 +223,23 @@ func (db *DB) GetArticle(id string) (Article, error) {
 	return article, nil
 }
 
-func (db *DB) GetArticles() ([]Article, error) {
+func (db *DB) GetArticles() ([]digitalgoods.Article, error) {
 	return db.articles(db.getArticles)
 }
 
-func (db *DB) GetArticlesByCategory(category Category) ([]Article, error) {
+func (db *DB) GetArticlesByCategory(category digitalgoods.Category) ([]digitalgoods.Article, error) {
 	return db.articles(db.getArticlesByCategory, category.ID)
 }
 
-func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]Article, error) {
+func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]digitalgoods.Article, error) {
 	rows, err := stmt.Query(args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var articles = []Article{}
+	var articles = []digitalgoods.Article{}
 	for rows.Next() {
-		var article = Article{}
+		var article = digitalgoods.Article{}
 		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
 			return nil, err
 		}
@@ -252,7 +251,7 @@ func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]Article, error) {
 	return articles, nil
 }
 
-func (db *DB) readStock(article *Article) error {
+func (db *DB) readStock(article *digitalgoods.Article) error {
 	rows, err := db.getStock.Query(article.ID)
 	if err != nil {
 		return err
@@ -272,7 +271,7 @@ func (db *DB) readStock(article *Article) error {
 	return nil
 }
 
-func (db *DB) GetCategories() ([]*Category, error) {
+func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
 
 	// table category
 	rows, err := db.getCategories.Query()
@@ -280,10 +279,10 @@ func (db *DB) GetCategories() ([]*Category, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var categories = []*Category{}
-	var catMap = map[string]*Category{}
+	var categories = []*digitalgoods.Category{}
+	var catMap = map[string]*digitalgoods.Category{}
 	for rows.Next() {
-		var category = &Category{
+		var category = &digitalgoods.Category{
 			Description: []html.TagStr{},
 		}
 		if err := rows.Scan(&category.ID, &category.Name); err != nil {
@@ -317,20 +316,20 @@ func (db *DB) GetCategories() ([]*Category, error) {
 	return categories, nil
 }
 
-func (db *DB) GetPurchaseByID(id string) (*Purchase, error) {
+func (db *DB) GetPurchaseByID(id string) (*digitalgoods.Purchase, error) {
 	return db.getPurchaseWithStmt(id, db.getPurchaseByID)
 }
 
-func (db *DB) GetPurchaseByBTCPayInvoiceID(btcpayInvoiceID string) (*Purchase, error) {
+func (db *DB) GetPurchaseByBTCPayInvoiceID(btcpayInvoiceID string) (*digitalgoods.Purchase, error) {
 	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByBTCPayInvoiceID)
 }
-func (db *DB) GetPurchaseByPayID(btcpayInvoiceID string) (*Purchase, error) {
+func (db *DB) GetPurchaseByPayID(btcpayInvoiceID string) (*digitalgoods.Purchase, error) {
 	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByPayID)
 }
 
 // can be used within or without a transaction
-func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*Purchase, error) {
-	var purchase = &Purchase{}
+func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*digitalgoods.Purchase, error) {
+	var purchase = &digitalgoods.Purchase{}
 	var ordered string
 	var delivered string
 	if err := stmt.QueryRow(whereArg).Scan(&purchase.ID, &purchase.BTCPayInvoiceID, &purchase.PayID, &purchase.Status, &ordered, &delivered, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
@@ -379,13 +378,13 @@ func (db *DB) GetPurchases(status string) ([]string, error) {
 	return ids, nil
 }
 
-func (db *DB) SetBTCPayInvoiceExpired(purchase *Purchase) error {
-	_, err := db.updateStatus.Exec(StatusBTCPayInvoiceExpired, time.Now().AddDate(0, 0, 31).Format(DateFmt), purchase.ID)
+func (db *DB) SetBTCPayInvoiceExpired(purchase *digitalgoods.Purchase) error {
+	_, err := db.updateStatus.Exec(digitalgoods.StatusBTCPayInvoiceExpired, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
 	return err
 }
 
 // idempotent, must be called only if the invoice has been paid
-func (db *DB) SetSettled(purchase *Purchase) error {
+func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 	tx, err := db.sqlDB.Begin()
 	if err != nil {
@@ -422,13 +421,13 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
 				return err
 			}
-			log.Printf("delivering %s: %s", Mask(purchase.ID, 4), Mask(itemID, 4))
-			purchase.Delivered = append(purchase.Delivered, DeliveredItem{
+			log.Printf("delivering %s: %s", digitalgoods.Mask(purchase.ID), digitalgoods.Mask(itemID))
+			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
 				ArticleID:    u.ArticleID,
 				CountryID:    u.CountryID,
 				ID:           itemID,
 				Image:        image,
-				DeliveryDate: time.Now().Format(DateFmt),
+				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
 			gotAmount++
 		}
@@ -436,7 +435,7 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 		// log VAT
 
 		if gotAmount > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(digitalgoods.DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}
@@ -454,11 +453,11 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 		return err
 	}
 	if unfulfilled.Empty() {
-		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(DateFmt)
-		newStatus = StatusFinalized
+		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt)
+		newStatus = digitalgoods.StatusFinalized
 	} else {
 		newDeleteDate = "" // don't delete
-		newStatus = StatusUnderdelivered
+		newStatus = digitalgoods.StatusUnderdelivered
 	}
 
 	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
@@ -469,20 +468,20 @@ func (db *DB) SetSettled(purchase *Purchase) error {
 }
 
 // SetBTCPayInvoiceID sets the invoice ID to the given value and the status to StatusBTCPayInvoiceCreated.
-func (db *DB) SetBTCPayInvoiceID(purchase *Purchase, btcpayInvoiceID string) error {
+func (db *DB) SetBTCPayInvoiceID(purchase *digitalgoods.Purchase, btcpayInvoiceID string) error {
 	if purchase.BTCPayInvoiceID != "" {
 		return errors.New("an invoice has already been created")
 	}
-	_, err := db.updatePurchaseBTCPayInvoiceID.Exec(btcpayInvoiceID, StatusBTCPayInvoiceCreated, purchase.ID)
+	_, err := db.updatePurchaseBTCPayInvoiceID.Exec(btcpayInvoiceID, digitalgoods.StatusBTCPayInvoiceCreated, purchase.ID)
 	return err
 }
 
 type OrderGroup struct {
-	Category *Category
-	Rows     []OrderRow
+	Category *digitalgoods.Category
+	Rows     []digitalgoods.OrderRow
 }
 
-func (db *DB) GroupedOrder(order Order) ([]OrderGroup, error) {
+func (db *DB) GroupedOrder(order digitalgoods.Order) ([]OrderGroup, error) {
 	categories, err := db.GetCategories()
 	if err != nil {
 		return nil, err
@@ -490,7 +489,7 @@ func (db *DB) GroupedOrder(order Order) ([]OrderGroup, error) {
 	result := make([]OrderGroup, len(categories))
 	for i := range categories {
 		result[i].Category = categories[i]
-		result[i].Rows = []OrderRow{}
+		result[i].Rows = []digitalgoods.OrderRow{}
 	}
 	for _, row := range order {
 		article, err := db.GetArticle(row.ArticleID)

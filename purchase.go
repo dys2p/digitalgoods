@@ -1,4 +1,4 @@
-package db
+package digitalgoods
 
 import (
 	"encoding/base64"
@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+const DateFmt = "2006-01-02"
+
 const (
 	StatusNew                  string = "new" // no BTCPay invoice created yet
 	StatusBTCPayInvoiceCreated string = "btcpay-created"
@@ -15,6 +17,30 @@ const (
 	StatusUnderdelivered       string = "underdelivered" // payment settled, but we had not had enough items on stock
 	StatusFinalized            string = "finalized"      // payment settled, codes delivered
 )
+
+// https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
+var EUCountryCodes = [...]string{"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK"}
+
+func IsEUCountryCode(s string) bool {
+	if s == "non-EU" {
+		return true
+	}
+	for _, euCode := range EUCountryCodes {
+		if euCode == s {
+			return true
+		}
+	}
+	return false
+}
+
+// Mask replaces all but the last six letters of a string by asterisks.
+func Mask(s string) string {
+	r := []rune(s)
+	for i := 0; i < len(s)-6; i++ {
+		r[i] = '*'
+	}
+	return string(r)
+}
 
 type Purchase struct {
 	ID              string
@@ -24,12 +50,11 @@ type Purchase struct {
 	Ordered         Order
 	Delivered       Delivery
 	DeleteDate      string
-	CountryCode     string
+	CountryCode     string // EU country
 }
 
-func (p *Purchase) DeleteDateStr() (string, error) {
-	var t, err = time.Parse(DateFmt, string(p.DeleteDate))
-	return t.Format("02.01.2006"), err
+func (p *Purchase) ParseDeleteDate() (time.Time, error) {
+	return time.Parse(DateFmt, string(p.DeleteDate))
 }
 
 func (p *Purchase) GetUnfulfilled() (Order, error) {
@@ -111,9 +136,8 @@ type DeliveredItem struct {
 	DeliveryDate string `json:"delivery-date"`
 }
 
-func (item *DeliveredItem) DeliveryDateStr() (string, error) {
-	var t, err = time.Parse(DateFmt, string(item.DeliveryDate))
-	return t.Format("02.01.2006"), err
+func (item *DeliveredItem) ParseDeliveryDate() (time.Time, error) {
+	return time.Parse(DateFmt, string(item.DeliveryDate))
 }
 
 func (item *DeliveredItem) ImageSrc() template.URL {

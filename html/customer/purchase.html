@@ -3,7 +3,7 @@
 <p>
 	<strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}
 	{{if .Purchase.DeleteDate}}
-		<br>{{.Translate "info-delete"}} {{.Purchase.DeleteDateStr}}</p>
+		<br>{{.Translate "info-delete"}} {{.FmtDate .Purchase.ParseDeleteDate}}</p>
 	{{end}}
 </p>
 {{with .PaysrvErr}}
@@ -132,7 +132,7 @@
 		{{range .Purchase.Delivered}}
 		<tr>
 			<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
-			<td>{{.DeliveryDateStr}}</td>
+			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
 			{{if .Image}}
 				<!-- use image as code -->
 				<td><img src="{{.ImageSrc}}" /></td>
