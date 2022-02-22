@@ -531,7 +531,7 @@ type staffSelect struct {
 }
 
 func (s *staffSelect) ISOCountryCodes() []string {
-	return html.ISOCountryCodes[:]
+	return digitalgoods.ISOCountryCodes[:]
 }
 
 func (s *staffSelect) FeaturedCountryIDs(article digitalgoods.Article) []string {
@@ -603,7 +603,7 @@ func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
 	return html.StaffUploadImage.Execute(w, struct {
-		db.Article
+		digitalgoods.Article
 		Country string
 		html.Language
 	}{
@@ -636,7 +636,7 @@ func staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	log.Printf("added image to stock: %s %s %s", articleID, countryID, db.Mask(header.Filename, 4))
+	log.Printf("added image to stock: %s %s %s", articleID, countryID, digitalgoods.Mask(header.Filename))
 
 	return database.FulfilUnderdelivered()
 }
@@ -648,7 +648,7 @@ func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
 	return html.StaffUploadText.Execute(w, struct {
-		db.Article
+		digitalgoods.Article
 		Country string
 		html.Language
 	}{
@@ -665,7 +665,7 @@ func staffUploadTextPost(w http.ResponseWriter, r *http.Request) error {
 
 	for _, code := range strings.Fields(r.PostFormValue("codes")) {
 		if err := database.AddToStock(articleID, countryID, code, nil); err == nil {
-			log.Printf("added code to stock: %s %s %s", articleID, countryID, db.Mask(code, 20))
+			log.Printf("added code to stock: %s %s %s", articleID, countryID, digitalgoods.Mask(code))
 		} else {
 			log.Println(err)
 			return err
