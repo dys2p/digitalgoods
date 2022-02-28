@@ -138,8 +138,8 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.German, "Bargeld"},
 	},
 	"payment-cash-intro": []TagStr{
-		TagStr{language.AmericanEnglish, `You can send cash in an insured letter or package to our store address in Germany. Please check the cash shipment limits of your postal company (e. g. Deutsche Post "Einschreiben Wert" up to 100 Euros within Germany, or DHL Parcel up to 500 Euros). Send it to:`},
-		TagStr{language.German, `Schicke uns Bargeld in einem versichertem Brief oder Paket. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post "Einschreiben Wert" bis 100 Euro innerhalb von Deutschland, oder DHL Paket bis 500 Euro). Sende es an:`},
+		TagStr{language.AmericanEnglish, `You can send cash in an insured letter or package to our store address in Germany. We'll unlock your voucher codes when it arrives. Please check the cash shipment limits of your postal company (e. g. Deutsche Post "Einschreiben Wert" up to 100 Euros within Germany, or DHL Parcel up to 500 Euros). Send it to:`},
+		TagStr{language.German, `Schicke uns Bargeld in einem versichertem Brief oder Paket. Wenn es bei uns ankommt, schalten wir deine Gutscheincodes frei. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post "Einschreiben Wert" bis 100 Euro innerhalb von Deutschland, oder DHL Paket bis 500 Euro). Sende es an:`},
 	},
 	"payment-cash-payid": []TagStr{
 		TagStr{language.AmericanEnglish, "Please include a note with this payment code:"},
