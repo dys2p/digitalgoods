@@ -503,6 +503,10 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Bhutan"},
 		TagStr{language.German, "Bhutan"},
 	},
+	"BV": []TagStr{
+		TagStr{language.AmericanEnglish, "Bouvet Island"},
+		TagStr{language.German, "Bouvetinsel"},
+	},
 	"BW": []TagStr{
 		TagStr{language.AmericanEnglish, "Botswana"},
 		TagStr{language.German, "Botswana"},
@@ -1296,7 +1300,7 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.German, "United States Minor Outlying Islands"},
 	},
 	"US": []TagStr{
-		TagStr{language.AmericanEnglish, "United States"},
+		TagStr{language.AmericanEnglish, "United States of America"},
 		TagStr{language.German, "Vereinigte Staaten von Amerika"},
 	},
 	"UY": []TagStr{
