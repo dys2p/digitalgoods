@@ -85,6 +85,10 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Please select a country from the list."},
 		TagStr{language.German, "Bitte wähle ein Land aus der Liste aus."},
 	},
+	"select-other-country": []TagStr{
+		TagStr{language.AmericanEnglish, "Select other country"},
+		TagStr{language.German, "Anderes Land auswählen"},
+	},
 	"captcha-label": []TagStr{
 		TagStr{language.AmericanEnglish, "Please type the digits in order to solve the captcha:"},
 		TagStr{language.German, "Bitte tippe die Ziffern ab, um das Captcha zu lösen:"},

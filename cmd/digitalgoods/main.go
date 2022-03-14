@@ -252,10 +252,12 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 		// other country
 		if amount, _ := strconv.Atoi(r.PostFormValue(a.ID + "-other-amount")); amount > 0 {
 			countryID := r.PostFormValue(a.ID + "-other-country")
+			if countryID == "" || !digitalgoods.IsISOCountryCode(countryID) {
+				continue
+			}
 			if max := a.Max(countryID); amount > max {
 				amount = max // client must check their order before payment
 			}
-			// TODO complain if countryID == "" or invalid
 			if amount > 0 {
 				co.Cart[a.ID+"-other-amount"] = amount
 				co.OtherCountry[a.ID] = countryID

@@ -79,7 +79,7 @@
 							<td class="ps-4">{{$article.Name}} {{if $article.OnDemand}}(on demand){{end}}</td><!-- assuming other country IDs are always on demand -->
 							<td>
 								<select name="{{$article.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-									<option><!-- if selectedCountryID is among the featured countries --></option>
+									<option>{{$.Translate "select-other-country"}}</option><!-- autoselected if $selectedCountryID is empty -->
 									{{range .}}
 										<option {{if eq $selectedCountryID .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
 									{{end}}
