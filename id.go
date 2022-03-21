@@ -33,7 +33,16 @@ func NewPurchaseID() string {
 	return newID(16, purchaseDigits)
 }
 
-// 8 digits * log2(33) = 40 bits
+// NewPayID returns a randomly created six-digit ID. It is not guaranteed to be unique. You should try at least five times.
+//
+// Risk estimation:
+//
+//   - 33^6 different combinations, approx 10^9
+//   - assuming there are 10^6 orders
+//   - risk of individual order ID being not unique: 10^-3
+//   - try with five different IDs: 10^-15
+//   - divide by 10^6 order
+//   - = overall risk of five non-unique IDs: 10^-9 or less
 func NewPayID() string {
-	return newID(8, payDigits)
+	return newID(6, payDigits)
 }

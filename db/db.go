@@ -162,7 +162,7 @@ func (db *DB) AddPurchase(order digitalgoods.Order, deleteDate, countryCode stri
 	if err != nil {
 		return "", err
 	}
-	for i := 0; i < 3; i++ { // try again if purchase id or pay id already exists
+	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewPayID
 		id := digitalgoods.NewPurchaseID()
 		payID := digitalgoods.NewPayID()
 		if _, err := db.addPurchase.Exec(id, payID, digitalgoods.StatusNew, orderJson, deleteDate, countryCode); err == nil {
