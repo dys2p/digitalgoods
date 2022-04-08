@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/dys2p/digitalgoods"
-	"github.com/dys2p/digitalgoods/html"
 	"golang.org/x/text/language"
 )
 
@@ -227,7 +226,7 @@ func (db *DB) GetArticles() ([]digitalgoods.Article, error) {
 	return db.articles(db.getArticles)
 }
 
-func (db *DB) GetArticlesByCategory(category digitalgoods.Category) ([]digitalgoods.Article, error) {
+func (db *DB) GetArticlesByCategory(category *digitalgoods.Category) ([]digitalgoods.Article, error) {
 	return db.articles(db.getArticlesByCategory, category.ID)
 }
 
@@ -282,9 +281,7 @@ func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
 	var categories = []*digitalgoods.Category{}
 	var catMap = map[string]*digitalgoods.Category{}
 	for rows.Next() {
-		var category = &digitalgoods.Category{
-			Description: []html.TagStr{},
-		}
+		var category = &digitalgoods.Category{}
 		if err := rows.Scan(&category.ID, &category.Name); err != nil {
 			return nil, err
 		}
@@ -306,10 +303,8 @@ func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
 			return nil, err
 		}
 		if c, ok := catMap[categoryID]; ok {
-			c.Description = append(c.Description, html.TagStr{
-				Tag: language.Make(lang),
-				Str: htmltext,
-			})
+			c.DescriptionLangs = append(c.DescriptionLangs, language.Make(lang))
+			c.DescriptionTexts = append(c.DescriptionTexts, htmltext)
 		}
 	}
 
@@ -476,17 +471,12 @@ func (db *DB) SetBTCPayInvoiceID(purchase *digitalgoods.Purchase, btcpayInvoiceI
 	return err
 }
 
-type OrderGroup struct {
-	Category *digitalgoods.Category
-	Rows     []digitalgoods.OrderRow
-}
-
-func (db *DB) GroupedOrder(order digitalgoods.Order) ([]OrderGroup, error) {
+func (db *DB) GroupedOrder(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error) {
 	categories, err := db.GetCategories()
 	if err != nil {
 		return nil, err
 	}
-	result := make([]OrderGroup, len(categories))
+	result := make([]digitalgoods.OrderGroup, len(categories))
 	for i := range categories {
 		result[i].Category = categories[i]
 		result[i].Rows = []digitalgoods.OrderRow{}

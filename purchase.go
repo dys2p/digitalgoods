@@ -126,6 +126,11 @@ func (o OrderRow) Sum() int {
 	return o.Amount * o.ItemPrice
 }
 
+type OrderGroup struct {
+	Category *Category
+	Rows     []OrderRow
+}
+
 type Delivery []DeliveredItem
 
 type DeliveredItem struct {

@@ -77,7 +77,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{range .GroupedOrder}}
+		{{range (call .GroupedOrder .Purchase.Ordered)}}
 			{{if gt (len .Rows) 0}}
 			<tr>
 				<td colspan="4">
@@ -97,7 +97,7 @@
 						}
 						</style>
 						<div class="mt-2 mb-1">
-							{{.Translate $.Language}}
+							{{$.TranslateCategoryDescription .}}
 						</div>
 						<!-- end -->
 					{{end}}
@@ -105,7 +105,7 @@
 			</tr>
 				{{range .Rows}}
 				<tr>
-					<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+					<td>{{(call $.GetArticle .ArticleID).Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 					<td>{{.Amount}}</td>
 					<td>{{FmtEuro .ItemPrice}}</td>
 					<td>{{FmtEuro .Sum}}</td>
@@ -131,7 +131,7 @@
 	<tbody>
 		{{range .Purchase.Delivered}}
 		<tr>
-			<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+			<td>{{(call $.GetArticle .ArticleID).Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
 			<td>
 				{{if .Image}}

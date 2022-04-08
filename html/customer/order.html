@@ -30,7 +30,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		{{range .Categories}}
+		{{range call .Categories}}
 			<tr>
 				<td colspan="5">
 					<!-- same as in purchase.html -->
@@ -48,15 +48,15 @@
 					}
 					</style>
 					<div class="mt-2 mb-1">
-						{{.Translate $.Language}}
+						{{$.TranslateCategoryDescription .}}
 					</div>
 					<!-- end -->
 				</td>
 			</tr>
-			{{range $.ArticlesByCategory .}}
+			{{range (call $.ArticlesByCategory .)}}
 				{{if .Portfolio}}
 					{{$article := .}}
-					{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
+					{{range $.TranslateAndSort ($article.FeaturedCountryIDs)}}
 						<tr>
 							<td class="ps-4">{{$article.Name}} {{if $article.OnDemandOnly .ID}}(on demand){{end}}</td>
 							<td>{{if ne .Name "all"}}{{.Name}}{{end}}</td>
@@ -70,7 +70,7 @@
 							<td>{{FmtEuro $article.Price}}</td>
 						</tr>
 					{{end}}
-					{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
+					{{with $.TranslateAndSort ($article.OtherCountryIDs)}}
 						{{$selectedCountryID := $.Translate "default-iso-country"}}
 						{{with index $.OtherCountry $article.ID}}
 							{{$selectedCountryID = .}}

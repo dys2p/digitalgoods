@@ -1,10 +1,12 @@
 package html
 
 import (
+	"html/template"
 	"net/http"
 	"sort"
 	"time"
 
+	"github.com/dys2p/digitalgoods"
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -1399,6 +1401,15 @@ func (lang Language) Translate(key string, args ...interface{}) string {
 		return message.NewPrinter(language.Make(string(lang))).Sprintf(key, args...)
 	}
 	return lang.TranslateItem(item, args...)
+}
+
+func (lang Language) TranslateCategoryDescription(c *digitalgoods.Category) template.HTML {
+	_, i := language.MatchStrings(language.NewMatcher(c.DescriptionLangs), string(lang))
+	if i < len(c.DescriptionTexts) {
+		return template.HTML(c.DescriptionTexts[i])
+	} else {
+		return template.HTML("")
+	}
 }
 
 func (lang Language) TranslateItem(item []TagStr, args ...interface{}) string {

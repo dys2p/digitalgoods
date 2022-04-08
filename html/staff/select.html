@@ -18,7 +18,7 @@
 		</tr>
 		{{range .Articles}}
 			{{$article := .}}
-			{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
+			{{range $.TranslateAndSort ($article.FeaturedCountryIDs)}}
 				<tr>
 					<td>{{$article.Name}}</td>
 					<td>{{$article.ID}}</td>
@@ -28,7 +28,7 @@
 					<td><a href="/upload/{{$article.ID}}/{{.ID}}">{{.Name}}</a></td>
 				</tr>
 			{{end}}
-			{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
+			{{with $.TranslateAndSort ($article.OtherCountryIDs)}}
 				<tr>
 					<td>{{$article.Name}}</td>
 					<td>{{$article.ID}}</td>

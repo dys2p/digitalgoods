@@ -44,3 +44,32 @@ func (a Article) Portfolio() bool {
 	}
 	return !a.Hide
 }
+
+func (a *Article) FeaturedCountryIDs() []string {
+	if !a.HasCountry {
+		return []string{"all"}
+	}
+	ids := []string{}
+	for _, countryID := range ISOCountryCodes {
+		if stock := a.Stock[countryID]; stock > 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}
+
+func (a *Article) OtherCountryIDs() []string {
+	if !a.HasCountry {
+		return nil
+	}
+	if !a.OnDemand {
+		return nil
+	}
+	ids := []string{}
+	for _, countryID := range ISOCountryCodes {
+		if stock := a.Stock[countryID]; stock == 0 {
+			ids = append(ids, countryID)
+		}
+	}
+	return ids
+}

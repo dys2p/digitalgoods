@@ -142,62 +142,13 @@ func main() {
 	log.Println("shutting down")
 }
 
-type custOrder struct {
-	CaptchaAnswer string
-	CaptchaErr    bool
-	CaptchaID     string
-	Cart          map[string]int    // user input, in case of errors: HTML input name -> amount
-	OtherCountry  map[string]string // user input, in case of errors: article ID -> country ID
-	CountryAnswer string
-	CountryErr    bool
-	OrderErr      bool
-	html.Language
-}
-
-func (*custOrder) ArticlesByCategory(category digitalgoods.Category) ([]digitalgoods.Article, error) {
-	return database.GetArticlesByCategory(category)
-}
-
-func (*custOrder) Categories() ([]*digitalgoods.Category, error) {
-	return database.GetCategories()
-}
-
-func (*custOrder) EUCountryCodes() []string {
-	return digitalgoods.EUCountryCodes[:]
-}
-
-func (*custOrder) FeaturedCountryIDs(article digitalgoods.Article) []string {
-	if !article.HasCountry {
-		return []string{"all"}
-	}
-	ids := []string{}
-	for _, countryID := range digitalgoods.ISOCountryCodes {
-		if stock := article.Stock[countryID]; stock > 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
-}
-
-func (*custOrder) OtherCountryIDs(article digitalgoods.Article) []string {
-	if !article.HasCountry {
-		return nil
-	}
-	if !article.OnDemand {
-		return nil
-	}
-	ids := []string{}
-	for _, countryID := range digitalgoods.ISOCountryCodes {
-		if stock := article.Stock[countryID]; stock == 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
-}
-
 func custOrderGet(w http.ResponseWriter, r *http.Request) error {
 	lang := html.GetLanguage(r)
-	return html.CustOrder.Execute(w, &custOrder{
+	return html.CustOrder.Execute(w, &html.CustOrderData{
+		ArticlesByCategory: database.GetArticlesByCategory,
+		Categories:         database.GetCategories,
+		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
+
 		CaptchaID:     captcha.NewLen(6),
 		CountryAnswer: lang.Translate("default-eu-country"),
 		Language:      lang,
@@ -208,7 +159,11 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 
 	// read user input
 
-	co := &custOrder{
+	co := &html.CustOrderData{
+		ArticlesByCategory: database.GetArticlesByCategory,
+		Categories:         database.GetCategories,
+		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
+
 		CaptchaAnswer: r.PostFormValue("captcha-answer"),
 		CaptchaID:     r.PostFormValue("captcha-id"),
 		Cart:          make(map[string]int),
@@ -230,7 +185,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 			continue
 		}
 		// featured countries
-		for _, countryID := range co.FeaturedCountryIDs(a) {
+		for _, countryID := range a.FeaturedCountryIDs() {
 			val := r.PostFormValue(a.ID + "-" + countryID)
 			if val == "" {
 				continue
@@ -301,31 +256,6 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-type custPurchase struct {
-	Purchase    *digitalgoods.Purchase
-	URL         string
-	PaysrvErr   error
-	PreferOnion bool
-	html.Language
-	ActiveTab string
-	TabBTCPay string
-	TabCash   string
-	TabSepa   string
-}
-
-func (cp *custPurchase) GetArticleName(id string) string {
-	article, err := database.GetArticle(id)
-	if err != nil {
-		return id
-	}
-	return article.Name
-}
-
-// returns empty orderGroups too
-func (cp *custPurchase) GroupedOrder() ([]db.OrderGroup, error) {
-	return database.GroupedOrder(cp.Purchase.Ordered)
-}
-
 func custPurchaseGetBTCPay(w http.ResponseWriter, r *http.Request) error {
 	return custPurchaseGet("btcpay", w, r)
 }
@@ -373,7 +303,10 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 		}
 	}
 
-	return html.CustPurchase.Execute(w, &custPurchase{
+	return html.CustPurchase.Execute(w, &html.CustPurchaseData{
+		GetArticle:   database.GetArticle,
+		GroupedOrder: database.GroupedOrder, // returns empty orderGroups too
+
 		Purchase:    purchase,
 		URL:         fmt.Sprintf("%s/i/%s%s", AbsHost(r), purchase.ID, LangQuery(r)),
 		PaysrvErr:   paysrvErr,
