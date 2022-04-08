@@ -82,7 +82,7 @@
 			<tr>
 				<td colspan="4">
 					{{with .Category}}
-						<!-- same as in purchase.html -->
+						<!-- same as in order.html -->
 						<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
 						<label for="toggle-{{.ID}}">
 							<strong>{{.Name}}</strong>
@@ -133,23 +133,25 @@
 		<tr>
 			<td>{{$.GetArticleName .ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
-			{{if .Image}}
-				<!-- use image as code -->
-				<td><img src="{{.ImageSrc}}" /></td>
-			{{else}}
-				<!-- use ID as code -->
-				<td>{{.ID}}</td>
-			{{end}}
+			<td>
+				{{if .Image}}
+					<!-- use image as code -->
+					<img src="{{.ImageSrc}}" />
+				{{else}}
+					<!-- use ID as code -->
+					{{.ID}}
+				{{end}}
+			</td>
 		</tr>
 		{{end}}
 		{{if .Purchase.Underdelivered}}
 		<tr>
-			<td colspan="4">{{.Translate "sorry-underdelivered"}}</td>
+			<td colspan="3">{{.Translate "sorry-underdelivered"}}</td>
 		</tr>
 		{{end}}
 		{{if .Purchase.Unpaid}}
 		<tr>
-			<td colspan="4">{{.Translate "info-unpaid"}}</td>
+			<td colspan="3">{{.Translate "info-unpaid"}}</td>
 		</tr>
 		{{end}}
 	</tbody>
