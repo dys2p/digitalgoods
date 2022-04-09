@@ -126,11 +126,6 @@ func (o OrderRow) Sum() int {
 	return o.Amount * o.ItemPrice
 }
 
-type OrderGroup struct {
-	Category *Category
-	Rows     []OrderRow
-}
-
 type Delivery []DeliveredItem
 
 type DeliveredItem struct {
@@ -147,4 +142,16 @@ func (item *DeliveredItem) ParseDeliveryDate() (time.Time, error) {
 
 func (item *DeliveredItem) ImageSrc() template.URL {
 	return template.URL(fmt.Sprintf("data:%s;base64,%s", http.DetectContentType(item.Image), base64.StdEncoding.EncodeToString(item.Image)))
+}
+
+// Higher-level data structures:
+
+type OrderArticle struct {
+	OrderRow
+	Article *Article
+}
+
+type OrderGroup struct {
+	Category *Category
+	Rows     []OrderArticle
 }

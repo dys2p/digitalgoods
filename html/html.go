@@ -51,7 +51,6 @@ type CustOrderData struct {
 }
 
 type CustPurchaseData struct {
-	GetArticle   func(id string) (digitalgoods.Article, error)
 	GroupedOrder func(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error)
 
 	Purchase    *digitalgoods.Purchase

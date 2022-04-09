@@ -304,7 +304,6 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 	}
 
 	return html.CustPurchase.Execute(w, &html.CustPurchaseData{
-		GetArticle:   database.GetArticle,
 		GroupedOrder: database.GroupedOrder, // returns empty orderGroups too
 
 		Purchase:    purchase,

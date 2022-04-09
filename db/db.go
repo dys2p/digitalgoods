@@ -479,7 +479,6 @@ func (db *DB) GroupedOrder(order digitalgoods.Order) ([]digitalgoods.OrderGroup,
 	result := make([]digitalgoods.OrderGroup, len(categories))
 	for i := range categories {
 		result[i].Category = categories[i]
-		result[i].Rows = []digitalgoods.OrderRow{}
 	}
 	for _, row := range order {
 		article, err := db.GetArticle(row.ArticleID)
@@ -489,7 +488,10 @@ func (db *DB) GroupedOrder(order digitalgoods.Order) ([]digitalgoods.OrderGroup,
 		// linear search, well...
 		for i := range categories {
 			if categories[i].ID == article.CategoryID {
-				result[i].Rows = append(result[i].Rows, row)
+				result[i].Rows = append(result[i].Rows, digitalgoods.OrderArticle{
+					OrderRow: row,
+					Article:  &article,
+				})
 			}
 		}
 		// don't check the unlikely case that no category is found because this is just the "ordered" section and not the "delivered goods" section
