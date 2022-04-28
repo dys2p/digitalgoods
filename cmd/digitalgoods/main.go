@@ -61,6 +61,7 @@ func main() {
 
 		log.Println("don't forget to set up the webhook for your store")
 		log.Println(`  URL: /rpc`)
+		log.Println(`  Event: "An invoice is processing"`)
 		log.Println(`  Event: "An invoice has expired"`)
 		log.Println(`  Event: "An invoice has been settled"`)
 	}
@@ -289,11 +290,19 @@ func custPurchaseGet(activeTab string, w http.ResponseWriter, r *http.Request) e
 				}
 				// update purchase
 				purchase.Status = digitalgoods.StatusBTCPayInvoiceExpired
+			case btcpay.InvoiceProcessing:
+				if err := database.SetBTCPayInvoiceProcessing(purchase); err != nil {
+					return err
+				}
+				// re-read purchase
+				if purchase, err = database.GetPurchaseByID(purchase.ID); err != nil {
+					return err
+				}
 			case btcpay.InvoiceSettled:
 				if err := database.SetSettled(purchase); err != nil {
 					return err
 				}
-				// reload purchase
+				// re-read purchase
 				if purchase, err = database.GetPurchaseByID(purchase.ID); err != nil {
 					return err
 				}

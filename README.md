@@ -9,4 +9,4 @@ We sell coupons using our BTCPay Server. No reservations are made (first pay, fi
   * Payload URL: `https://example.com/rpc`
   * Automatic redelivery: yes
   * Is enabled: yes
-  * Events: "An invoice has expired", "An invoice has been settled"
+  * Events: "An invoice is processing", "An invoice has expired", "An invoice has been settled"

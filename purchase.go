@@ -11,11 +11,12 @@ import (
 const DateFmt = "2006-01-02"
 
 const (
-	StatusNew                  string = "new" // no BTCPay invoice created yet
-	StatusBTCPayInvoiceCreated string = "btcpay-created"
-	StatusBTCPayInvoiceExpired string = "btcpay-expired" // not paid properly
-	StatusUnderdelivered       string = "underdelivered" // payment settled, but we had not had enough items on stock
-	StatusFinalized            string = "finalized"      // payment settled, codes delivered
+	StatusNew                     string = "new" // no BTCPay invoice created yet
+	StatusBTCPayInvoiceCreated    string = "btcpay-created"
+	StatusBTCPayInvoiceProcessing string = "btcpay-processing" // "InvoiceProcessing Webhook: Triggers when an invoice is fully paid, but doesn't have the required amount of confirmations on the blockchain yet according to your store's settings."
+	StatusBTCPayInvoiceExpired    string = "btcpay-expired"    // not paid properly
+	StatusUnderdelivered          string = "underdelivered"    // payment settled, but we had not had enough items on stock
+	StatusFinalized               string = "finalized"         // payment settled, codes delivered
 )
 
 // https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de

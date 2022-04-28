@@ -378,6 +378,11 @@ func (db *DB) SetBTCPayInvoiceExpired(purchase *digitalgoods.Purchase) error {
 	return err
 }
 
+func (db *DB) SetBTCPayInvoiceProcessing(purchase *digitalgoods.Purchase) error {
+	_, err := db.updateStatus.Exec(digitalgoods.StatusBTCPayInvoiceProcessing, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
+	return err
+}
+
 // idempotent, must be called only if the invoice has been paid
 func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 

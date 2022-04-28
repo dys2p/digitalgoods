@@ -215,6 +215,10 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "BTCPay invoice created"},
 		TagStr{language.German, "BTCPay-Rechnung erzeugt"},
 	},
+	"status-btcpay-processing": []TagStr{
+		TagStr{language.AmericanEnglish, "BTCPay payment processing: Your invoice is fully paid, but we're still waiting for the required amount of confirmations on the blockchain."},
+		TagStr{language.German, "BTCPay-Zahlung wird verarbeitet: Deine Rechnung ist vollständig bezahlt, aber wir warten noch auf die ausreichende Anzahl Bestätigungen auf der Blockchain."},
+	},
 	"status-btcpay-expired": []TagStr{
 		TagStr{language.AmericanEnglish, "BTCPay invoice expired: The BTCPay invoice has been paid late, partly or not at all. You can still pay cash or by SEPA bank transfer."},
 		TagStr{language.German, "BTCPay-Rechnung abgelaufen: Die BTCPay-Rechnung wurde zu spät, unvollständig oder gar nicht bezahlt. Du kannst immer noch bar oder per SEPA-Überweisung bezahlen."},
