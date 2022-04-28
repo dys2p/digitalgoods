@@ -84,7 +84,7 @@ func (p *Purchase) Unpaid() bool {
 }
 
 func (p *Purchase) WaitingForBTCPayment() bool {
-	return p.Status == StatusBTCPayInvoiceCreated
+	return p.Status == StatusBTCPayInvoiceCreated || p.Status == StatusBTCPayInvoiceProcessing
 }
 
 type Order []OrderRow
