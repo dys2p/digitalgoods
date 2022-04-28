@@ -42,8 +42,8 @@ type CustOrderData struct {
 	CaptchaAnswer string
 	CaptchaErr    bool
 	CaptchaID     string
-	Cart          map[string]int    // user input, in case of errors: HTML input name -> amount
-	OtherCountry  map[string]string // user input, in case of errors: article ID -> country ID
+	Cart          map[string]int    // user input: HTML input name -> amount
+	OtherCountry  map[string]string // user input: article ID -> country ID
 	CountryAnswer string
 	CountryErr    bool
 	OrderErr      bool
