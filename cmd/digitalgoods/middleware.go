@@ -15,7 +15,7 @@ var ErrUnauthenticated = errors.New("unauthenticated")
 
 func auth(f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if sessionManager.Exists(r.Context(), "username") {
+		if staffSessions.Exists(r.Context(), "username") {
 			f(w, r)
 		} else {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)

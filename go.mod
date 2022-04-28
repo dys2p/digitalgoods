@@ -3,6 +3,7 @@ module github.com/dys2p/digitalgoods
 go 1.17
 
 require (
+	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
 	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f
 	github.com/dys2p/btcpay v0.4.0

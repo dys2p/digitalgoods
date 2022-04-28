@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"flag"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
 	"github.com/dchest/captcha"
@@ -29,7 +31,8 @@ import (
 )
 
 var database *db.DB
-var sessionManager *scs.SessionManager
+var custSessions *scs.SessionManager
+var staffSessions *scs.SessionManager
 var store btcpay.Store
 var users userdb.Authenticator
 
@@ -77,6 +80,30 @@ func main() {
 
 	// customer http server
 
+	custSessionsDB, err := sql.Open("sqlite3", "data/customer-sessions.sqlite3")
+	if err != nil {
+		log.Printf("error opening customer session database: %v", err)
+		return
+	}
+	defer custSessionsDB.Close()
+
+	if _, err = custSessionsDB.Exec(`
+		CREATE TABLE IF NOT EXISTS sessions (
+			token TEXT PRIMARY KEY,
+			data BLOB NOT NULL,
+			expiry REAL NOT NULL
+		);
+		CREATE INDEX IF NOT EXISTS sessions_expiry_idx ON sessions(expiry);
+	`); err != nil {
+		log.Printf("error creating customer sessions table: %v", err)
+		return
+	}
+
+	custSessions = scs.New()
+	custSessions.Cookie.SameSite = http.SameSiteLaxMode // prevent CSRF
+	custSessions.Lifetime = 8 * time.Hour
+	custSessions.Store = sqlite3store.New(custSessionsDB)
+
 	var custRtr = httprouter.New()
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/", wrapTmpl(custOrderGet))
@@ -85,20 +112,21 @@ func main() {
 	custRtr.HandlerFunc(http.MethodPost, "/i/:purchaseid", wrapTmpl(custPurchasePostBTCPay))
 	custRtr.HandlerFunc(http.MethodGet, "/i/:purchaseid/cash", wrapTmpl(custPurchaseGetCash))
 	custRtr.HandlerFunc(http.MethodGet, "/i/:purchaseid/sepa", wrapTmpl(custPurchaseGetSEPA))
+	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
 	custRtr.HandlerFunc(http.MethodGet, "/health", health)
 	custRtr.HandlerFunc(http.MethodPost, "/rpc", rpc)
 	custRtr.Handler("GET", "/captcha/:fn", captcha.Server(captcha.StdWidth, captcha.StdHeight))
 
-	var custSrv = ListenAndServe("tcp", ":9002", custRtr, stop)
+	var custSrv = ListenAndServe("tcp", ":9002", custSessions.LoadAndSave(custRtr), stop)
 	defer custSrv.Shutdown()
 
 	log.Println("listening to port 9002")
 
-	// staff http server with session management
+	// staff http server
 
-	sessionManager = scs.New()
-	sessionManager.Cookie.SameSite = http.SameSiteLaxMode // prevent CSRF
-	sessionManager.Store = memstore.New()
+	staffSessions = scs.New()
+	staffSessions.Cookie.SameSite = http.SameSiteLaxMode // prevent CSRF
+	staffSessions.Store = memstore.New()
 
 	var staffRtr = httprouter.New()
 	staffRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
@@ -118,7 +146,7 @@ func main() {
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/text", auth(wrapTmpl(staffUploadTextGet)))
 	staffRtr.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/text", auth(wrapAPI(staffUploadTextPost)))
 
-	var staffSrv = ListenAndServe("tcp", "127.0.0.1:9003", sessionManager.LoadAndSave(staffRtr), stop)
+	var staffSrv = ListenAndServe("tcp", "127.0.0.1:9003", staffSessions.LoadAndSave(staffRtr), stop)
 	defer staffSrv.Shutdown()
 
 	// cleanup bot
@@ -343,6 +371,7 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request) error {
 		invoiceRequest.DefaultLanguage = html.GetLanguage(r).Translate("btcpay-defaultlanguage")
 		invoiceRequest.ExpirationMinutes = 60
 		invoiceRequest.OrderID = fmt.Sprintf("digitalgoods %s", purchase.PayID) // PayID only
+		invoiceRequest.RedirectURL = fmt.Sprintf("%s/by-cookie", AbsHost(r))
 		btcInvoice, err := store.CreateInvoice(invoiceRequest)
 		if err != nil {
 			return err
@@ -352,6 +381,9 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		purchase.BTCPayInvoiceID = btcInvoice.ID
+
+		// set cookie
+		custSessions.Put(r.Context(), "purchase-id", purchase.ID)
 	}
 
 	link := store.InvoiceCheckoutLink(purchase.BTCPayInvoiceID)
@@ -361,6 +393,14 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request) error {
 
 	http.Redirect(w, r, link, http.StatusSeeOther)
 	return nil
+}
+
+func byCookie(w http.ResponseWriter, r *http.Request) {
+	if purchaseID := custSessions.GetString(r.Context(), "purchase-id"); purchaseID != "" {
+		http.Redirect(w, r, fmt.Sprintf("/i/%s", purchaseID), http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 func rpc(w http.ResponseWriter, r *http.Request) {
@@ -409,13 +449,13 @@ func staffLoginPost(w http.ResponseWriter, r *http.Request) error {
 	if err := users.Authenticate(username, password); err != nil {
 		return err
 	}
-	sessionManager.Put(r.Context(), "username", username)
+	staffSessions.Put(r.Context(), "username", username)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return nil
 }
 
 func staffLogoutGet(w http.ResponseWriter, r *http.Request) error {
-	sessionManager.Destroy(r.Context())
+	staffSessions.Destroy(r.Context())
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return nil
 }
