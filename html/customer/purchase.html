@@ -131,7 +131,7 @@
 	<tbody>
 		{{range .Purchase.Delivered}}
 		<tr>
-			<td>{{.Article.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+			<td>{{.ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
 			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
 			<td>
 				{{if .Image}}
