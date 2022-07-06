@@ -243,114 +243,6 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.AmericanEnglish, "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"},
 		TagStr{language.German, "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"},
 	},
-	"country-BE": []TagStr{
-		TagStr{language.AmericanEnglish, "Belgium"},
-		TagStr{language.German, "Belgien"},
-	},
-	"country-BG": []TagStr{
-		TagStr{language.AmericanEnglish, "Bulgaria"},
-		TagStr{language.German, "Bulgarien"},
-	},
-	"country-DK": []TagStr{
-		TagStr{language.AmericanEnglish, "Denmark"},
-		TagStr{language.German, "Dänemark"},
-	},
-	"country-DE": []TagStr{
-		TagStr{language.AmericanEnglish, "Germany"},
-		TagStr{language.German, "Deutschland"},
-	},
-	"country-EE": []TagStr{
-		TagStr{language.AmericanEnglish, "Estonia"},
-		TagStr{language.German, "Estland"},
-	},
-	"country-FI": []TagStr{
-		TagStr{language.AmericanEnglish, "Finland"},
-		TagStr{language.German, "Finnland"},
-	},
-	"country-FR": []TagStr{
-		TagStr{language.AmericanEnglish, "France"},
-		TagStr{language.German, "Frankreich"},
-	},
-	"country-EL": []TagStr{
-		TagStr{language.AmericanEnglish, "Greece"},
-		TagStr{language.German, "Griechenland"},
-	},
-	"country-IE": []TagStr{
-		TagStr{language.AmericanEnglish, "Ireland"},
-		TagStr{language.German, "Irland"},
-	},
-	"country-IT": []TagStr{
-		TagStr{language.AmericanEnglish, "Italy"},
-		TagStr{language.German, "Italien"},
-	},
-	"country-HR": []TagStr{
-		TagStr{language.AmericanEnglish, "Croatia"},
-		TagStr{language.German, "Kroatien"},
-	},
-	"country-LV": []TagStr{
-		TagStr{language.AmericanEnglish, "Latvia"},
-		TagStr{language.German, "Lettland"},
-	},
-	"country-LT": []TagStr{
-		TagStr{language.AmericanEnglish, "Lithuania"},
-		TagStr{language.German, "Litauen"},
-	},
-	"country-LU": []TagStr{
-		TagStr{language.AmericanEnglish, "Luxembourg"},
-		TagStr{language.German, "Luxemburg"},
-	},
-	"country-MT": []TagStr{
-		TagStr{language.AmericanEnglish, "Malta"},
-		TagStr{language.German, "Malta"},
-	},
-	"country-NL": []TagStr{
-		TagStr{language.AmericanEnglish, "Netherlands"},
-		TagStr{language.German, "Niederlande"},
-	},
-	"country-AT": []TagStr{
-		TagStr{language.AmericanEnglish, "Austria"},
-		TagStr{language.German, "Österreich"},
-	},
-	"country-PL": []TagStr{
-		TagStr{language.AmericanEnglish, "Poland"},
-		TagStr{language.German, "Polen"},
-	},
-	"country-PT": []TagStr{
-		TagStr{language.AmericanEnglish, "Portugal"},
-		TagStr{language.German, "Portugal"},
-	},
-	"country-RO": []TagStr{
-		TagStr{language.AmericanEnglish, "Romania"},
-		TagStr{language.German, "Rumänien"},
-	},
-	"country-SE": []TagStr{
-		TagStr{language.AmericanEnglish, "Sweden"},
-		TagStr{language.German, "Schweden"},
-	},
-	"country-SK": []TagStr{
-		TagStr{language.AmericanEnglish, "Slovakia"},
-		TagStr{language.German, "Slowakei"},
-	},
-	"country-SI": []TagStr{
-		TagStr{language.AmericanEnglish, "Slovenia"},
-		TagStr{language.German, "Slowenien"},
-	},
-	"country-ES": []TagStr{
-		TagStr{language.AmericanEnglish, "Spain"},
-		TagStr{language.German, "Spanien"},
-	},
-	"country-CZ": []TagStr{
-		TagStr{language.AmericanEnglish, "Czechia"},
-		TagStr{language.German, "Tschechien"},
-	},
-	"country-HU": []TagStr{
-		TagStr{language.AmericanEnglish, "Hungary"},
-		TagStr{language.German, "Ungarn"},
-	},
-	"country-CY": []TagStr{
-		TagStr{language.AmericanEnglish, "Cyprus"},
-		TagStr{language.German, "Zypern"},
-	},
 	"non-EU": []TagStr{
 		TagStr{language.AmericanEnglish, "Not in the European Union"},
 		TagStr{language.German, "Außerhalb der Europäischen Union"},
@@ -456,6 +348,12 @@ var uiTranslations = map[string][]TagStr{
 	"btcpay-defaultlanguage": []TagStr{
 		TagStr{language.AmericanEnglish, "en"},
 		TagStr{language.German, "de-DE"},
+	},
+
+	// EU country codes are same as ISO-3166-1 codes and don't interfere with each other, so we don't need to define them separately. Only difference is Greece.
+	"EL": []TagStr{
+		TagStr{language.AmericanEnglish, "Greece"},
+		TagStr{language.German, "Griechenland"},
 	},
 
 	// ISO-3166-1 country list
