@@ -15,6 +15,24 @@ var files embed.FS
 func parse(fn ...string) *template.Template {
 	fn = append([]string{"layout.html"}, fn...)
 	return template.Must(template.Must(template.New("layout.html").Funcs(template.FuncMap{
+		"AlertContextualClass": func(status string) string {
+			switch status {
+			case digitalgoods.StatusNew:
+				return "alert-primary"
+			case digitalgoods.StatusBTCPayInvoiceCreated:
+				return "alert-primary"
+			case digitalgoods.StatusBTCPayInvoiceProcessing:
+				return "alert-success"
+			case digitalgoods.StatusBTCPayInvoiceExpired:
+				return "alert-danger"
+			case digitalgoods.StatusUnderdelivered:
+				return "alert-warning"
+			case digitalgoods.StatusFinalized:
+				return "alert-success"
+			default:
+				return "alert-primary"
+			}
+		},
 		"FmtEuro": func(cents int) template.HTML {
 			return template.HTML(strings.Replace(fmt.Sprintf("%.2f&nbsp;€", float64(cents)/100.0), ".", ",", 1))
 		},
