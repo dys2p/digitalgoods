@@ -8,8 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const Path = "data/users.json"
-
 type Authenticator interface {
 	Authenticate(username, password string) error
 }
@@ -24,14 +22,14 @@ func (db userdb) Authenticate(username, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
 }
 
-func Open() (Authenticator, error) {
+func Open(path string) (Authenticator, error) {
 	var db = userdb{}
-	data, err := os.ReadFile(Path)
+	data, err := os.ReadFile(path)
 	switch {
 	case err == nil:
 		return db, json.Unmarshal(data, &db)
 	case os.IsNotExist(err):
-		return db, os.WriteFile(Path, []byte("{}"), 0660)
+		return db, os.WriteFile(path, []byte("{}"), 0660)
 	default:
 		return nil, err
 	}

@@ -69,7 +69,7 @@ func main() {
 		log.Println(`  Event: "An invoice has been settled"`)
 	}
 
-	users, err = userdb.Open()
+	users, err = userdb.Open("data/users.json")
 	if err != nil {
 		log.Printf("error opening userdb: %v", err)
 		return
