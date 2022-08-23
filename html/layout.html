@@ -10,14 +10,19 @@
 </head>
 <body>
 	<header>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<nav class="navbar navbar-expand-sm navbar-light justify-content-center small mb-0 py-2" style="background-color: #eeeff0!important; font-weight: bold">
+			<a class="nav-item nav-link text-dark px-2 py-0" href="https://dys2p.com">dys2p</a> &middot;
+			<a class="nav-item nav-link text-dark px-2 py-0" href="https://proxysto.re">ProxyStore</a> &middot;
+			<a class="nav-item nav-link text-dark px-2 py-0" href="https://toolbox77.de">toolbox77</a>
+		</nav>
+		<nav class="navbar navbar-expand-sm navbar-light bg-light">
 			<div class="container-fluid">
 				<!-- left -->
-				<div class="equal-width-lg navbar-brand">
+				<div class="equal-width-sm navbar-brand">
 					{{block "brand" .}}{{end}}
 				</div>
 				<!-- center -->
-				<div class="equal-width-lg text-lg-center">
+				<div class="equal-width-sm text-sm-center">
 					{{block "menu" .}}{{end}}
 					<div>
 						BTCPay status:
@@ -31,7 +36,7 @@
 					</div>
 				</div>
 				<!-- right -->
-				<div class="equal-width-lg text-lg-end">
+				<div class="equal-width-sm text-sm-end">
 					<a href="?lang=de" class="btn btn-secondary btn-sm ml-4">DE</a>
 					<a href="?lang=en" class="btn btn-secondary btn-sm ml-4">EN</a>
 				</div>
