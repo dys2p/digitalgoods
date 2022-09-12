@@ -144,8 +144,8 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.German, "Bargeld"},
 	},
 	"payment-cash-intro": []TagStr{
-		TagStr{language.AmericanEnglish, `You can send cash in an insured letter or package to our store address in Germany. We'll unlock your voucher codes when it arrives. Please check the cash shipment limits of your postal company (e. g. Deutsche Post "Einschreiben Wert" up to 100 Euros within Germany, or DHL Parcel up to 500 Euros). Send it to:`},
-		TagStr{language.German, `Schicke uns Bargeld in einem versichertem Brief oder Paket. Wenn es bei uns ankommt, schalten wir deine Gutscheincodes frei. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post "Einschreiben Wert" bis 100 Euro innerhalb von Deutschland, oder DHL Paket bis 500 Euro). Sende es an:`},
+		TagStr{language.AmericanEnglish, `You can send cash in an insured letter or package to our store address in Germany. We'll unlock your voucher codes when it arrives. Then we shred your letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post "Einschreiben Wert" up to 100 Euros within Germany, or DHL Parcel up to 500 Euros). Send it to:`},
+		TagStr{language.German, `Schicke uns Bargeld in einem versichertem Brief oder Paket. Wenn es bei uns ankommt, schalten wir deine Gutscheincodes frei. Danach schreddern wir deinen Brief. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post "Einschreiben Wert" bis 100 Euro innerhalb von Deutschland, oder DHL Paket bis 500 Euro). Sende es an:`},
 	},
 	"payment-cash-payid": []TagStr{
 		TagStr{language.AmericanEnglish, "Please include a note with this payment code:"},
@@ -156,8 +156,8 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.German, "SEPA-Banküberweisung"},
 	},
 	"payment-sepa-intro": []TagStr{
-		TagStr{language.AmericanEnglish, "If you have a SEPA (Single Euro Payments Area) bank account, you can do a SEPA bank transfer to our German bank account. We will see your name and bank account number on our account statement."},
-		TagStr{language.German, "Falls du ein SEPA-Bankkonto (Europäischer Zahlungsraum) hast, kannst du den Betrag per SEPA-Überweisung auf unser deutsches Bankkonto überweisen. Wir werden deinen Namen und deine IBAN auf unserem Kontoauszug sehen."},
+		TagStr{language.AmericanEnglish, "If you have a SEPA (Single Euro Payments Area) bank account, you can do a SEPA bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement."},
+		TagStr{language.German, "Falls du ein SEPA-Bankkonto (Europäischer Zahlungsraum) hast, kannst du den Betrag per SEPA-Überweisung auf unser deutsches Bankkonto überweisen. Wir prüfen es täglich manuell auf neue Zahlungseingänge. Wir werden deinen Namen und deine IBAN auf unserem Kontoauszug sehen."},
 	},
 	"payment-sepa-payid": []TagStr{
 		TagStr{language.AmericanEnglish, "Please enter this payment code in the payment reference field:"},
