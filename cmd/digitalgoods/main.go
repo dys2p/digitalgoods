@@ -465,7 +465,7 @@ func staffViewGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffViewPost(w http.ResponseWriter, r *http.Request) error {
-	payID := r.PostFormValue("pay-id")
+	payID := strings.ToUpper(strings.TrimSpace(r.PostFormValue("pay-id")))
 	purchase, err := database.GetPurchaseByPayID(payID)
 	if err != nil {
 		return err
@@ -475,7 +475,7 @@ func staffViewPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
-	payID := httprouter.ParamsFromContext(r.Context()).ByName("payid")
+	payID := strings.ToUpper(strings.TrimSpace(httprouter.ParamsFromContext(r.Context()).ByName("payid")))
 	purchase, err := database.GetPurchaseByPayID(payID)
 	if err != nil {
 		return err
