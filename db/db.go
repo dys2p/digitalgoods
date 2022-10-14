@@ -23,6 +23,7 @@ type DB struct {
 	getPurchaseByPayID            *sql.Stmt
 	getPurchasesByStatus          *sql.Stmt
 	updatePurchase                *sql.Stmt
+	updatePurchaseCountry         *sql.Stmt
 	updatePurchaseBTCPayInvoiceID *sql.Stmt
 	updateStatus                  *sql.Stmt
 
@@ -132,6 +133,7 @@ func OpenDB() (*DB, error) {
 	db.getPurchaseByPayID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where payid = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
 	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
+	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ? where id = ?")
 	db.updatePurchaseBTCPayInvoiceID = mustPrepare("update purchase set invoiceid = ?, status = ? where id = ?")
 	db.updateStatus = mustPrepare("update purchase set status = ?, deletedate = ? where id = ?")
 
@@ -380,6 +382,11 @@ func (db *DB) SetBTCPayInvoiceExpired(purchase *digitalgoods.Purchase) error {
 
 func (db *DB) SetBTCPayInvoiceProcessing(purchase *digitalgoods.Purchase) error {
 	_, err := db.updateStatus.Exec(digitalgoods.StatusBTCPayInvoiceProcessing, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
+	return err
+}
+
+func (db *DB) SetCountry(purchase *digitalgoods.Purchase, countryCode string) error {
+	_, err := db.updatePurchaseCountry.Exec(countryCode, purchase.ID)
 	return err
 }
 

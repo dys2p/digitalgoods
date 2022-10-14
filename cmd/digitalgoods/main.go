@@ -482,10 +482,12 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	}
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
-		DB *db.DB
+		EUCountryCodes []string
+		DB             *db.DB
 		html.Language
 	}{
 		purchase,
+		digitalgoods.EUCountryCodes[:],
 		database,
 		html.GetLanguage(r),
 	})
@@ -499,6 +501,12 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	purchase, err := database.GetPurchaseByPayID(payID)
 	if err != nil {
 		return err
+	}
+	countryCode := r.PostFormValue("country")
+	if purchase.CountryCode != countryCode {
+		if err := database.SetCountry(purchase, countryCode); err != nil {
+			return err
+		}
 	}
 	if err := database.SetSettled(purchase); err != nil {
 		return err

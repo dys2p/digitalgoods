@@ -7,6 +7,7 @@
 	</div>
 	<p>Amount: {{FmtEuro .Ordered.Sum}}</p>
 	<p>Status: {{.Status}}</p>
+	<p>Country: {{.Translate .CountryCode}}</p>
 
 	<table class="table">
 		<thead>
@@ -39,6 +40,19 @@
 		<div class="mb-3 form-check">
 			<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
 			<label for="confirm" class="form-check-label">Yes, I am sure. We have received <strong>{{FmtEuro .Ordered.Sum}}</strong>.</label>
+		</div>
+		<div class="input-group mb-3">
+			<label class="input-group-text">Adjust country?</label>
+			<select class="form-select" name="country">
+				<optgroup label="Not in the European Union">
+					<option {{if eq .CountryCode "non-EU"}}selected{{end}} value="non-EU">{{.Translate "non-EU"}}</option>
+				</optgroup>
+				<optgroup label="European Union">
+					{{range $.TranslateAndSort $.EUCountryCodes}}
+						<option {{if eq $.CountryCode .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
+					{{end}}
+				</optgroup>
+			</select>
 		</div>
 		<div class="text-end">
 			<button type="submit" class="btn btn-success">Mark as paid and deliver the goods</button>
