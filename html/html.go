@@ -36,7 +36,7 @@ func parse(fn ...string) *template.Template {
 		"FmtEuro": func(cents int) template.HTML {
 			return template.HTML(strings.Replace(fmt.Sprintf("%.2f&nbsp;€", float64(cents)/100.0), ".", ",", 1))
 		},
-	}).ParseFS(files, fn...)).ParseGlob("data/custom.html"))
+	}).ParseFS(files, fn...)).ParseGlob("/etc/digitalgoods/custom.html"))
 }
 
 var (

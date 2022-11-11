@@ -52,7 +52,7 @@ func IsNotFound(err error) bool {
 
 func OpenDB() (*DB, error) {
 
-	var sqlDB, err = sql.Open("sqlite3", "data/digitalgoods.sqlite3?_busy_timeout=10000&_journal=WAL&_sync=NORMAL&cache=shared")
+	var sqlDB, err = sql.Open("sqlite3", "/var/lib/digitalgoods/digitalgoods.sqlite3?_busy_timeout=10000&_journal=WAL&_sync=NORMAL&cache=shared")
 	if err != nil {
 		return nil, err
 	}
