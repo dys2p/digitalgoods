@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -56,7 +57,7 @@ func main() {
 		store = btcpay.NewDummyStore()
 		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
 	} else {
-		store, err = btcpay.Load("/etc/digitalgoods/btcpay.json")
+		store, err = btcpay.Load(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "btcpay.json"))
 		if err != nil {
 			log.Printf("error loading btcpay store: %v", err)
 			return
@@ -69,7 +70,7 @@ func main() {
 		log.Println(`  Event: "An invoice has been settled"`)
 	}
 
-	users, err = userdb.Open("/etc/digitalgoods/users.json")
+	users, err = userdb.Open(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "users.json"))
 	if err != nil {
 		log.Printf("error opening userdb: %v", err)
 		return
@@ -80,7 +81,7 @@ func main() {
 
 	// customer http server
 
-	custSessionsDB, err := sql.Open("sqlite3", "/var/lib/digitalgoods/customer-sessions.sqlite3")
+	custSessionsDB, err := sql.Open("sqlite3", filepath.Join(os.Getenv("STATE_DIRECTORY"), "customer-sessions.sqlite3"))
 	if err != nil {
 		log.Printf("error opening customer session database: %v", err)
 		return

@@ -48,7 +48,7 @@ var uiTranslations = map[string][]TagStr{
 		TagStr{language.German, "SEPA-Überweisung auf unser deutsches Bankkonto. Wir prüfen es täglich manuell auf neue Zahlungseingänge."},
 	},
 	"how-4": []TagStr{
-		TagStr{language.AmericanEnglish, "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}, // On-demand articles are supplied within one business day.
+		TagStr{language.AmericanEnglish, "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."},                              // On-demand articles are supplied within one business day.
 		TagStr{language.German, "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."}, // On-Demand-Artikel beschaffen wir innerhalb eines Werktags.
 	},
 	"how-5": []TagStr{

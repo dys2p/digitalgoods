@@ -4,6 +4,8 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
@@ -36,7 +38,7 @@ func parse(fn ...string) *template.Template {
 		"FmtEuro": func(cents int) template.HTML {
 			return template.HTML(strings.Replace(fmt.Sprintf("%.2f&nbsp;€", float64(cents)/100.0), ".", ",", 1))
 		},
-	}).ParseFS(files, fn...)).ParseGlob("/etc/digitalgoods/custom.html"))
+	}).ParseFS(files, fn...)).ParseGlob(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "custom.html")))
 }
 
 var (
