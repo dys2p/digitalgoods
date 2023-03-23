@@ -2,7 +2,6 @@ package html
 
 import (
 	"html/template"
-	"net/http"
 	"sort"
 	"time"
 
@@ -1353,18 +1352,6 @@ var uiTranslations = map[string][]TagStr{
 
 // Language is any string. It will be matched by golang.org/x/text/language.Make and golang.org/x/text/language.NewMatcher.
 type Language string
-
-// GetLanguage returns the "lang" GET parameter or, if not present, the Accept-Language header value.
-// No matching is performed.
-func GetLanguage(r *http.Request) Language {
-	if lang := r.URL.Query().Get("lang"); lang != "" {
-		if len(lang) > 35 {
-			lang = lang[:35] // max length of language tag
-		}
-		return Language(lang)
-	}
-	return Language(r.Header.Get("Accept-Language"))
-}
 
 func (lang Language) FmtDate(t time.Time) string {
 	return t.Format(lang.Translate("date-format"))

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/static/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/style.css" />
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/fontawesome-selection.css" />
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/solid.css" />
+		
+	<link rel="stylesheet" href="/static/digitalgoods.css" />
+	<link rel="icon" type="image/png" href="https://proxysto.re/assets/images/favicon-96.png" sizes="96x96">
+    <meta name="author" content="ProxyStore">
+    <meta name="description" content="Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter.">
+    
+	<script src="/static/scripts.js"></script>
+	<title>Digital Goods – ProxyStore</title>
+	{{block "head" .}}{{end}}
+
+	</head>
+	<body>
+		<header>
+			<nav class="navbar navbar-expand-xl navbar-light py-0" style="background-color: rgb(240,242,244) !important">
+				<div class="container-fluid">
+					<!-- checkbox -->
+					<input type="checkbox" class="toggler" aria-hidden="true" id="open-shopbar">
+					<!-- togglers -->
+					<label for="open-shopbar" class="navbar-toggler my-2">
+						<div class="open navbar-toggler-icon"></div>
+						<div class="close btn-close"></div>
+					</label>
+					<div class="d-xl-none">
+						<a class="open visually-hidden-focusable" role="button" href="#open-shopbar">Open shops menu</a>
+						<a class="close visually-hidden-focusable" role="button" href="#">Close shops menu</a>
+					</div>
+					<!-- closed -->
+					<label for="open-shopbar" class="d-xl-none me-2">
+						<div class="navbar-text">All Services and Projects</div>
+					</label>
+					<!-- opened -->
+					<div class="collapse navbar-collapse">
+						<div class="navbar-brand equal-width-xl"></div>
+						<div class="navbar-nav equal-width-xl d-flex justify-content-center">
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://dys2p.com/en">
+								<i class="fa-solid fa-flask"></i> dys2p
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://proxysto.re/en/warum.html">
+								<i class="fa-solid fa-biohazard"></i> Why?
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://proxysto.re/en">
+								<i class="fa-solid fa-store"></i> Local Store
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 nav-active" rel="noreferrer" href="https://digitalgoods.proxysto.re/en">
+								<i class="fa-solid fa-ticket"></i> Digital Goods
+							</a>
+
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://shop.proxysto.re">
+								<i class="fa-solid fa-cart-shopping"></i> Online shop
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://order.proxysto.re">
+								<i class="fa-solid fa-tags"></i> Order Service
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://druck.proxysto.re">
+								<i class="fa-solid fa-print"></i> Online printing
+							</a>
+						</div>
+						<div class="equal-width-xl text-end text-nowrap">
+							
+								
+								<a class="btn btn-sm btn-secondary" href="/de/">DE</a> <a class="btn btn-sm btn-secondary active" href="/en/">EN</a> 
+							
+						</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		
+	<!-- shop -->
+<header>
+	<nav class="navbar navbar-expand-sm navbar-light bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="/en/">Digital Goods</a>
+			<div>
+				{{block "menu" .}}{{end}}
+				<div>
+					BTCPay status:
+					<script>
+						document.write(` <span id="health-widget"></span>`);
+						updateHealth("/health");
+					</script>
+					<noscript>
+						<div class="badge bg-secondary">requires JavaScript</div>
+					</noscript>
+				</div>
+			</div>
+		</div>
+	</nav>
+</header>
+
+<!-- main -->
+<main class="container pt-3 pb-4">
+	{{template "content" .}}
+</main>
+
+
+
+		<footer class="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-2">
+						<h4><a href="/en/payment.html">Payment</a></h4>
+						<ul>
+							<li>Cash payment</li>
+							<li>Cash letter</li>
+							<li>Monero and Bitcoin</li>
+							<li>SEPA bank transfer</li>
+							
+						</ul>
+					</div>
+					<div class="col-md-3">
+						
+					</div>
+					<div class="col-md-2">
+						<h4>Legal</h4>
+						<ul>
+							<li><a href="/en/terms.html">Terms and Conditions</a></li>
+							<li><a href="/en/privacy.html">Privacy policy</a></li>
+							<li><a href="/en/imprint.html">Imprint</a></li>
+							<li><a href="/en/cancellation-policy.html">Cancellation Policy</a></li>
+						</ul>
+					</div>
+					<div class="col-md-2">
+						<h4>Contact &amp; News</h4>
+						<ul>
+							<li><a rel="noreferrer" href="/en/contact.html"><strong>Contact us</strong></a></li>
+							<li><a rel="noreferrer" href="https://dys2p.com/en/news.html">Blog</a></li>
+							<li><a rel="noreferrer" href="https://chaos.social/@dys2p">Mastodon</a></li>
+							<li><a rel="noreferrer" href="https://www.reddit.com/r/dys2p">Reddit</a></li>
+							<li><a rel="noreferrer" href="https://twitter.com/dys2pn">Twitter</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4><a rel="noreferrer" href="https://proxysto.re/en">Local Store</a></h4>
+						<p>
+							Bernhard-Göring-Straße 162<br>
+							04277 Leipzig<br>
+							Germany
+						</p>
+						<p>
+							Mo+Do 10-18 Uhr<br>
+							Di+Mi+Fr+Sa 10-14 Uhr<br>
+							and by arrangement
+						</p>
+					</div>
+				</div>
+				<p class="px-0">
+					<a href="/en/contact.html">Got an idea or found an error? Drop us a note!</a>
+				</p>
+			</div>
+		</footer>
+	</body>
+</html>

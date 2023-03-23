@@ -16,18 +16,3 @@ func AbsHost(r *http.Request) string {
 	}
 	return fmt.Sprintf("%s://%s", proto, r.Host)
 }
-
-func LangQuery(r *http.Request) string {
-	var lang = r.URL.Query().Get("lang")
-	switch lang {
-	// options from layout.html
-	case "de":
-		// ok
-	case "en":
-		// ok
-	default:
-		// missing or not ok
-		return ""
-	}
-	return fmt.Sprintf("?lang=%s", lang)
-}

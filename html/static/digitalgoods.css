@@ -15,10 +15,6 @@ h2 + div, h2 + table {
 	margin-left: 0.75rem;
 }
 
-nav {
-	margin-bottom: 12px;
-}
-
 td a, td a:hover {
 	color: #198754;
 }
