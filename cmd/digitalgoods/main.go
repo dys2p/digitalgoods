@@ -36,7 +36,7 @@ import (
 var database *db.DB
 var custSessions *scs.SessionManager
 var staffSessions *scs.SessionManager
-var store btcpay.Store
+var btcpayStore btcpay.Store
 var users userdb.Authenticator
 
 func main() {
@@ -56,10 +56,10 @@ func main() {
 	}
 
 	if *test {
-		store = btcpay.NewDummyStore()
+		btcpayStore = btcpay.NewDummyStore()
 		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
 	} else {
-		store, err = btcpay.Load(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "btcpay.json"))
+		btcpayStore, err = btcpay.Load(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "btcpay.json"))
 		if err != nil {
 			log.Printf("error loading btcpay store: %v", err)
 			return
@@ -323,7 +323,7 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request, activeTab string, l
 
 	// Query payserver in case the webhook has been missed. Load is reduced by querying only if the purchase status is StatusBTCPayInvoiceCreated.
 	if purchase.Status == digitalgoods.StatusBTCPayInvoiceCreated {
-		if invoice, err := store.GetInvoice(purchase.BTCPayInvoiceID); err == nil {
+		if invoice, err := btcpayStore.GetInvoice(purchase.BTCPayInvoiceID); err == nil {
 			// same as in webhook
 			switch invoice.Status {
 			case btcpay.InvoiceExpired:
@@ -386,7 +386,7 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request, langstr stri
 		invoiceRequest.ExpirationMinutes = 60
 		invoiceRequest.OrderID = fmt.Sprintf("digitalgoods %s", purchase.PayID) // PayID only
 		invoiceRequest.RedirectURL = fmt.Sprintf("%s/by-cookie", AbsHost(r))
-		btcInvoice, err := store.CreateInvoice(invoiceRequest)
+		btcInvoice, err := btcpayStore.CreateInvoice(invoiceRequest)
 		if err != nil {
 			return err
 		}
@@ -400,9 +400,9 @@ func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request, langstr stri
 		custSessions.Put(r.Context(), "purchase-id", purchase.ID)
 	}
 
-	link := store.InvoiceCheckoutLink(purchase.BTCPayInvoiceID)
+	link := btcpayStore.InvoiceCheckoutLink(purchase.BTCPayInvoiceID)
 	if strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:") {
-		link = store.InvoiceCheckoutLinkPreferOnion(purchase.BTCPayInvoiceID)
+		link = btcpayStore.InvoiceCheckoutLinkPreferOnion(purchase.BTCPayInvoiceID)
 	}
 
 	http.Redirect(w, r, link, http.StatusSeeOther)
@@ -419,7 +419,7 @@ func byCookie(w http.ResponseWriter, r *http.Request) {
 
 func rpc(w http.ResponseWriter, r *http.Request) {
 
-	var event, err = store.ProcessWebhook(r)
+	var event, err = btcpayStore.ProcessWebhook(r)
 	if err != nil {
 		log.Printf("rpc: error processing webhook: %v", err)
 		return

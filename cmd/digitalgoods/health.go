@@ -13,7 +13,7 @@ type HealthItem struct {
 // provides the same simple API as https://github.com/dys2p/xmrhealthd/
 func health(w http.ResponseWriter, r *http.Request) {
 
-	status, err := store.GetServerStatus()
+	status, err := btcpayStore.GetServerStatus()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(nil)
