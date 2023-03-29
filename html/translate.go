@@ -220,7 +220,7 @@ var uiTranslations = map[string][]TagStr{
 	},
 	"status-underdelivered": []TagStr{
 		TagStr{language.AmericanEnglish, "Underdelivered: We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience."},
-		TagStr{language.German, "Untergeliefert: Wir haben deine Zahlung erhalten, aber unser Vorrat wurde zwischenzeitlich ausverkauft. Die fehlenden Codes erhälst du möglichst bald. Wir bitten die Umstände zu entschuldigen."},
+		TagStr{language.German, "Unterbeliefert: Wir haben deine Zahlung erhalten, aber unser Vorrat wurde zwischenzeitlich ausverkauft. Die fehlenden Codes erhälst du möglichst bald. Wir bitten die Umstände zu entschuldigen."},
 	},
 	"status-finalized": []TagStr{
 		TagStr{language.AmericanEnglish, "Finalized: Your codes have been delivered."},
