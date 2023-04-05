@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"os"
-	"path/filepath"
+	"net/http"
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
+	"github.com/dys2p/eco/payment"
 	"gitlab.com/golang-commonmark/markdown"
 	"golang.org/x/text/language"
 )
@@ -36,16 +36,18 @@ func (t LangTemplate) Execute(w io.Writer, lang string, data any) error {
 }
 
 func parse(fn ...string) *template.Template {
-	return template.Must(template.Must(template.New(fn[0]).Funcs(template.FuncMap{
+	return template.Must(template.New(fn[0]).Funcs(template.FuncMap{
 		"AlertContextualClass": func(status string) string {
 			switch status {
 			case digitalgoods.StatusNew:
 				return "alert-primary"
-			case digitalgoods.StatusBTCPayInvoiceCreated:
+			case "btcpay-created": // temp, backward compatibility
 				return "alert-primary"
-			case digitalgoods.StatusBTCPayInvoiceProcessing:
+			case "btcpay-processing": // temp, backward compatibility
 				return "alert-success"
-			case digitalgoods.StatusBTCPayInvoiceExpired:
+			case digitalgoods.StatusPaymentProcessing:
+				return "alert-success"
+			case "btcpay-expired": // temp, backward compatibility
 				return "alert-danger"
 			case digitalgoods.StatusUnderdelivered:
 				return "alert-warning"
@@ -61,7 +63,7 @@ func parse(fn ...string) *template.Template {
 		"Markdown": func(input string) template.HTML {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},
-	}).ParseFS(files, fn...)).ParseGlob(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "custom.html")))
+	}).ParseFS(files, fn...))
 }
 
 var (
@@ -106,13 +108,16 @@ type CustOrderData struct {
 type CustPurchaseData struct {
 	GroupedOrder func(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error)
 
-	Purchase    *digitalgoods.Purchase
-	URL         string
-	PaysrvErr   error
-	PreferOnion bool
+	Purchase       *digitalgoods.Purchase
+	PaymentMethod  payment.Method
+	PaymentMethods []payment.Method
+	URL            string
+	PaysrvErr      error
+	PreferOnion    bool
 	Language
-	ActiveTab string
-	TabBTCPay string
-	TabCash   string
-	TabSepa   string
+	HTTPRequest *http.Request
+	ActiveTab   string
+	TabBTCPay   string
+	TabCash     string
+	TabSepa     string
 }

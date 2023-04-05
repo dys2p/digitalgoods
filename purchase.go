@@ -11,12 +11,10 @@ import (
 const DateFmt = "2006-01-02"
 
 const (
-	StatusNew                     string = "new" // no BTCPay invoice created yet
-	StatusBTCPayInvoiceCreated    string = "btcpay-created"
-	StatusBTCPayInvoiceProcessing string = "btcpay-processing" // "InvoiceProcessing Webhook: Triggers when an invoice is fully paid, but doesn't have the required amount of confirmations on the blockchain yet according to your store's settings."
-	StatusBTCPayInvoiceExpired    string = "btcpay-expired"    // not paid properly
-	StatusUnderdelivered          string = "underdelivered"    // payment settled, but we had not had enough items on stock
-	StatusFinalized               string = "finalized"         // payment settled, codes delivered
+	StatusNew               string = "new"            // unpaid
+	StatusPaymentProcessing string = "processing"     // e.g. btcpay: "InvoiceProcessing Webhook: Triggers when an invoice is fully paid, but doesn't have the required amount of confirmations on the blockchain yet according to your store's settings."
+	StatusUnderdelivered    string = "underdelivered" // payment settled, but we had not had enough items on stock
+	StatusFinalized         string = "finalized"      // payment settled, codes delivered
 )
 
 // https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Country_codes/de
@@ -44,14 +42,15 @@ func Mask(s string) string {
 }
 
 type Purchase struct {
-	ID              string
-	BTCPayInvoiceID string // defined by BTCPay server
-	PayID           string // defined by us
-	Status          string
-	Ordered         Order
-	Delivered       Delivery
-	DeleteDate      string
-	CountryCode     string // EU country
+	ID          string
+	AccessKey   string
+	PaymentKey  string
+	Status      string
+	Ordered     Order
+	Delivered   Delivery
+	CreateDate  string // yyyy-mm-dd
+	DeleteDate  string // yyyy-mm-dd
+	CountryCode string // EU country
 }
 
 func (p *Purchase) ParseDeleteDate() (time.Time, error) {
@@ -80,11 +79,11 @@ func (p *Purchase) Underdelivered() bool {
 }
 
 func (p *Purchase) Unpaid() bool {
-	return p.Status == StatusNew || p.Status == StatusBTCPayInvoiceCreated || p.Status == StatusBTCPayInvoiceExpired
+	return p.Status == StatusNew
 }
 
-func (p *Purchase) WaitingForBTCPayment() bool {
-	return p.Status == StatusBTCPayInvoiceCreated || p.Status == StatusBTCPayInvoiceProcessing
+func (p *Purchase) Waiting() bool {
+	return p.Status == StatusNew || p.Status == StatusPaymentProcessing || p.Status == StatusUnderdelivered
 }
 
 type Order []OrderRow

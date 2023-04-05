@@ -18,16 +18,15 @@ type DB struct {
 	sqlDB *sql.DB
 
 	// purchases
-	addPurchase                   *sql.Stmt
-	cleanupPurchases              *sql.Stmt
-	getPurchaseByID               *sql.Stmt
-	getPurchaseByBTCPayInvoiceID  *sql.Stmt
-	getPurchaseByPayID            *sql.Stmt
-	getPurchasesByStatus          *sql.Stmt
-	updatePurchase                *sql.Stmt
-	updatePurchaseCountry         *sql.Stmt
-	updatePurchaseBTCPayInvoiceID *sql.Stmt
-	updateStatus                  *sql.Stmt
+	addPurchase                  *sql.Stmt
+	cleanupPurchases             *sql.Stmt
+	getPurchaseByAccessKey       *sql.Stmt
+	getPurchaseByID              *sql.Stmt
+	getPurchaseByIDAndPaymentKey *sql.Stmt
+	getPurchasesByStatus         *sql.Stmt
+	updatePurchase               *sql.Stmt
+	updatePurchaseCountry        *sql.Stmt
+	updatePurchaseStatus         *sql.Stmt
 
 	// stock
 	addToStock      *sql.Stmt
@@ -84,14 +83,16 @@ func OpenDB() (*DB, error) {
 		);
 		create table if not exists purchase (
 			id          text not null primary key,
-			invoiceid   text not null, -- btcpay
-			payid       text not null,
+			access_key  text not null,
+			payment_key text not null,
 			status      text not null,
 			ordered     text not null, -- json
 			delivered   text not null, -- json (codes removed from stock)
+			create_date text not null, -- yyyy-mm-dd
 			deletedate  text not null, -- yyyy-mm-dd
 			countrycode text not null,
-			unique(payid)
+			unique(access_key),
+			unique(payment_key)
 		);
 		create table if not exists stock (
 			article text not null,
@@ -128,16 +129,15 @@ func OpenDB() (*DB, error) {
 	}
 
 	// purchase
-	db.addPurchase = mustPrepare("insert into purchase (id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode) values (?, '', ?, ?, ?, '[]', ?, ?)")
+	db.addPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, '[]', ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
-	db.getPurchaseByID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where id = ? limit 1")
-	db.getPurchaseByBTCPayInvoiceID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where invoiceid = ? limit 1")
-	db.getPurchaseByPayID = mustPrepare("select id, invoiceid, payid, status, ordered, delivered, deletedate, countrycode from purchase where payid = ? limit 1")
+	db.getPurchaseByAccessKey = mustPrepare("      select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where access_key = ? limit 1")
+	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
+	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
-	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
-	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ? where id = ?")
-	db.updatePurchaseBTCPayInvoiceID = mustPrepare("update purchase set invoiceid = ?, status = ? where id = ?")
-	db.updateStatus = mustPrepare("update purchase set status = ?, deletedate = ? where id = ?")
+	db.updatePurchase = mustPrepare("       update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
+	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ?                           where id = ?")
+	db.updatePurchaseStatus = mustPrepare(" update purchase set status = ?, deletedate = ?                where id = ?")
 
 	// stock
 	db.addToStock = mustPrepare("insert into stock (article, country, itemid, image, addtime) values (?, ?, ?, ?, ?)")
@@ -160,19 +160,20 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-func (db *DB) AddPurchase(order digitalgoods.Order, deleteDate, countryCode string) (string, error) {
-	orderJson, err := json.Marshal(order)
+// AddPurchase sets purchase.ID and purchase.Status.
+func (db *DB) AddPurchase(purchase *digitalgoods.Purchase) error {
+	orderJson, err := json.Marshal(purchase.Ordered)
 	if err != nil {
-		return "", err
+		return err
 	}
-	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewPayID
-		id := digitalgoods.NewPurchaseID()
-		payID := digitalgoods.NewPayID()
-		if _, err := db.addPurchase.Exec(id, payID, digitalgoods.StatusNew, orderJson, deleteDate, countryCode); err == nil {
-			return id, nil
+	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewID
+		purchase.ID = digitalgoods.NewID()
+		if _, err = db.addPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, digitalgoods.StatusNew, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
+			return nil
 		}
 	}
-	return "", errors.New("database ran out of IDs")
+	log.Printf("database ran out of IDs, or other error: %v", err)
+	return errors.New("database ran out of IDs")
 }
 
 func (db *DB) AddToStock(articleID, countryID, itemID string, image []byte) error {
@@ -181,12 +182,40 @@ func (db *DB) AddToStock(articleID, countryID, itemID string, image []byte) erro
 }
 
 func (db *DB) Cleanup() error {
-	result, err := db.cleanupPurchases.Exec(digitalgoods.StatusFinalized, time.Now().Format(digitalgoods.DateFmt))
+	// new
+	result, err := db.cleanupPurchases.Exec(digitalgoods.StatusNew, time.Now().Format(digitalgoods.DateFmt))
 	if err != nil {
 		return err
 	}
 	if ra, _ := result.RowsAffected(); ra > 0 {
-		log.Printf("deleted %d purchases", ra)
+		log.Printf("deleted %d new purchases", ra)
+	}
+
+	// btcpay-created
+	result, err = db.cleanupPurchases.Exec("btcpay-created", time.Now().Format(digitalgoods.DateFmt))
+	if err != nil {
+		return err
+	}
+	if ra, _ := result.RowsAffected(); ra > 0 {
+		log.Printf("deleted %d created purchases", ra)
+	}
+
+	// btcpay-expired
+	result, err = db.cleanupPurchases.Exec("btcpay-expired", time.Now().Format(digitalgoods.DateFmt))
+	if err != nil {
+		return err
+	}
+	if ra, _ := result.RowsAffected(); ra > 0 {
+		log.Printf("deleted %d expired purchases", ra)
+	}
+
+	// finalized
+	result, err = db.cleanupPurchases.Exec(digitalgoods.StatusFinalized, time.Now().Format(digitalgoods.DateFmt))
+	if err != nil {
+		return err
+	}
+	if ra, _ := result.RowsAffected(); ra > 0 {
+		log.Printf("deleted %d finalized purchases", ra)
 	}
 	return nil
 }
@@ -316,22 +345,23 @@ func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
 }
 
 func (db *DB) GetPurchaseByID(id string) (*digitalgoods.Purchase, error) {
-	return db.getPurchaseWithStmt(id, db.getPurchaseByID)
+	return db.getPurchaseWithStmt(db.getPurchaseByID, id)
 }
 
-func (db *DB) GetPurchaseByBTCPayInvoiceID(btcpayInvoiceID string) (*digitalgoods.Purchase, error) {
-	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByBTCPayInvoiceID)
+func (db *DB) GetPurchaseByAccessKey(accessKey string) (*digitalgoods.Purchase, error) {
+	return db.getPurchaseWithStmt(db.getPurchaseByAccessKey, accessKey)
 }
-func (db *DB) GetPurchaseByPayID(btcpayInvoiceID string) (*digitalgoods.Purchase, error) {
-	return db.getPurchaseWithStmt(btcpayInvoiceID, db.getPurchaseByPayID)
+
+func (db *DB) GetPurchaseByIDAndPaymentKey(id, paymentKey string) (*digitalgoods.Purchase, error) {
+	return db.getPurchaseWithStmt(db.getPurchaseByIDAndPaymentKey, id, paymentKey)
 }
 
 // can be used within or without a transaction
-func (db *DB) getPurchaseWithStmt(whereArg string, stmt *sql.Stmt) (*digitalgoods.Purchase, error) {
+func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Purchase, error) {
 	var purchase = &digitalgoods.Purchase{}
 	var ordered string
 	var delivered string
-	if err := stmt.QueryRow(whereArg).Scan(&purchase.ID, &purchase.BTCPayInvoiceID, &purchase.PayID, &purchase.Status, &ordered, &delivered, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
+	if err := stmt.QueryRow(args...).Scan(&purchase.ID, &purchase.AccessKey, &purchase.PaymentKey, &purchase.Status, &ordered, &delivered, &purchase.CreateDate, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
 		return nil, err
 	}
 	if err := json.Unmarshal([]byte(ordered), &purchase.Ordered); err != nil {
@@ -377,13 +407,8 @@ func (db *DB) GetPurchases(status string) ([]string, error) {
 	return ids, nil
 }
 
-func (db *DB) SetBTCPayInvoiceExpired(purchase *digitalgoods.Purchase) error {
-	_, err := db.updateStatus.Exec(digitalgoods.StatusBTCPayInvoiceExpired, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
-	return err
-}
-
-func (db *DB) SetBTCPayInvoiceProcessing(purchase *digitalgoods.Purchase) error {
-	_, err := db.updateStatus.Exec(digitalgoods.StatusBTCPayInvoiceProcessing, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
+func (db *DB) SetProcessing(purchase *digitalgoods.Purchase) error {
+	_, err := db.updatePurchaseStatus.Exec(digitalgoods.StatusPaymentProcessing, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), purchase.ID)
 	return err
 }
 
@@ -474,15 +499,6 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	}
 
 	return tx.Commit()
-}
-
-// SetBTCPayInvoiceID sets the invoice ID to the given value and the status to StatusBTCPayInvoiceCreated.
-func (db *DB) SetBTCPayInvoiceID(purchase *digitalgoods.Purchase, btcpayInvoiceID string) error {
-	if purchase.BTCPayInvoiceID != "" {
-		return errors.New("an invoice has already been created")
-	}
-	_, err := db.updatePurchaseBTCPayInvoiceID.Exec(btcpayInvoiceID, digitalgoods.StatusBTCPayInvoiceCreated, purchase.ID)
-	return err
 }
 
 func (db *DB) GroupedOrder(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error) {

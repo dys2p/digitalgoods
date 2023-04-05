@@ -18,6 +18,7 @@ import (
 	"syscall"
 	"time"
 
+	"dys2p.com/purchsrv"
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
@@ -29,6 +30,7 @@ import (
 	"github.com/dys2p/digitalgoods/html/sites"
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
+	"github.com/dys2p/eco/payment"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -37,6 +39,7 @@ var database *db.DB
 var custSessions *scs.SessionManager
 var staffSessions *scs.SessionManager
 var btcpayStore btcpay.Store
+var paymentMethods []payment.Method
 var users userdb.Authenticator
 
 func main() {
@@ -55,6 +58,8 @@ func main() {
 		return
 	}
 
+	// btcpay config
+
 	if *test {
 		btcpayStore = btcpay.NewDummyStore()
 		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
@@ -64,12 +69,14 @@ func main() {
 			log.Printf("error loading btcpay store: %v", err)
 			return
 		}
+	}
 
-		log.Println("don't forget to set up the webhook for your store")
-		log.Println(`  URL: /rpc`)
-		log.Println(`  Event: "An invoice is processing"`)
-		log.Println(`  Event: "An invoice has expired"`)
-		log.Println(`  Event: "An invoice has been settled"`)
+	// foreign currency cash
+
+	purchsrvClient, err := purchsrv.LoadClient(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "purchsrv-client.json"))
+	if err != nil {
+		log.Printf("error creating cash client: %v", err)
+		return
 	}
 
 	users, err = userdb.Open(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "users.json"))
@@ -80,6 +87,28 @@ func main() {
 
 	var stop = make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	// payment methods
+
+	paymentMethods = []payment.Method{
+		payment.BTCPay{
+			Purchases:    Purchases{database},
+			RedirectPath: "/by-cookie",
+			Store:        btcpayStore,
+		},
+		payment.Cash{
+			AddressHTML: addressHTML,
+		},
+		payment.CashForeign{
+			AddressHTML: addressHTML,
+			Client:      *purchsrvClient,
+			Purchases:   Purchases{database},
+		},
+		payment.SEPA{
+			Account:   sepaAccount,
+			Purchases: Purchases{database},
+		},
+	}
 
 	// customer http server
 
@@ -113,13 +142,10 @@ func main() {
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	addRoutes(custRtr, langs, http.MethodGet, "/", wrapLangTmpl(custOrderGet))
 	addRoutes(custRtr, langs, http.MethodPost, "/", wrapLangTmpl(custOrderPost))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:purchaseid", wrapLangTmpl(custPurchaseGetBTCPay))
-	addRoutes(custRtr, langs, http.MethodPost, "/i/:purchaseid", wrapLangTmpl(custPurchasePostBTCPay))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:purchaseid/cash", wrapLangTmpl(custPurchaseGetCash))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:purchaseid/sepa", wrapLangTmpl(custPurchaseGetSEPA))
+	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key", wrapLangTmpl(custPurchaseGet))
+	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key/:payment", wrapLangTmpl(custPurchaseGet))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
 	custRtr.HandlerFunc(http.MethodGet, "/health", health)
-	custRtr.HandlerFunc(http.MethodPost, "/rpc", rpc)
 
 	addRoutes(custRtr, langs, http.MethodGet, "/terms.html", wrapLangTmpl(siteGet))
 	addRoutes(custRtr, langs, http.MethodGet, "/privacy.html", wrapLangTmpl(siteGet))
@@ -128,6 +154,11 @@ func main() {
 	addRoutes(custRtr, langs, http.MethodGet, "/payment.html", wrapLangTmpl(siteGet))
 	addRoutes(custRtr, langs, http.MethodGet, "/cancellation-policy.html", wrapLangTmpl(siteGet))
 	addRoutes(custRtr, langs, http.MethodGet, "/cancellation-form.html", wrapLangTmpl(siteGet))
+
+	for _, m := range paymentMethods {
+		custRtr.Handler(http.MethodGet, fmt.Sprintf("/payment/%s/*path", m.ID()), m)
+		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", m.ID()), m)
+	}
 
 	custRtr.Handler("GET", "/captcha/:fn", captcha.Server(captcha.StdWidth, captcha.StdHeight))
 
@@ -151,8 +182,8 @@ func main() {
 	staffRtr.HandlerFunc(http.MethodGet, "/logout", auth(wrapTmpl(staffLogoutGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/view", auth(wrapTmpl(staffViewGet)))
 	staffRtr.HandlerFunc(http.MethodPost, "/view", auth(wrapTmpl(staffViewPost)))
-	staffRtr.HandlerFunc(http.MethodGet, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidGet)))
-	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid/:payid", auth(wrapTmpl(staffMarkPaidPost)))
+	staffRtr.HandlerFunc(http.MethodGet, "/mark-paid/:id", auth(wrapTmpl(staffMarkPaidGet)))
+	staffRtr.HandlerFunc(http.MethodPost, "/mark-paid/:id", auth(wrapTmpl(staffMarkPaidPost)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload", auth(wrapTmpl(staffSelectGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country", auth(wrapTmpl(staffUploadGet)))
 	staffRtr.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/image", auth(wrapTmpl(staffUploadImageGet)))
@@ -290,158 +321,60 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 		return html.CustOrder.Execute(w, langstr, co)
 	}
 
-	id, err := database.AddPurchase(order, time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt), co.CountryAnswer)
-	if err != nil {
+	purchase := &digitalgoods.Purchase{
+		AccessKey:   digitalgoods.NewKey(),
+		PaymentKey:  digitalgoods.NewKey(),
+		Status:      digitalgoods.StatusNew,
+		Ordered:     order,
+		CreateDate:  time.Now().Format("2006-01-02"),
+		DeleteDate:  time.Now().AddDate(0, 0, 31).Format("2006-01-02"),
+		CountryCode: co.CountryAnswer,
+	}
+
+	if err := database.AddPurchase(purchase); err != nil {
 		return err
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/%s/i/%s", langstr, id), http.StatusSeeOther)
+	// set cookie
+	redirectPath := fmt.Sprintf("/%s/i/%s", langstr, purchase.AccessKey)
+	custSessions.Put(r.Context(), "redirect-path", redirectPath)
+	http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 	return nil
 }
 
-func custPurchaseGetBTCPay(w http.ResponseWriter, r *http.Request, lang string) error {
-	return custPurchaseGet(w, r, "btcpay", lang)
-}
+func custPurchaseGet(w http.ResponseWriter, r *http.Request, langstr string) error {
+	params := httprouter.ParamsFromContext(r.Context())
 
-func custPurchaseGetCash(w http.ResponseWriter, r *http.Request, lang string) error {
-	return custPurchaseGet(w, r, "cash", lang)
-}
-
-func custPurchaseGetSEPA(w http.ResponseWriter, r *http.Request, lang string) error {
-	return custPurchaseGet(w, r, "sepa", lang)
-}
-
-func custPurchaseGet(w http.ResponseWriter, r *http.Request, activeTab string, langstr string) error {
-
-	purchaseID := httprouter.ParamsFromContext(r.Context()).ByName("purchaseid")
-	purchase, err := database.GetPurchaseByID(purchaseID)
+	accessKey := params.ByName("access-key")
+	purchase, err := database.GetPurchaseByAccessKey(accessKey)
 	if err != nil {
 		return err
 	}
 
-	var paysrvErr error
-
-	// Query payserver in case the webhook has been missed. Load is reduced by querying only if the purchase status is StatusBTCPayInvoiceCreated.
-	if purchase.Status == digitalgoods.StatusBTCPayInvoiceCreated {
-		if invoice, err := btcpayStore.GetInvoice(purchase.BTCPayInvoiceID); err == nil {
-			// same as in webhook
-			switch invoice.Status {
-			case btcpay.InvoiceExpired:
-				if err := database.SetBTCPayInvoiceExpired(purchase); err != nil {
-					return err
-				}
-				// update purchase
-				purchase.Status = digitalgoods.StatusBTCPayInvoiceExpired
-			case btcpay.InvoiceProcessing:
-				if err := database.SetBTCPayInvoiceProcessing(purchase); err != nil {
-					return err
-				}
-				// re-read purchase
-				if purchase, err = database.GetPurchaseByID(purchase.ID); err != nil {
-					return err
-				}
-			case btcpay.InvoiceSettled:
-				if err := database.SetSettled(purchase); err != nil {
-					return err
-				}
-				// re-read purchase
-				if purchase, err = database.GetPurchaseByID(purchase.ID); err != nil {
-					return err
-				}
-			}
-		} else {
-			paysrvErr = err
-		}
+	paymentMethod, err := payment.Get(paymentMethods, params.ByName("payment"))
+	if err != nil {
+		return err
 	}
 
 	return html.CustPurchase.Execute(w, langstr, &html.CustPurchaseData{
 		GroupedOrder: database.GroupedOrder, // returns empty orderGroups too
 
-		Purchase:    purchase,
-		URL:         fmt.Sprintf("%s/%s/i/%s", AbsHost(r), langstr, purchase.ID),
-		PaysrvErr:   paysrvErr,
-		PreferOnion: strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
-		Language:    html.Language(langstr),
-		ActiveTab:   activeTab,
-		TabBTCPay:   fmt.Sprintf("/%s/i/%s", langstr, purchase.ID),
-		TabCash:     fmt.Sprintf("/%s/i/%s/cash", langstr, purchase.ID),
-		TabSepa:     fmt.Sprintf("/%s/i/%s/sepa", langstr, purchase.ID),
+		Purchase:       purchase,
+		PaymentMethod:  paymentMethod,
+		URL:            fmt.Sprintf("%s/%s/i/%s", absHost(r), langstr, purchase.AccessKey),
+		PreferOnion:    strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
+		Language:       html.Language(langstr),
+		HTTPRequest:    r,
+		ActiveTab:      paymentMethod.ID(),
+		PaymentMethods: paymentMethods,
 	})
 }
 
-func custPurchasePostBTCPay(w http.ResponseWriter, r *http.Request, langstr string) error {
-
-	purchaseID := httprouter.ParamsFromContext(r.Context()).ByName("purchaseid")
-	purchase, err := database.GetPurchaseByID(purchaseID)
-	if err != nil {
-		return err
-	}
-
-	if purchase.BTCPayInvoiceID == "" {
-		invoiceRequest := &btcpay.InvoiceRequest{
-			Amount:   float64(purchase.Ordered.Sum()) / 100.0,
-			Currency: "EUR",
-		}
-		invoiceRequest.DefaultLanguage = html.Language(langstr).Translate("btcpay-defaultlanguage")
-		invoiceRequest.ExpirationMinutes = 60
-		invoiceRequest.OrderID = fmt.Sprintf("digitalgoods %s", purchase.PayID) // PayID only
-		invoiceRequest.RedirectURL = fmt.Sprintf("%s/by-cookie", AbsHost(r))
-		btcInvoice, err := btcpayStore.CreateInvoice(invoiceRequest)
-		if err != nil {
-			return err
-		}
-
-		if err := database.SetBTCPayInvoiceID(purchase, btcInvoice.ID); err != nil {
-			return err
-		}
-		purchase.BTCPayInvoiceID = btcInvoice.ID
-
-		// set cookie
-		custSessions.Put(r.Context(), "purchase-id", purchase.ID)
-	}
-
-	link := btcpayStore.InvoiceCheckoutLink(purchase.BTCPayInvoiceID)
-	if strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:") {
-		link = btcpayStore.InvoiceCheckoutLinkPreferOnion(purchase.BTCPayInvoiceID)
-	}
-
-	http.Redirect(w, r, link, http.StatusSeeOther)
-	return nil
-}
-
 func byCookie(w http.ResponseWriter, r *http.Request) {
-	if purchaseID := custSessions.GetString(r.Context(), "purchase-id"); purchaseID != "" {
-		http.Redirect(w, r, fmt.Sprintf("/i/%s", purchaseID), http.StatusSeeOther)
+	if redirectPath := custSessions.GetString(r.Context(), "redirect-path"); redirectPath != "" {
+		http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 	} else {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-}
-
-func rpc(w http.ResponseWriter, r *http.Request) {
-
-	var event, err = btcpayStore.ProcessWebhook(r)
-	if err != nil {
-		log.Printf("rpc: error processing webhook: %v", err)
-		return
-	}
-
-	purchase, err := database.GetPurchaseByBTCPayInvoiceID(event.InvoiceID)
-	if err != nil {
-		log.Printf("rpc: purchase not found for invoice id: %s", event.InvoiceID)
-		return
-	}
-
-	switch event.Type {
-	case btcpay.EventInvoiceExpired:
-		if err := database.SetBTCPayInvoiceExpired(purchase); err != nil {
-			log.Printf("rpc: error setting expired %s: %v", purchase.ID, err)
-		}
-	case btcpay.EventInvoiceSettled:
-		if err := database.SetSettled(purchase); err != nil {
-			log.Printf("rpc: error fulfilling order %s: %v", purchase.ID, err)
-		}
-	default:
-		log.Printf("rpc: unknown event type: %s", event.Type)
 	}
 }
 
@@ -493,18 +426,18 @@ func staffViewGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffViewPost(w http.ResponseWriter, r *http.Request) error {
-	payID := strings.ToUpper(strings.TrimSpace(r.PostFormValue("pay-id")))
-	purchase, err := database.GetPurchaseByPayID(payID)
+	id := strings.ToUpper(strings.TrimSpace(r.PostFormValue("id")))
+	purchase, err := database.GetPurchaseByID(id)
 	if err != nil {
 		return err
 	}
-	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.PayID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
 	return nil
 }
 
 func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
-	payID := strings.ToUpper(strings.TrimSpace(httprouter.ParamsFromContext(r.Context()).ByName("payid")))
-	purchase, err := database.GetPurchaseByPayID(payID)
+	id := strings.ToUpper(strings.TrimSpace(httprouter.ParamsFromContext(r.Context()).ByName("id")))
+	purchase, err := database.GetPurchaseByID(id)
 	if err != nil {
 		return err
 	}
@@ -525,8 +458,8 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	if r.PostFormValue("confirm") == "" {
 		return errors.New("You did not confirm.")
 	}
-	payID := r.PostFormValue("pay-id")
-	purchase, err := database.GetPurchaseByPayID(payID)
+	id := r.PostFormValue("id")
+	purchase, err := database.GetPurchaseByID(id)
 	if err != nil {
 		return err
 	}
@@ -539,7 +472,7 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	if err := database.SetSettled(purchase); err != nil {
 		return err
 	}
-	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.PayID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
 	return nil
 }
 
@@ -697,4 +630,54 @@ func staffUploadTextPost(w http.ResponseWriter, r *http.Request) error {
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return nil
+}
+
+type Purchases struct {
+	db *db.DB
+}
+
+func (purchases Purchases) PurchaseCreationDate(id, paymentKey string) (string, error) {
+	purchase, err := purchases.db.GetPurchaseByIDAndPaymentKey(id, paymentKey)
+	if err != nil {
+		return "", err
+	}
+	if purchase.CreateDate == "" {
+		purchase.CreateDate = time.Now().Format("2006-01-02") // TODO
+	}
+	return purchase.CreateDate, nil
+}
+
+func (purchases Purchases) PurchaseSumCents(id, paymentKey string) (int, error) {
+	purchase, err := purchases.db.GetPurchaseByIDAndPaymentKey(id, paymentKey)
+	if err != nil {
+		return 0, err
+	}
+	return purchase.Ordered.Sum(), nil
+}
+
+func (purchases Purchases) SetPurchasePaid(id, paymentKey string) error {
+	purchase, err := purchases.db.GetPurchaseByIDAndPaymentKey(id, paymentKey)
+	if err != nil {
+		return err
+	}
+	return purchases.db.SetSettled(purchase)
+}
+
+func (purchases Purchases) SetPurchaseProcessing(id, paymentKey string) error {
+	purchase, err := purchases.db.GetPurchaseByIDAndPaymentKey(id, paymentKey)
+	if err != nil {
+		return err
+	}
+	return purchases.db.SetProcessing(purchase)
+}
+
+// absHost returns the scheme and host part of an HTTP request. It uses a heuristic for the scheme.
+//
+// If you use nginx as a reverse proxy, make sure you have set "proxy_set_header Host $host;" besides proxy_pass in your configuration.
+func absHost(r *http.Request) string {
+	var proto = "https"
+	if strings.HasPrefix(r.Host, "127.0.") || strings.HasPrefix(r.Host, "[::1]") || strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:") { // if running locally or through TOR
+		proto = "http"
+	}
+	return fmt.Sprintf("%s://%s", proto, r.Host)
 }

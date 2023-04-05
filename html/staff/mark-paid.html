@@ -2,8 +2,8 @@
 <h1>Manually mark a purchase paid</h1>
 <form method="post">
 	<div class="mb-3">
-		<label for="pay-id" class="form-label">PayID</label>
-		<input id="pay-id" class="form-control" name="pay-id" value="{{.PayID}}" readonly>
+		<label for="id" class="form-label">ID</label>
+		<input id="id" class="form-control" name="id" value="{{.ID}}" readonly>
 	</div>
 	<p>Amount: {{FmtEuro .Ordered.Sum}}</p>
 	<p>Status: {{.Status}}</p>

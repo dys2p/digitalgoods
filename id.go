@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 )
 
-const purchaseDigits = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789"
+const keyDigits = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789"
 
-const payDigits = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789"
+const idDigits = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789"
 
 func newDigit(charset string) byte {
 	b := make([]byte, 8)
@@ -29,11 +29,11 @@ func newID(length int, charset string) string {
 }
 
 // 16 digits * log2(58) = 94 bits
-func NewPurchaseID() string {
-	return newID(16, purchaseDigits)
+func NewKey() string {
+	return newID(16, keyDigits)
 }
 
-// NewPayID returns a randomly created six-digit ID. It is not guaranteed to be unique. You should try at least five times.
+// NewID returns a randomly created six-digit ID. It is not guaranteed to be unique. You should try at least five times.
 //
 // Risk estimation:
 //
@@ -43,6 +43,6 @@ func NewPurchaseID() string {
 //   - try with five different IDs: 10^-15
 //   - divide by 10^6 order
 //   - = overall risk of five non-unique IDs: 10^-9 or less
-func NewPayID() string {
-	return newID(6, payDigits)
+func NewID() string {
+	return newID(6, idDigits)
 }
