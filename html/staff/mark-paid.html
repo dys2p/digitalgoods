@@ -57,6 +57,23 @@
 		<div class="text-end">
 			<button type="submit" class="btn btn-success">Mark as paid and deliver the goods</button>
 		</div>
+		<h2>Foreign currencies (rates from {{.Purchase.CreateDate}})</h2>
+		<table class="table ms-3 w-auto">
+			<thead>
+				<tr>
+					<th>Amount</th>
+					<th>Currency</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .CurrencyOptions}}
+					<tr>
+						<td>{{printf "%.2f" .Price}}</td>
+						<td>{{.Currency}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+		</table>
 	{{end}}
 </form>
 {{end}}

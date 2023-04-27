@@ -40,6 +40,7 @@ var custSessions *scs.SessionManager
 var staffSessions *scs.SessionManager
 var btcpayStore btcpay.Store
 var paymentMethods []payment.Method
+var purchsrvClient *purchsrv.Client
 var users userdb.Authenticator
 
 func main() {
@@ -73,7 +74,7 @@ func main() {
 
 	// foreign currency cash
 
-	purchsrvClient, err := purchsrv.LoadClient(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "purchsrv-client.json"))
+	purchsrvClient, err = purchsrv.LoadClient(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "purchsrv-client.json"))
 	if err != nil {
 		log.Printf("error creating cash client: %v", err)
 		return
@@ -441,13 +442,17 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
+	currencyOptions, _ := purchsrvClient.CurrencyOptions(purchase.CreateDate, purchase.Ordered.Sum())
+
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
-		EUCountryCodes []string
-		DB             *db.DB
+		CurrencyOptions []purchsrv.CurrencyOption
+		EUCountryCodes  []string
+		DB              *db.DB
 		html.Language
 	}{
 		purchase,
+		currencyOptions,
 		digitalgoods.EUCountryCodes[:],
 		database,
 		"en",
