@@ -60,6 +60,9 @@ func parse(fn ...string) *template.Template {
 		"FmtEuro": func(cents int) template.HTML {
 			return template.HTML(strings.Replace(fmt.Sprintf("%.2f&nbsp;€", float64(cents)/100.0), ".", ",", 1))
 		},
+		"IsURL": func(s string) bool {
+			return strings.HasPrefix(s, "https://")
+		},
 		"Markdown": func(input string) template.HTML {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},

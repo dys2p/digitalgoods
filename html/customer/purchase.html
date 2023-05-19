@@ -115,7 +115,11 @@
 					<img src="{{.ImageSrc}}" />
 				{{else}}
 					<!-- use ID as code -->
-					{{.ID}}
+					{{if IsURL .ID}}
+						<a rel="noreferrer" href="{{.ID}}">{{.ID}}</a>
+					{{else}}
+						{{.ID}}
+					{{end}}
 				{{end}}
 			</td>
 		</tr>
