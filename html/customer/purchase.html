@@ -116,7 +116,7 @@
 				{{else}}
 					<!-- use ID as code -->
 					{{if IsURL .ID}}
-						<a rel="noreferrer" href="{{.ID}}">{{.ID}}</a>
+						<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
 					{{else}}
 						{{.ID}}
 					{{end}}
