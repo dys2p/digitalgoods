@@ -17,33 +17,35 @@
 			<th>Upload</th>
 		</tr>
 		{{range .Articles}}
-			{{$article := .}}
-			{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
-				<tr>
-					<td>{{$article.Name}}</td>
-					<td>{{$article.ID}}</td>
-					<td>{{FmtEuro $article.Price}}</td>
-					<td>{{index $article.Stock .ID}}</td>
-					<td>{{index $.Underdelivered (printf "%s-%s" $article.ID .ID)}}</td>
-					<td><a href="/upload/{{$article.ID}}/{{.ID}}">{{.Name}}</a></td>
-				</tr>
-			{{end}}
-			{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
-				<tr>
-					<td>{{$article.Name}}</td>
-					<td>{{$article.ID}}</td>
-					<td>{{FmtEuro $article.Price}}</td>
-					<td>0</td><!-- assuming non-featured items are not on stock -->
-					<td>0</td><!-- assuming non-featured items are not underdelivered -->
-					<td>
-						<select onchange="go('{{$article.ID}}', this)" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-							<option></option>
-							{{range $.TranslateAndSort $.ISOCountryCodes}}
-								<option value="{{.ID}}">{{.Name}}</a>
-							{{end}}
-						</select>
-					</td>
-				</tr>
+			{{if not .Hide}}
+				{{$article := .}}
+				{{range $.TranslateAndSort ($.FeaturedCountryIDs $article)}}
+					<tr>
+						<td>{{$article.Name}}</td>
+						<td>{{$article.ID}}</td>
+						<td>{{FmtEuro $article.Price}}</td>
+						<td>{{index $article.Stock .ID}}</td>
+						<td>{{index $.Underdelivered (printf "%s-%s" $article.ID .ID)}}</td>
+						<td><a href="/upload/{{$article.ID}}/{{.ID}}">{{.Name}}</a></td>
+					</tr>
+				{{end}}
+				{{with $.TranslateAndSort ($.OtherCountryIDs $article)}}
+					<tr>
+						<td>{{$article.Name}}</td>
+						<td>{{$article.ID}}</td>
+						<td>{{FmtEuro $article.Price}}</td>
+						<td>0</td><!-- assuming non-featured items are not on stock -->
+						<td>0</td><!-- assuming non-featured items are not underdelivered -->
+						<td>
+							<select onchange="go('{{$article.ID}}', this)" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+								<option></option>
+								{{range $.TranslateAndSort $.ISOCountryCodes}}
+									<option value="{{.ID}}">{{.Name}}</a>
+								{{end}}
+							</select>
+						</td>
+					</tr>
+				{{end}}
 			{{end}}
 		{{end}}
 	</table>
