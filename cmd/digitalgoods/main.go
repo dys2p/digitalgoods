@@ -18,7 +18,6 @@ import (
 	"syscall"
 	"time"
 
-	"dys2p.com/purchsrv"
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
@@ -31,6 +30,7 @@ import (
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/dys2p/eco/payment"
+	"github.com/dys2p/eco/payment/rates"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -40,7 +40,7 @@ var custSessions *scs.SessionManager
 var staffSessions *scs.SessionManager
 var btcpayStore btcpay.Store
 var paymentMethods []payment.Method
-var purchsrvClient *purchsrv.Client
+var ratesHistory *rates.History
 var users userdb.Authenticator
 
 func main() {
@@ -74,11 +74,21 @@ func main() {
 
 	// foreign currency cash
 
-	purchsrvClient, err = purchsrv.LoadClient(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "purchsrv-client.json"))
+	ratesDB, err := rates.OpenDB(filepath.Join(os.Getenv("STATE_DIRECTORY"), "rates.sqlite3"))
 	if err != nil {
-		log.Printf("error creating cash client: %v", err)
+		log.Printf("error opening rates db: %v", err)
 		return
 	}
+
+	ratesHistory := &rates.History{
+		Currencies:  []string{"AUD", "BGN", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "ISK", "JPY", "NIS", "NOK", "NZD", "PLN", "RON", "RSD", "SEK", "TWD", "USD"},
+		GetBuyRates: GetBuyRates,
+		Repository:  ratesDB,
+	}
+
+	go ratesHistory.RunDaemon()
+
+	// users
 
 	users, err = userdb.Open(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "users.json"))
 	if err != nil {
@@ -102,7 +112,7 @@ func main() {
 		},
 		payment.CashForeign{
 			AddressHTML: addressHTML,
-			Client:      *purchsrvClient,
+			History:     ratesHistory,
 			Purchases:   Purchases{database},
 		},
 		payment.SEPA{
@@ -442,11 +452,11 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	currencyOptions, _ := purchsrvClient.CurrencyOptions(purchase.CreateDate, purchase.Ordered.Sum())
+	currencyOptions, _ := ratesHistory.Get(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
 
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
-		CurrencyOptions []purchsrv.CurrencyOption
+		CurrencyOptions []rates.Option
 		EUCountryCodes  []string
 		DB              *db.DB
 		html.Language
