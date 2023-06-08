@@ -80,7 +80,7 @@ func main() {
 		return
 	}
 
-	ratesHistory := &rates.History{
+	ratesHistory = &rates.History{
 		Currencies:  []string{"AUD", "BGN", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "ISK", "JPY", "NIS", "NOK", "NZD", "PLN", "RON", "RSD", "SEK", "TWD", "USD"},
 		GetBuyRates: GetBuyRates,
 		Repository:  ratesDB,
