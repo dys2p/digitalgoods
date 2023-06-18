@@ -1,4 +1,4 @@
-# Kontakt
+# Contact us
 
 ## E-Mail
 
@@ -19,38 +19,47 @@ HNgRv+TJ015PyDUk3p05s5UK
 -----END PGP PUBLIC KEY BLOCK-----
 ```
 
-Fingerprint des PGP public keys: `46C9 A8B2 8780 6904 3472 CFA0 76E2 D4C7 62CE 7476`
+Fingerprint of this PGP public key: `46C9 A8B2 8780 6904 3472 CFA0 76E2 D4C7 62CE 7476`
 
 ## Matrix
 
 `@proxystore:systemli.org`
 
-Mehr zum sicheren Umgang mit Matrix erfährst du im [Kuketz-Blog](https://www.kuketz-blog.de/element-messaging-ueber-die-matrix-messenger-teil7/) oder bei [systemli](https://www.systemli.org/service/matrix/).
+Read how to use Matrix securely at [Kuketz-Blog (in German)](https://www.kuketz-blog.de/element-messaging-ueber-die-matrix-messenger-teil7/) oder [systemli (in German)](https://www.systemli.org/service/matrix/).
 
 ## Session
 
 `056ab54005c858e3ffd2835d68621375006bbbe412b9824fd8cf669f459ea48328`
 
-[FAQ auf getsession.org](https://getsession.org/faq/)
+[FAQ at getsession.org](https://getsession.org/faq/)
 
 ## Signal
 
-Bitte nur für Signal verwenden (keine SMS oder Anrufe). Wir benutzen unter dieser Nummer keine anderen Messenger.
+Please use this phone number for Signal only (no SMS or calls). We use no other messengers than Signal with this number.
 
 `+49 178 123 9200`
 
-## XMPP mit OTR-Verschlüsselung
+## XMPP with OTR Encryption (new account)
+
+<code>proxystore <span class="ritole">ta</span> jabber.dys2p.com</code>
+
+OTR Fingerprints:
+
+* `30D426F8 2B7ACD2C 475D20B3 D3785469 1B0EB5A9`
+* `6B9B5483 324F7F61 4F2051E9 6ABA2924 69D8FF47`
+
+## XMPP with OTR Encryption (old account, until 2023-08-30)
 
 <code>proxystore <span class="ritole">ta</span> jabber.systemli.org</code>
 
-OTR-Fingerprint:
+OTR Fingerprints:
 
 * `D3C20EE9 530CD74B A1C1D2C3 A9D5E4CD 23629ECA`
 * `861E80B0 16C886D2 EF4DEB78 377D8131 F2C08E96`
 
 ## Tor Hidden Services
 
-Die Adressen sind gleichzeitig die Fingerprints.
+The addresses themselves are the fingerprints.
 
 ```
 digitalgoods.proxysto.re digitazyyxyihwwzudp5syxxyn3qhcd63wqcha2dxpfqiyydmrgdiaad.onion
@@ -59,16 +68,16 @@ digitalgoods.proxysto.re digitazyyxyihwwzudp5syxxyn3qhcd63wqcha2dxpfqiyydmrgdiaa
          pay.proxysto.re ak4jf6rqm3inp3o6ide4zfjgxukpmzzlawpltt5s4iy6tys6qjp6atqd.onion
 ```
 
-## Häufig gestellte Fragen
+## Frequently Asked Questions
 
-_Warum verwenden eure Tor Hidden Services kein https?_
+_Why are your Tor hidden services not using https?_
 
-Weil es nicht nötig ist und technisch aufwändiger wäre. Mehr zu diesem Thema findet ihr beim Tor Project: [HTTPS For Your Onion Service](https://community.torproject.org/onion-services/advanced/https/).
+Because it is not required and would be harder to implement. Read more on this topic at the Tor Project website: [HTTPS For Your Onion Service](https://community.torproject.org/onion-services/advanced/https/).
 
-_Warum seid ihr nicht über den Messenger "Threema" zu erreichen?_
+_Why don't you use the messenger "Threema"?_
 
-Ein Vorteil von Threema ist, dass Nutzerinnen ihre Handynummer nicht preisgeben müssen. An der Version für Computer stört uns allerdings, dass sie bei jedem Start mit dem Smartphone aktiviert werden muss. Das macht die Nutzung für uns derzeit zu umständlich.
+One advantage of Threema is that users do not have to disclose their cell phone number. However, we do not like the fact that the computer version has to be activated with the smartphone every time it is started. That currently makes it too cumbersome for us to use.
 
-_Warum seid ihr nicht über Jabber mit OMEMO-Verschlüsselung zu erreichen?_
+_Why don't you use OMEMO encryption for Jabber?_
 
-Die Clients, die wir getestet haben, waren entweder miteinander inkompatibel oder haben unsere Ansprüche nicht erfüllt. Bei manchen Clients ließ sich beispielsweise das Speichern des Chatverlaufs nicht deaktivieren.
+The clients we tested were either incompatible with each other or did not meet our requirements. For example, storing the chat history could not be disabled on some clients.

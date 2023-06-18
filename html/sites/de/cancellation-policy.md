@@ -9,7 +9,7 @@
 
 Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.
 
-Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (<span class="ritole">RbG gnisnaW &amp; nnamretI</span>, Bernhard-Göring-Straße 162, 04277 Leipzig, Deutschland, mail <span class="ritole">ta</span> proxysto.re) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das [beigefügte Muster-Widerrufsformular](widerrufsformular.html) verwenden, das jedoch nicht vorgeschrieben ist.
+Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (<span class="ritole">RbG gnisnaW &amp; nnamretI</span>, Bernhard-Göring-Straße 162, 04277 Leipzig, Deutschland, mail <span class="ritole">ta</span> proxysto.re) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das [beigefügte Muster-Widerrufsformular](cancellation-form.html) verwenden, das jedoch nicht vorgeschrieben ist.
 
 Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
 
@@ -24,7 +24,7 @@ Haben Sie verlangt, dass die Dienstleistungen während der Widerrufsfrist beginn
 
 Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen den Kaufvertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben bzw. hat.
 
-Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (<span class="ritole">RbG gnisnaW &amp; nnamretI</span>, Bernhard-Göring-Straße 162, 04277 Leipzig, mail <span class="ritole">ta</span> proxysto.re) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das [beigefügte Muster-Widerrufsformular](widerrufsformular.html) verwenden, das jedoch nicht vorgeschrieben ist.
+Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (<span class="ritole">RbG gnisnaW &amp; nnamretI</span>, Bernhard-Göring-Straße 162, 04277 Leipzig, mail <span class="ritole">ta</span> proxysto.re) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das [beigefügte Muster-Widerrufsformular](cancellation-form.html) verwenden, das jedoch nicht vorgeschrieben ist.
 
 Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
 

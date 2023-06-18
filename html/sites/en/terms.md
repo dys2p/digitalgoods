@@ -1,12 +1,6 @@
 # Allgemeine Geschäftsbedingungen
 
-Unser Angebot richtet sich an Privatkunden.
-
-<!--
-## Bestellservice
-
-Mit unserem Bestellservice vertreten wir dich bei Online-Einkäufen. Das Recht auf Gewährleistung und Widerruf verbleibt zwischen dir und dem tatsächlichen Händler.
--->
+Irrtümer und technische Fehler vorbehalten. Dazu zählen auch Lagerirrtümer und Fehler beim Einlesen der Wechselkurse.
 
 ## Rückzahlungen
 
@@ -29,3 +23,7 @@ Im Fall einer Rückzahlung ist nicht die Anzahl der Coins maßgeblich, sondern i
 ## Abholung bestellter Waren in unserem Ladenlokal
 
 Bitte hole deine Ware innerhalb von 21 Tagen nach Eintreffen in unserem Ladenlokal ab. Andernfalls sind wir berechtigt, dir Kosten für die Lagerung zu berechnen.
+
+## Gerichtsstand
+
+Falls du kein Verbraucher bist, ist der Gerichtsstand Leipzig.
