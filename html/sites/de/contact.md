@@ -39,6 +39,8 @@ Bitte nur für Signal verwenden (keine SMS oder Anrufe). Wir benutzen unter dies
 
 `+49 178 123 9200`
 
+Letzte Änderung der Sicherheitsnummer: 2023-06-22
+
 ## XMPP mit OTR-Verschlüsselung (neuer Account)
 
 <code>proxystore <span class="ritole">ta</span> jabber.dys2p.com</code>

@@ -39,6 +39,8 @@ Please use this phone number for Signal only (no SMS or calls). We use no other 
 
 `+49 178 123 9200`
 
+Last safety number change: 2023-06-22
+
 ## XMPP with OTR Encryption (new account)
 
 <code>proxystore <span class="ritole">ta</span> jabber.dys2p.com</code>
