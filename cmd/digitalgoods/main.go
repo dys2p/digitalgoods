@@ -81,7 +81,7 @@ func main() {
 	}
 
 	ratesHistory = &rates.History{
-		Currencies:  []string{"AUD", "BGN", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "ISK", "JPY", "NIS", "NOK", "NZD", "PLN", "RON", "RSD", "SEK", "TWD", "USD"},
+		Currencies:  []string{"AUD", "BGN", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "ILS", "ISK", "JPY", "NOK", "NZD", "PLN", "RON", "RSD", "SEK", "TWD", "USD"},
 		GetBuyRates: GetBuyRates,
 		Repository:  ratesDB,
 	}
