@@ -39,9 +39,9 @@ func (a Article) OnDemandOnly(countryID string) bool {
 
 // Portfolio determines whether an article is shown in the portfolio. It might be still sold out at the moment.
 func (a Article) Portfolio() bool {
-	if len(a.Stock) > 0 || a.OnDemand {
-		return true
-	}
+	//if len(a.Stock) > 0 || a.OnDemand {
+	//	return true
+	//}
 	return !a.Hide
 }
 
