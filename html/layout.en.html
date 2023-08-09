@@ -2,13 +2,14 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="referrer" content="no-referrer">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="/static/bootstrap.min.css">
-		<link rel="stylesheet" href="/static/style.css" />
-		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/fontawesome-selection.css" />
-		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/solid.css" />
+		<link rel="stylesheet" href="/static/style.css">
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/fontawesome-selection.css">
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/solid.css">
 		
-	<link rel="stylesheet" href="/static/digitalgoods.css" />
+	<link rel="stylesheet" href="/static/digitalgoods.css">
 	<link rel="icon" type="image/png" href="https://proxysto.re/assets/images/favicon-96.png" sizes="96x96">
     <meta name="author" content="ProxyStore">
     <meta name="description" content="Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter.">
@@ -22,9 +23,9 @@
 		<header>
 			<nav class="navbar navbar-expand-xl navbar-light py-0" style="background-color: rgb(240,242,244) !important">
 				<div class="container-fluid">
-					<!-- checkbox -->
+					
 					<input type="checkbox" class="toggler" aria-hidden="true" id="open-shopbar">
-					<!-- togglers -->
+					
 					<label for="open-shopbar" class="navbar-toggler my-2">
 						<div class="open navbar-toggler-icon"></div>
 						<div class="close btn-close"></div>
@@ -33,11 +34,11 @@
 						<a class="open visually-hidden-focusable" role="button" href="#open-shopbar">Open shops menu</a>
 						<a class="close visually-hidden-focusable" role="button" href="#">Close shops menu</a>
 					</div>
-					<!-- closed -->
+					
 					<label for="open-shopbar" class="d-xl-none me-2">
 						<div class="navbar-text">All Services and Projects</div>
 					</label>
-					<!-- opened -->
+					
 					<div class="collapse navbar-collapse">
 						<div class="navbar-brand equal-width-xl"></div>
 						<div class="navbar-nav equal-width-xl d-flex justify-content-center">
@@ -53,7 +54,6 @@
 							<a class="nav-item nav-link text-dark text-nowrap p-3 nav-active" rel="noreferrer" href="https://digitalgoods.proxysto.re/en">
 								<i class="fa-solid fa-ticket"></i> Digital Goods
 							</a>
-
 							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://shop.proxysto.re">
 								<i class="fa-solid fa-cart-shopping"></i> Online shop
 							</a>
@@ -128,6 +128,7 @@
 							<li><a href="/en/privacy.html">Privacy policy</a></li>
 							<li><a href="/en/imprint.html">Imprint</a></li>
 							<li><a href="/en/cancellation-policy.html">Cancellation Policy</a></li>
+							
 						</ul>
 					</div>
 					<div class="col-md-2">
@@ -135,9 +136,9 @@
 						<ul>
 							<li><a rel="noreferrer" href="/en/contact.html"><strong>Contact us</strong></a></li>
 							<li><a rel="noreferrer" href="https://dys2p.com/en/news.html">Blog</a></li>
-							<li><a rel="noreferrer" href="https://chaos.social/@dys2p">Mastodon</a></li>
+							<li><a rel="noreferrer" href="https://github.com/dys2p">GitHub</a></li>
+							<li><a rel="noreferrer" href="https://chaos.social/@dys2p">Mastodon</a> + <a rel="noreferrer" href="https://chaos.social/@dys2p.rss">RSS</a></li>
 							<li><a rel="noreferrer" href="https://www.reddit.com/r/dys2p">Reddit</a></li>
-							<li><a rel="noreferrer" href="https://twitter.com/dys2pn">Twitter</a></li>
 						</ul>
 					</div>
 					<div class="col-md-3">
@@ -159,5 +160,10 @@
 				</p>
 			</div>
 		</footer>
+
+		
+		<script>
+			document.querySelectorAll("[name='apply-changes-nojs']").forEach(e => e.remove());
+		</script>
 	</body>
 </html>
