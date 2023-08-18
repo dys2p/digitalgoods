@@ -103,6 +103,7 @@ func OpenDB() (*DB, error) {
 			foreign key (article) references article(id)
 		);
 		create table if not exists vat_log (
+			purchase       text not null, -- six-digit id
 			deliverydate   text not null, -- yyyy-mm-dd
 			article        text not null,
 			articlecountry text not null,
@@ -155,7 +156,7 @@ func OpenDB() (*DB, error) {
 	db.getCategoryDescriptions = mustPrepare("select category, language, htmltext from category_description")
 
 	// VAT
-	db.logVAT = mustPrepare("insert into vat_log (deliverydate, article, articlecountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
+	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, article, articlecountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -469,7 +470,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		// log VAT
 
 		if gotAmount > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(time.Now().Format(digitalgoods.DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}

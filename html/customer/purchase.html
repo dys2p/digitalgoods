@@ -1,5 +1,5 @@
 {{define "content"}}
-<h1>{{.Translate "purchase"}} {{.Purchase.AccessKey}}</h1>
+<h1>{{.Translate "purchase"}} {{.Purchase.ID}}</h1>
 <div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}</div>
 {{if .Purchase.DeleteDate}}
 	<p>{{.Translate "info-delete"}} {{.FmtDate .Purchase.ParseDeleteDate}}</p>

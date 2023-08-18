@@ -153,8 +153,10 @@ func main() {
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	addRoutes(custRtr, langs, http.MethodGet, "/", wrapLangTmpl(custOrderGet))
 	addRoutes(custRtr, langs, http.MethodPost, "/", wrapLangTmpl(custOrderPost))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key", wrapLangTmpl(custPurchaseGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key/:payment", wrapLangTmpl(custPurchaseGet))
+	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key", wrapLangTmpl(custPurchaseGetRedirect))
+	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key/:payment", wrapLangTmpl(custPurchaseGetPaymentRedirect))
+	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key", wrapLangTmpl(custPurchaseGet))
+	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key/:payment", wrapLangTmpl(custPurchaseGet))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
 	custRtr.HandlerFunc(http.MethodGet, "/health", health)
 
@@ -347,9 +349,39 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 	}
 
 	// set cookie
-	redirectPath := fmt.Sprintf("/%s/i/%s", langstr, purchase.AccessKey)
+	redirectPath := fmt.Sprintf("/%s/order/%s/%s", langstr, purchase.ID, purchase.AccessKey)
 	custSessions.Put(r.Context(), "redirect-path", redirectPath)
 	http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+	return nil
+}
+
+func custPurchaseGetRedirect(w http.ResponseWriter, r *http.Request, langstr string) error {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	accessKey := params.ByName("access-key")
+	purchase, err := database.GetPurchaseByAccessKey(accessKey)
+	if err != nil {
+		return err
+	}
+
+	redirectPath := fmt.Sprintf("/%s/order/%s/%s", langstr, purchase.ID, purchase.AccessKey)
+	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
+	return nil
+}
+
+func custPurchaseGetPaymentRedirect(w http.ResponseWriter, r *http.Request, langstr string) error {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	accessKey := params.ByName("access-key")
+	purchase, err := database.GetPurchaseByAccessKey(accessKey)
+	if err != nil {
+		return err
+	}
+
+	paymentMethod := params.ByName("payment")
+
+	redirectPath := fmt.Sprintf("/%s/order/%s/%s/%s", langstr, purchase.ID, purchase.AccessKey, paymentMethod)
+	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
 	return nil
 }
 
@@ -372,7 +404,7 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request, langstr string) err
 
 		Purchase:       purchase,
 		PaymentMethod:  paymentMethod,
-		URL:            fmt.Sprintf("%s/%s/i/%s", absHost(r), langstr, purchase.AccessKey),
+		URL:            fmt.Sprintf("%s/%s/order/%s/%s", absHost(r), langstr, purchase.ID, purchase.AccessKey),
 		PreferOnion:    strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		Language:       html.Language(langstr),
 		HTTPRequest:    r,
