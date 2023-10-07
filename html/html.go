@@ -10,6 +10,7 @@ import (
 
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/eco/payment"
+	"github.com/dys2p/eco/payment/health"
 	"gitlab.com/golang-commonmark/markdown"
 	"golang.org/x/text/language"
 )
@@ -36,7 +37,7 @@ func (t LangTemplate) Execute(w io.Writer, lang string, data any) error {
 }
 
 func parse(fn ...string) *template.Template {
-	return template.Must(template.New(fn[0]).Funcs(template.FuncMap{
+	t := template.New(fn[0]).Funcs(template.FuncMap{
 		"AlertContextualClass": func(status string) string {
 			switch status {
 			case digitalgoods.StatusNew:
@@ -66,7 +67,10 @@ func parse(fn ...string) *template.Template {
 		"Markdown": func(input string) template.HTML {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},
-	}).ParseFS(files, fn...))
+	})
+	t = template.Must(t.Parse(health.TemplateString))
+	t = template.Must(t.ParseFS(files, fn...))
+	return t
 }
 
 var (

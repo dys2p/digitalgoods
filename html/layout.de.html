@@ -67,7 +67,9 @@
 						<div class="equal-width-xl text-end text-nowrap">
 							
 								
-								<a class="btn btn-sm btn-secondary active" href="/de/">DE</a> <a class="btn btn-sm btn-secondary" href="/en/">EN</a> 
+									
+									<a class="btn btn-sm btn-secondary active" href="/de/">DE</a> <a class="btn btn-sm btn-secondary" href="/en/">EN</a> 
+								
 							
 						</div>
 					</div>
@@ -83,16 +85,7 @@
 			<a class="navbar-brand" href="/de/">Digital Goods</a>
 			<div>
 				{{block "menu" .}}{{end}}
-				<div>
-					BTCPay status:
-					<script>
-						document.write(` <span id="health-widget"></span>`);
-						updateHealth("/health");
-					</script>
-					<noscript>
-						<div class="badge bg-secondary">requires JavaScript</div>
-					</noscript>
-				</div>
+				<div>BTCPay-Status: {{template "health"}}</div>
 			</div>
 		</div>
 	</nav>
@@ -108,20 +101,20 @@
 		<footer class="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-2">
+					<div class="col-lg-3">
 						<h4><a href="/de/payment.html">Bezahlung</a></h4>
 						<ul>
 							<li>Barzahlung im Ladengeschäft</li>
-							<li>Bargeld per Post</li>
+							<li>Bargeld per Post in 20 Währungen</li>
 							<li>Monero und Bitcoin</li>
 							<li>SEPA-Überweisung</li>
 							
 						</ul>
 					</div>
-					<div class="col-md-3">
+					<div class="col-lg-3">
 						
 					</div>
-					<div class="col-md-2">
+					<div class="col-lg-2">
 						<h4>Rechtliches</h4>
 						<ul>
 							<li><a href="/de/terms.html">AGB</a></li>
@@ -131,8 +124,8 @@
 							
 						</ul>
 					</div>
-					<div class="col-md-2">
-						<h4>Kontakt &amp; News</h4>
+					<div class="col-lg-2">
+						<h4>Kontakt & News</h4>
 						<ul>
 							<li><a rel="noreferrer" href="/de/contact.html"><strong>Kontakt</strong></a></li>
 							<li><a rel="noreferrer" href="https://dys2p.com/de/news.html">Blog</a></li>
@@ -141,7 +134,7 @@
 							<li><a rel="noreferrer" href="https://www.reddit.com/r/dys2p">Reddit</a></li>
 						</ul>
 					</div>
-					<div class="col-md-3">
+					<div class="col-lg-2">
 						<h4><a rel="noreferrer" href="https://proxysto.re/de">Ladengeschäft</a></h4>
 						<p>
 							Bernhard-Göring-Straße 162<br>

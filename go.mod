@@ -7,7 +7,7 @@ require (
 	github.com/alexedwards/scs/v2 v2.4.0
 	github.com/dchest/captcha v1.0.0
 	github.com/dys2p/btcpay v0.5.0
-	github.com/dys2p/eco v0.0.0-20230717184854-c31fb8b643e3
+	github.com/dys2p/eco v0.0.0-20231007120803-ea40d1638c2b
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a

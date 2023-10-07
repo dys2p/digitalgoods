@@ -30,6 +30,7 @@ import (
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/dys2p/eco/payment"
+	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
@@ -158,7 +159,7 @@ func main() {
 	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key", wrapLangTmpl(custPurchaseGet))
 	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key/:payment", wrapLangTmpl(custPurchaseGet))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
-	custRtr.HandlerFunc(http.MethodGet, "/health", health)
+	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{btcpayStore})
 
 	addRoutes(custRtr, langs, http.MethodGet, "/terms.html", wrapLangTmpl(siteGet))
 	addRoutes(custRtr, langs, http.MethodGet, "/privacy.html", wrapLangTmpl(siteGet))
