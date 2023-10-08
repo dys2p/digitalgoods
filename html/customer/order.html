@@ -112,16 +112,8 @@
 		<div class="invalid-feedback">{{.Translate "country-error"}}</div>
 	</div>
 
-	<p class="text-center">
-		<img id="captcha-image" src="/captcha/{{.CaptchaID}}.png" alt="Captcha image">
-	</p>
-	<div class="mb-3">
-		<label for="captcha-answer" class="form-label">{{.Translate "captcha-label"}}</label>
-		<input class="form-control {{if .CaptchaErr}}is-invalid{{end}}" id="captcha-answer" name="captcha-answer" value="{{.CaptchaAnswer}}" type="number" required>
-		<div class="invalid-feedback">{{.Translate "captcha-error"}}</div>
-		<div class="form-text"><a class="text-muted" href="#" onclick="reloadCaptcha(); return false;">{{.Translate "captcha-reload"}}</a></div>
-	</div>
-	<input type="hidden" name="captcha-id" value="{{.CaptchaID}}">
+	{{template "captcha" .Captcha}}
+
 	<div class="text-end">
 		<input class="btn btn-success" type="submit" value="{{.Translate "submit-order"}}">
 	</div>

@@ -21,7 +21,6 @@ import (
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
-	"github.com/dchest/captcha"
 	"github.com/dys2p/btcpay"
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/digitalgoods/db"
@@ -29,6 +28,7 @@ import (
 	"github.com/dys2p/digitalgoods/html/sites"
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
+	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
@@ -72,6 +72,9 @@ func main() {
 			return
 		}
 	}
+
+	// captcha
+	captcha.Initialize(filepath.Join(os.Getenv("STATE_DIRECTORY"), "captcha.sqlite3"))
 
 	// foreign currency cash
 
@@ -174,7 +177,7 @@ func main() {
 		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", m.ID()), m)
 	}
 
-	custRtr.Handler("GET", "/captcha/:fn", captcha.Server(captcha.StdWidth, captcha.StdHeight))
+	custRtr.Handler(http.MethodGet, "/captcha/:fn", captcha.Handler())
 
 	var custSrv = ListenAndServe("tcp", ":9002", custSessions.LoadAndSave(custRtr), stop)
 	defer custSrv.Shutdown()
@@ -237,7 +240,9 @@ func custOrderGet(w http.ResponseWriter, r *http.Request, langstr string) error 
 		Categories:         database.GetCategories,
 		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
 
-		CaptchaID:     captcha.NewLen(6),
+		Captcha: captcha.TemplateData{
+			ID: captcha.New(),
+		},
 		CountryAnswer: lang.Translate("default-eu-country"),
 		Language:      lang,
 	})
@@ -252,8 +257,10 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 		Categories:         database.GetCategories,
 		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
 
-		CaptchaAnswer: r.PostFormValue("captcha-answer"),
-		CaptchaID:     r.PostFormValue("captcha-id"),
+		Captcha: captcha.TemplateData{
+			Answer: r.PostFormValue("captcha-answer"),
+			ID:     r.PostFormValue("captcha-id"),
+		},
 		Cart:          make(map[string]int),
 		OtherCountry:  make(map[string]string),
 		CountryAnswer: r.PostFormValue("country"),
@@ -328,10 +335,10 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 	}
 
 	// VerifyString probably invalidates the captcha, so we check this last
-	if !captcha.VerifyString(co.CaptchaID, co.CaptchaAnswer) {
-		co.CaptchaAnswer = ""
-		co.CaptchaID = captcha.NewLen(6)
-		co.CaptchaErr = true
+	if !captcha.Verify(co.Captcha.ID, co.Captcha.Answer) {
+		co.Captcha.Answer = ""
+		co.Captcha.ID = captcha.New()
+		co.Captcha.Err = true
 		return html.CustOrder.Execute(w, langstr, co)
 	}
 

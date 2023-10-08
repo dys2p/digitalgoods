@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
+	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"gitlab.com/golang-commonmark/markdown"
@@ -68,6 +69,7 @@ func parse(fn ...string) *template.Template {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},
 	})
+	t = template.Must(t.Parse(captcha.TemplateString))
 	t = template.Must(t.Parse(health.TemplateString))
 	t = template.Must(t.ParseFS(files, fn...))
 	return t
@@ -101,9 +103,7 @@ type CustOrderData struct {
 	Categories         func() ([]*digitalgoods.Category, error)
 	EUCountryCodes     []string
 
-	CaptchaAnswer string
-	CaptchaErr    bool
-	CaptchaID     string
+	Captcha       captcha.TemplateData
 	Cart          map[string]int    // user input: HTML input name -> amount
 	OtherCountry  map[string]string // user input: article ID -> country ID
 	CountryAnswer string
