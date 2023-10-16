@@ -48,7 +48,7 @@
 					<option {{if eq .CountryCode "non-EU"}}selected{{end}} value="non-EU">{{.Translate "non-EU"}}</option>
 				</optgroup>
 				<optgroup label="European Union">
-					{{range $.TranslateAndSort $.EUCountryCodes}}
+					{{range $.EUCountries}}
 						<option {{if eq $.CountryCode .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
 					{{end}}
 				</optgroup>

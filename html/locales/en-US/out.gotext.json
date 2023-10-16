@@ -1,0 +1,691 @@
+{
+    "language": "en-US",
+    "messages": [
+        {
+            "id": "We are waiting for your payment.",
+            "message": "We are waiting for your payment.",
+            "translation": "We are waiting for your payment.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.",
+            "message": "A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.",
+            "translation": "A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.",
+            "message": "We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.",
+            "translation": "We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Your codes have been delivered.",
+            "message": "Your codes have been delivered.",
+            "translation": "Your codes have been delivered.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "New",
+            "message": "New",
+            "translation": "New",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Payment processing",
+            "message": "Payment processing",
+            "translation": "Payment processing",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Underdelivered",
+            "message": "Underdelivered",
+            "translation": "Underdelivered",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Finalized",
+            "message": "Finalized",
+            "translation": "Finalized",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Austria",
+            "message": "Austria",
+            "translation": "Austria",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Belgium",
+            "message": "Belgium",
+            "translation": "Belgium",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Bulgaria",
+            "message": "Bulgaria",
+            "translation": "Bulgaria",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Switzerland",
+            "message": "Switzerland",
+            "translation": "Switzerland",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cyprus",
+            "message": "Cyprus",
+            "translation": "Cyprus",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Czechia",
+            "message": "Czechia",
+            "translation": "Czechia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Germany",
+            "message": "Germany",
+            "translation": "Germany",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Denmark",
+            "message": "Denmark",
+            "translation": "Denmark",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Estonia",
+            "message": "Estonia",
+            "translation": "Estonia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Spain",
+            "message": "Spain",
+            "translation": "Spain",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Finland",
+            "message": "Finland",
+            "translation": "Finland",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "France",
+            "message": "France",
+            "translation": "France",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "United Kingdom",
+            "message": "United Kingdom",
+            "translation": "United Kingdom",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Greece",
+            "message": "Greece",
+            "translation": "Greece",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Croatia",
+            "message": "Croatia",
+            "translation": "Croatia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Hungary",
+            "message": "Hungary",
+            "translation": "Hungary",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Ireland",
+            "message": "Ireland",
+            "translation": "Ireland",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Italy",
+            "message": "Italy",
+            "translation": "Italy",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Lithuania",
+            "message": "Lithuania",
+            "translation": "Lithuania",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Luxembourg",
+            "message": "Luxembourg",
+            "translation": "Luxembourg",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Latvia",
+            "message": "Latvia",
+            "translation": "Latvia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Malta",
+            "message": "Malta",
+            "translation": "Malta",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Netherlands",
+            "message": "Netherlands",
+            "translation": "Netherlands",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Poland",
+            "message": "Poland",
+            "translation": "Poland",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Portugal",
+            "message": "Portugal",
+            "translation": "Portugal",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Romania",
+            "message": "Romania",
+            "translation": "Romania",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Sweden",
+            "message": "Sweden",
+            "translation": "Sweden",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Slovenia",
+            "message": "Slovenia",
+            "translation": "Slovenia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Slovakia",
+            "message": "Slovakia",
+            "translation": "Slovakia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero or Bitcoin",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Cash in Foreign Currency",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Cash",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA Bank Transfer",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Australian dollars",
+            "message": "Australian dollars",
+            "translation": "Australian dollars",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Bulgarian lev",
+            "message": "Bulgarian lev",
+            "translation": "Bulgarian lev",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Canadian dollars",
+            "message": "Canadian dollars",
+            "translation": "Canadian dollars",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Swiss francs",
+            "message": "Swiss francs",
+            "translation": "Swiss francs",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Chinese renminbi",
+            "message": "Chinese renminbi",
+            "translation": "Chinese renminbi",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Czech koruna",
+            "message": "Czech koruna",
+            "translation": "Czech koruna",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Danish krone",
+            "message": "Danish krone",
+            "translation": "Danish krone",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pound sterling",
+            "message": "Pound sterling",
+            "translation": "Pound sterling",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Icelandic króna",
+            "message": "Icelandic króna",
+            "translation": "Icelandic króna",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Japanese yen",
+            "message": "Japanese yen",
+            "translation": "Japanese yen",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "New Israeli shekel (NIS)",
+            "message": "New Israeli shekel (NIS)",
+            "translation": "New Israeli shekel (NIS)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Norwegian krone",
+            "message": "Norwegian krone",
+            "translation": "Norwegian krone",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "New Zealand dollars",
+            "message": "New Zealand dollars",
+            "translation": "New Zealand dollars",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Polish złoty",
+            "message": "Polish złoty",
+            "translation": "Polish złoty",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Romanian leu",
+            "message": "Romanian leu",
+            "translation": "Romanian leu",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Serbian dinar",
+            "message": "Serbian dinar",
+            "translation": "Serbian dinar",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Swedish krona",
+            "message": "Swedish krona",
+            "translation": "Swedish krona",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "New Taiwan dollars",
+            "message": "New Taiwan dollars",
+            "translation": "New Taiwan dollars",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "United States dollars",
+            "message": "United States dollars",
+            "translation": "United States dollars",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Enter the amount and press „Order“.",
+            "message": "Enter the amount and press „Order“.",
+            "translation": "Enter the amount and press „Order“.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "translation": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
+            "message": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
+            "translation": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "message": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "translation": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
+            "message": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
+            "translation": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "message": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "translation": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "message": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "translation": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Write down your codes. We will delete them 30 days after delivery.",
+            "message": "Write down your codes. We will delete them 30 days after delivery.",
+            "translation": "Write down your codes. We will delete them 30 days after delivery.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please select some products.",
+            "message": "Please select some products.",
+            "translation": "Please select some products.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Product",
+            "message": "Product",
+            "translation": "Product",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Amount",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "In Stock",
+            "message": "In Stock",
+            "translation": "In Stock",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Item Price",
+            "message": "Item Price",
+            "translation": "Item Price",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "click here to read more",
+            "message": "click here to read more",
+            "translation": "click here to read more",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
+            "message": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
+            "translation": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Not in the European Union",
+            "message": "Not in the European Union",
+            "translation": "Not in the European Union",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "non-EU",
+            "message": "non-EU",
+            "translation": "non-EU",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "European Union",
+            "message": "European Union",
+            "translation": "European Union",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please select a country from the list.",
+            "message": "Please select a country from the list.",
+            "translation": "Please select a country from the list.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Create order",
+            "message": "Create order",
+            "translation": "Create order",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Order",
+            "message": "Order",
+            "translation": "Order",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Status",
+            "message": "Status",
+            "translation": "Status",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Current deletion date",
+            "message": "Current deletion date",
+            "translation": "Current deletion date",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.",
+            "message": "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.",
+            "translation": "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "What's next?",
+            "message": "What's next?",
+            "translation": "What's next?",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Check your order.",
+            "message": "Check your order.",
+            "translation": "Check your order.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "message": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "translation": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Payment",
+            "message": "Payment",
+            "translation": "Payment",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Your Order",
+            "message": "Your Order",
+            "translation": "Your Order",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Sum",
+            "message": "Sum",
+            "translation": "Sum",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Overall Sum",
+            "message": "Overall Sum",
+            "translation": "Overall Sum",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Your Goods",
+            "message": "Your Goods",
+            "translation": "Your Goods",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Delivery Date",
+            "message": "Delivery Date",
+            "translation": "Delivery Date",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Code",
+            "message": "Code",
+            "translation": "Code",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "translation": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "You will receive your codes as soon as you payment has arrived.",
+            "message": "You will receive your codes as soon as you payment has arrived.",
+            "translation": "You will receive your codes as soon as you payment has arrived.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Internal server error",
+            "message": "Internal server error",
+            "translation": "Internal server error",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "There is no such order, or it has been deleted.",
+            "message": "There is no such order, or it has been deleted.",
+            "translation": "There is no such order, or it has been deleted.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        }
+    ]
+}

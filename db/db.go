@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/dys2p/digitalgoods"
-	"golang.org/x/text/language"
 )
 
 type DB struct {
@@ -337,8 +336,10 @@ func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
 			return nil, err
 		}
 		if c, ok := catMap[categoryID]; ok {
-			c.DescriptionLangs = append(c.DescriptionLangs, language.Make(lang))
-			c.DescriptionTexts = append(c.DescriptionTexts, htmltext)
+			if c.Description == nil {
+				c.Description = make(map[string]string)
+			}
+			c.Description[lang] = htmltext
 		}
 	}
 
@@ -391,7 +392,7 @@ func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Pu
 }
 
 // GetPurchases returns the IDs of all purchases with the given status.
-func (db *DB) GetPurchases(status string) ([]string, error) {
+func (db *DB) GetPurchases(status digitalgoods.Status) ([]string, error) {
 	rows, err := db.getPurchasesByStatus.Query(status)
 	if err != nil {
 		return nil, err
@@ -482,7 +483,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	}
 
 	var newDeleteDate string
-	var newStatus string
+	var newStatus digitalgoods.Status
 	unfulfilled, err = purchase.GetUnfulfilled()
 	if err != nil {
 		return err

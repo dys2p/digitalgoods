@@ -1,0 +1,495 @@
+{
+    "language": "de-DE",
+    "messages": [
+        {
+            "id": "We are waiting for your payment.",
+            "message": "We are waiting for your payment.",
+            "translation": "Wir warten auf den Eingang deiner Zahlung."
+        },
+        {
+            "id": "A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.",
+            "message": "A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.",
+            "translation": "Eine Zahlung wurde angekündigt, aber wir warten noch auf die erforderliche Anzahl Bestätigungen auf der Blockchain."
+        },
+        {
+            "id": "We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.",
+            "message": "We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.",
+            "translation": "Wir haben deine Zahlung erhalten, aber unser Vorrat wurde zwischenzeitlich ausverkauft. Die fehlenden Codes erhälst du möglichst bald. Wir bitten die Umstände zu entschuldigen."
+        },
+        {
+            "id": "Your codes have been delivered.",
+            "message": "Your codes have been delivered.",
+            "translation": "Deine Codes wurden ausgeliefert."
+        },
+        {
+            "id": "New",
+            "message": "New",
+            "translation": "Neu"
+        },
+        {
+            "id": "Payment processing",
+            "message": "Payment processing",
+            "translation": "Zahlung wird verarbeitet"
+        },
+        {
+            "id": "Underdelivered",
+            "message": "Underdelivered",
+            "translation": "Unterbeliefert"
+        },
+        {
+            "id": "Finalized",
+            "message": "Finalized",
+            "translation": "Abgeschlossen"
+        },
+        {
+            "id": "Austria",
+            "message": "Austria",
+            "translation": "Österreich"
+        },
+        {
+            "id": "Belgium",
+            "message": "Belgium",
+            "translation": "Belgien"
+        },
+        {
+            "id": "Bulgaria",
+            "message": "Bulgaria",
+            "translation": "Bulgarien"
+        },
+        {
+            "id": "Switzerland",
+            "message": "Switzerland",
+            "translation": "Schweiz"
+        },
+        {
+            "id": "Cyprus",
+            "message": "Cyprus",
+            "translation": "Zypern"
+        },
+        {
+            "id": "Czechia",
+            "message": "Czechia",
+            "translation": "Tschechien"
+        },
+        {
+            "id": "Germany",
+            "message": "Germany",
+            "translation": "Deutschland"
+        },
+        {
+            "id": "Denmark",
+            "message": "Denmark",
+            "translation": "Dänemark"
+        },
+        {
+            "id": "Estonia",
+            "message": "Estonia",
+            "translation": "Estland"
+        },
+        {
+            "id": "Spain",
+            "message": "Spain",
+            "translation": "Spanien"
+        },
+        {
+            "id": "Finland",
+            "message": "Finland",
+            "translation": "Finnland"
+        },
+        {
+            "id": "France",
+            "message": "France",
+            "translation": "Frankreich"
+        },
+        {
+            "id": "United Kingdom",
+            "message": "United Kingdom",
+            "translation": "Vereinigtes Königreich"
+        },
+        {
+            "id": "Greece",
+            "message": "Greece",
+            "translation": "Griechenland"
+        },
+        {
+            "id": "Croatia",
+            "message": "Croatia",
+            "translation": "Kroatien"
+        },
+        {
+            "id": "Hungary",
+            "message": "Hungary",
+            "translation": "Ungarn"
+        },
+        {
+            "id": "Ireland",
+            "message": "Ireland",
+            "translation": "Irland"
+        },
+        {
+            "id": "Italy",
+            "message": "Italy",
+            "translation": "Italien"
+        },
+        {
+            "id": "Lithuania",
+            "message": "Lithuania",
+            "translation": "Litauen"
+        },
+        {
+            "id": "Luxembourg",
+            "message": "Luxembourg",
+            "translation": "Luxemburg"
+        },
+        {
+            "id": "Latvia",
+            "message": "Latvia",
+            "translation": "Lettland"
+        },
+        {
+            "id": "Malta",
+            "message": "Malta",
+            "translation": "Malta"
+        },
+        {
+            "id": "Netherlands",
+            "message": "Netherlands",
+            "translation": "Niederlande"
+        },
+        {
+            "id": "Poland",
+            "message": "Poland",
+            "translation": "Polen"
+        },
+        {
+            "id": "Portugal",
+            "message": "Portugal",
+            "translation": "Portugal"
+        },
+        {
+            "id": "Romania",
+            "message": "Romania",
+            "translation": "Rumänien"
+        },
+        {
+            "id": "Sweden",
+            "message": "Sweden",
+            "translation": "Schweden"
+        },
+        {
+            "id": "Slovenia",
+            "message": "Slovenia",
+            "translation": "Slowenien"
+        },
+        {
+            "id": "Slovakia",
+            "message": "Slovakia",
+            "translation": "Slowakei"
+        },
+        {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero oder Bitcoin"
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Bargeld in Fremdwährung"
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Bargeld"
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA-Banküberweisung"
+        },
+        {
+            "id": "Australian dollars",
+            "message": "Australian dollars",
+            "translation": "Australische Dollar"
+        },
+        {
+            "id": "Bulgarian lev",
+            "message": "Bulgarian lev",
+            "translation": "Bulgarische Lew"
+        },
+        {
+            "id": "Canadian dollars",
+            "message": "Canadian dollars",
+            "translation": "Kanadische Dollar"
+        },
+        {
+            "id": "Swiss francs",
+            "message": "Swiss francs",
+            "translation": "Schweizer Franken"
+        },
+        {
+            "id": "Chinese renminbi",
+            "message": "Chinese renminbi",
+            "translation": "Chinesische Renminbi"
+        },
+        {
+            "id": "Czech koruna",
+            "message": "Czech koruna",
+            "translation": "Tschechische Kronen"
+        },
+        {
+            "id": "Danish krone",
+            "message": "Danish krone",
+            "translation": "Dänische Kronen"
+        },
+        {
+            "id": "Pound sterling",
+            "message": "Pound sterling",
+            "translation": "Britische Pfund"
+        },
+        {
+            "id": "Icelandic króna",
+            "message": "Icelandic króna",
+            "translation": "Isländische Kronen"
+        },
+        {
+            "id": "Japanese yen",
+            "message": "Japanese yen",
+            "translation": "Japanische Yen"
+        },
+        {
+            "id": "New Israeli shekel (NIS)",
+            "message": "New Israeli shekel (NIS)",
+            "translation": "Neue israelische Schekel (NIS)"
+        },
+        {
+            "id": "Norwegian krone",
+            "message": "Norwegian krone",
+            "translation": "Norwegische Kronen"
+        },
+        {
+            "id": "New Zealand dollars",
+            "message": "New Zealand dollars",
+            "translation": "Neuseeland-Dollar"
+        },
+        {
+            "id": "Polish złoty",
+            "message": "Polish złoty",
+            "translation": "Polnische Złoty"
+        },
+        {
+            "id": "Romanian leu",
+            "message": "Romanian leu",
+            "translation": "Rumänische Leu"
+        },
+        {
+            "id": "Serbian dinar",
+            "message": "Serbian dinar",
+            "translation": "Serbische Dinar"
+        },
+        {
+            "id": "Swedish krona",
+            "message": "Swedish krona",
+            "translation": "Schwedische Kronen"
+        },
+        {
+            "id": "New Taiwan dollars",
+            "message": "New Taiwan dollars",
+            "translation": "Taiwan-Dollar"
+        },
+        {
+            "id": "United States dollars",
+            "message": "United States dollars",
+            "translation": "US-Dollar"
+        },
+        {
+            "id": "Enter the amount and press „Order“.",
+            "message": "Enter the amount and press „Order“.",
+            "translation": "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."
+        },
+        {
+            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."
+        },
+        {
+            "id": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
+            "message": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
+            "translation": "Bezahle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+        },
+        {
+            "id": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "message": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "translation": "Monero (XMR) oder Bitcoin (BTC): Die schnellste Methode. Deine Gutscheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bestätigt ist."
+        },
+        {
+            "id": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
+            "message": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
+            "translation": "Bargeld: Schicke Bargeld in einem versichertem Brief oder Paket an unsere Adresse in Deutschland. Wir schreddern den Brief nach dem Freischalten."
+        },
+        {
+            "id": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "message": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "translation": "SEPA-Überweisung auf unser deutsches Bankkonto. Wir prüfen es täglich manuell auf neue Zahlungseingänge."
+        },
+        {
+            "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "message": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "translation": "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."
+        },
+        {
+            "id": "Write down your codes. We will delete them 30 days after delivery.",
+            "message": "Write down your codes. We will delete them 30 days after delivery.",
+            "translation": "Notiere dir die Codes. Wir werden sie 30 Tage nach der Auslieferung löschen."
+        },
+        {
+            "id": "Please select some products.",
+            "message": "Please select some products.",
+            "translation": "Bitte wähle eines oder mehrere Produkte aus."
+        },
+        {
+            "id": "Product",
+            "message": "Product",
+            "translation": "Produkt"
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Anzahl"
+        },
+        {
+            "id": "In Stock",
+            "message": "In Stock",
+            "translation": "Vorrätig"
+        },
+        {
+            "id": "Item Price",
+            "message": "Item Price",
+            "translation": "Einzelpreis"
+        },
+        {
+            "id": "click here to read more",
+            "message": "click here to read more",
+            "translation": "klicke hier für mehr Infos"
+        },
+        {
+            "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
+            "message": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
+            "translation": "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"
+        },
+        {
+            "id": "Not in the European Union",
+            "message": "Not in the European Union",
+            "translation": "Außerhalb der Europäischen Union"
+        },
+        {
+            "id": "non-EU",
+            "message": "non-EU",
+            "translation": "non-EU"
+        },
+        {
+            "id": "European Union",
+            "message": "European Union",
+            "translation": "Europäische Union"
+        },
+        {
+            "id": "Please select a country from the list.",
+            "message": "Please select a country from the list.",
+            "translation": "Bitte wähle ein Land aus der Liste aus."
+        },
+        {
+            "id": "Create order",
+            "message": "Create order",
+            "translation": "Bestellen"
+        },
+        {
+            "id": "Order",
+            "message": "Order",
+            "translation": "Bestellung"
+        },
+        {
+            "id": "Status",
+            "message": "Status",
+            "translation": "Status"
+        },
+        {
+            "id": "Current deletion date",
+            "message": "Current deletion date",
+            "translation": "Derzeitiges Löschdatum"
+        },
+        {
+            "id": "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.",
+            "message": "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.",
+            "translation": "Du hast JavaScript deaktiviert. Um über Neuigkeiten informiert zu werden, lade die Seite bitte gelegentlich neu."
+        },
+        {
+            "id": "What's next?",
+            "message": "What's next?",
+            "translation": "Wie geht es weiter?"
+        },
+        {
+            "id": "Check your order.",
+            "message": "Check your order.",
+            "translation": "Prüfe deine Bestellung."
+        },
+        {
+            "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "message": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "translation": "Bezahle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+        },
+        {
+            "id": "Payment",
+            "message": "Payment",
+            "translation": "Zahlung"
+        },
+        {
+            "id": "Your Order",
+            "message": "Your Order",
+            "translation": "Deine Bestellung"
+        },
+        {
+            "id": "Sum",
+            "message": "Sum",
+            "translation": "Summe"
+        },
+        {
+            "id": "Overall Sum",
+            "message": "Overall Sum",
+            "translation": "Gesamtsumme"
+        },
+        {
+            "id": "Your Goods",
+            "message": "Your Goods",
+            "translation": "Deine Ware"
+        },
+        {
+            "id": "Delivery Date",
+            "message": "Delivery Date",
+            "translation": "Lieferdatum"
+        },
+        {
+            "id": "Code",
+            "message": "Code",
+            "translation": "Code"
+        },
+        {
+            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "translation": "Die fehlenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir bitten die Umstände zu entschuldigen."
+        },
+        {
+            "id": "You will receive your codes as soon as you payment has arrived.",
+            "message": "You will receive your codes as soon as you payment has arrived.",
+            "translation": "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."
+        },
+        {
+            "id": "Internal server error",
+            "message": "Internal server error",
+            "translation": "Interner Serverfehler"
+        },
+        {
+            "id": "There is no such order, or it has been deleted.",
+            "message": "There is no such order, or it has been deleted.",
+            "translation": "Diese Bestellung existiert nicht oder wurde schon gelöscht."
+        }
+    ]
+}

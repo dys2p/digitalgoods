@@ -1,8 +1,8 @@
 {{define "content"}}
-<h1>{{.Translate "purchase"}} {{.Purchase.ID}}</h1>
-<div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Translate "status"}}</strong>: {{.Translate (printf "%s%s" "status-" .Purchase.Status)}}</div>
+<h1>{{.Tr "Order"}} {{.Purchase.ID}}</h1>
+<div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Tr "Status"}}</strong>: {{.Purchase.Status.TranslateName .Lang}}: {{.Purchase.Status.TranslateDescription .Lang}}</div>
 {{if .Purchase.DeleteDate}}
-	<p>{{.Translate "info-delete"}} {{.FmtDate .Purchase.ParseDeleteDate}}</p>
+	<p>{{.Tr "Current deletion date"}}: {{.Purchase.DeleteDate}}</p>
 {{end}}
 {{with .PaysrvErr}}
 	<p class="alert alert-danger">Unser Payserver lieferte eine Fehlermeldung: {{.}}</p>
@@ -12,44 +12,44 @@
 		scheduleReload();
 	</script>
 	<noscript>
-		<p>{{.Translate "javascript-reload"}}</p>
+		<p>{{.Tr "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time."}}</p>
 	</noscript>
 {{end}}
-<h2>{{.Translate "whats-next"}}</h2>
+<h2>{{.Tr "What's next?"}}</h2>
 <ol>
 	{{if .Purchase.Unpaid}}
-		<li>{{.Translate "next-1"}}</li>
+		<li>{{.Tr "Check your order."}}</li>
 	{{end}}
 	<!-- same as in order.html -->
-	<li>{{.Translate "how-2"}} <code>{{.URL}}</code></li>
+	<li>{{.Tr "Save the URL of your order. You need it to access your goods if you closed the browser tab."}} <code>{{.URL}}</code></li>
 	{{if .Purchase.Unpaid}}
-		<li>{{.Translate "how-3"}}</li>
-		<li>{{.Translate "how-4"}}</li>
+		<li>{{.Tr "Pay your order. (Unpaid orders are deleted after 30 days.)"}}</li>
+		<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
 	{{end}}
-	<li>{{.Translate "how-5"}}</li>
+	<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
 	<!-- end -->
 </ol>
 {{if .Purchase.Unpaid}}
-	<h2 id="payment">{{.Translate "payment"}}</h2>
+	<h2 id="payment">{{.Tr "Payment"}}</h2>
 	<div>
 		<ul class="nav nav-tabs my-3">
 			{{range .PaymentMethods}}
 				<li class="nav-item">
-					<a class="nav-link {{if eq $.ActiveTab .ID}}active{{end}}" href="{{$.URL}}/{{.ID}}#payment">{{.Name $.HTTPRequest}}</a>
+					<a class="nav-link {{if eq $.ActiveTab .ID}}active{{end}}" href="{{$.URL}}/{{.ID}}#payment">{{.Name $.Lang.String}}</a>
 				</li>
 			{{end}}
 		</ul>
-		<p>{{.PaymentMethod.PayHTML $.HTTPRequest .Purchase.ID .Purchase.PaymentKey}}</p>
+		<p>{{.PaymentMethod.PayHTML .Purchase.ID .Purchase.PaymentKey $.Lang.String}}</p>
 	</div>
 {{end}}
-<h2>{{.Translate "your-order"}}</h2>
+<h2>{{.Tr "Your Order"}}</h2>
 <table class="table">
 	<thead>
 		<tr>
-			<th>{{.Translate "product"}}</th>
-			<th>{{.Translate "amount"}}</th>
-			<th>{{.Translate "item-price"}}</th>
-			<th>{{.Translate "sum"}}</th>
+			<th>{{.Tr "Product"}}</th>
+			<th>{{.Tr "Amount"}}</th>
+			<th>{{.Tr "Item Price"}}</th>
+			<th>{{.Tr "Sum"}}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -62,7 +62,7 @@
 						<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
 						<label for="toggle-{{.ID}}">
 							<strong>{{.Name}}</strong>
-							({{$.Translate "click-more"}})
+							({{$.Tr "click here to read more"}})
 						</label>
 						<style>
 						#toggle-{{.ID}} ~ div {
@@ -73,7 +73,7 @@
 						}
 						</style>
 						<div class="mt-2 mb-1">
-							{{$.TranslateCategoryDescription .}}
+							{{.TranslateDescription $.Lang}}
 						</div>
 						<!-- end -->
 					{{end}}
@@ -81,7 +81,7 @@
 			</tr>
 				{{range .Rows}}
 				<tr>
-					<td>{{.Article.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+					<td>{{.Article.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
 					<td>{{.Amount}}</td>
 					<td>{{FmtEuro .ItemPrice}}</td>
 					<td>{{FmtEuro .Sum}}</td>
@@ -90,24 +90,24 @@
 			{{end}}
 		{{end}}
 		<tr>
-			<td colspan="3">{{.Translate "overall-sum"}}</td>
+			<td colspan="3">{{.Tr "Overall Sum"}}</td>
 			<td>{{FmtEuro .Purchase.Ordered.Sum}}</td>
 		</tr>
 	</tbody>
 </table>
-<h2>{{.Translate "your-goods"}}</h2>
+<h2>{{.Tr "Your Goods"}}</h2>
 <table class="table">
 	<thead>
 		<tr>
-			<th>{{.Translate "product"}}</th>
-			<th>{{.Translate "delivery-date"}}</th>
-			<th>{{.Translate "code"}}</th>
+			<th>{{.Tr "Product"}}</th>
+			<th>{{.Tr "Delivery Date"}}</th>
+			<th>{{.Tr "Code"}}</th>
 		</tr>
 	</thead>
 	<tbody>
 		{{range .Purchase.Delivered}}
 		<tr>
-			<td>{{.ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+			<td>{{.ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
 			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
 			<td>
 				{{if .Image}}
@@ -126,12 +126,12 @@
 		{{end}}
 		{{if .Purchase.Underdelivered}}
 		<tr>
-			<td colspan="3">{{.Translate "sorry-underdelivered"}}</td>
+			<td colspan="3">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</td>
 		</tr>
 		{{end}}
 		{{if .Purchase.Unpaid}}
 		<tr>
-			<td colspan="3">{{.Translate "info-unpaid"}}</td>
+			<td colspan="3">{{.Tr "You will receive your codes as soon as you payment has arrived."}}</td>
 		</tr>
 		{{end}}
 	</tbody>

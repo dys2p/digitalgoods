@@ -29,6 +29,8 @@ import (
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/dys2p/eco/captcha"
+	"github.com/dys2p/eco/countries"
+	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
@@ -43,6 +45,7 @@ var btcpayStore btcpay.Store
 var paymentMethods []payment.Method
 var ratesHistory *rates.History
 var users userdb.Authenticator
+var langs lang.Languages
 
 func main() {
 
@@ -151,33 +154,36 @@ func main() {
 	custSessions.Lifetime = 8 * time.Hour
 	custSessions.Store = sqlite3store.New(custSessionsDB)
 
-	langs := []string{"en", "de"}
+	langs = lang.Languages([]string{"en", "de"})
 
 	var custRtr = httprouter.New()
-	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
-	addRoutes(custRtr, langs, http.MethodGet, "/", wrapLangTmpl(custOrderGet))
-	addRoutes(custRtr, langs, http.MethodPost, "/", wrapLangTmpl(custOrderPost))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key", wrapLangTmpl(custPurchaseGetRedirect))
-	addRoutes(custRtr, langs, http.MethodGet, "/i/:access-key/:payment", wrapLangTmpl(custPurchaseGetPaymentRedirect))
-	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key", wrapLangTmpl(custPurchaseGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/order/:id/:access-key/:payment", wrapLangTmpl(custPurchaseGet))
-	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
-	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{btcpayStore})
 
-	addRoutes(custRtr, langs, http.MethodGet, "/terms.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/privacy.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/imprint.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/contact.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/payment.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/cancellation-policy.html", wrapLangTmpl(siteGet))
-	addRoutes(custRtr, langs, http.MethodGet, "/cancellation-form.html", wrapLangTmpl(siteGet))
+	for _, id := range langs {
+		custRtr.HandlerFunc(http.MethodGet, "/"+id, custOrderGet)
+		custRtr.HandlerFunc(http.MethodPost, "/"+id, custOrderPost)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/i/:access-key", custPurchaseGetRedirect)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/i/:access-key/:payment", custPurchaseGetPaymentRedirect)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/order/:id/:access-key", custPurchaseGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/order/:id/:access-key/:payment", custPurchaseGet)
 
-	for _, m := range paymentMethods {
-		custRtr.Handler(http.MethodGet, fmt.Sprintf("/payment/%s/*path", m.ID()), m)
-		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", m.ID()), m)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/terms.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/privacy.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/imprint.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/contact.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/payment.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/cancellation-policy.html", siteGet)
+		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/cancellation-form.html", siteGet)
 	}
 
+	// non-localized stuff
+	for _, method := range paymentMethods {
+		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", method.ID()), method)
+	}
+	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
+	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
 	custRtr.Handler(http.MethodGet, "/captcha/:fn", captcha.Handler())
+	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{btcpayStore})
+	custRtr.NotFound = http.HandlerFunc(langs.Redirect)
 
 	var custSrv = ListenAndServe("tcp", ":9002", custSessions.LoadAndSave(custRtr), stop)
 	defer custSrv.Shutdown()
@@ -233,29 +239,34 @@ func main() {
 	log.Println("shutting down")
 }
 
-func custOrderGet(w http.ResponseWriter, r *http.Request, langstr string) error {
-	lang := html.Language(langstr)
-	return html.CustOrder.Execute(w, langstr, &html.CustOrderData{
+func custOrderGet(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
+
+	err := html.CustOrder.Execute(w, string(lang), &html.CustOrderData{
 		ArticlesByCategory: database.GetArticlesByCategory,
 		Categories:         database.GetCategories,
-		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
+		EUCountries:        countries.TranslateAndSort(string(lang), countries.EuropeanUnion),
 
 		Captcha: captcha.TemplateData{
 			ID: captcha.New(),
 		},
-		CountryAnswer: lang.Translate("default-eu-country"),
-		Language:      lang,
+		CountryAnswer: lang.Tr("default-eu-country"),
+		Lang:          lang,
 	})
+	if err != nil {
+		log.Println(err)
+	}
 }
 
-func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error {
+func custOrderPost(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
 
 	// read user input
 
 	co := &html.CustOrderData{
 		ArticlesByCategory: database.GetArticlesByCategory,
 		Categories:         database.GetCategories,
-		EUCountryCodes:     digitalgoods.EUCountryCodes[:],
+		EUCountries:        countries.TranslateAndSort(string(lang), countries.EuropeanUnion),
 
 		Captcha: captcha.TemplateData{
 			Answer: r.PostFormValue("captcha-answer"),
@@ -264,12 +275,13 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 		Cart:          make(map[string]int),
 		OtherCountry:  make(map[string]string),
 		CountryAnswer: r.PostFormValue("country"),
-		Language:      html.Language(langstr),
+		Lang:          lang,
 	}
 
 	articles, err := database.GetArticles()
 	if err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
 
 	order := digitalgoods.Order{} // in case of no errors
@@ -325,13 +337,15 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 
 	if len(order) == 0 {
 		co.OrderErr = true
-		return html.CustOrder.Execute(w, langstr, co)
+		html.CustOrder.Execute(w, string(lang), co)
+		return
 	}
 
-	if !digitalgoods.IsEUCountryCode(co.CountryAnswer) {
+	if !digitalgoods.IsValidCountryCode(co.CountryAnswer) {
 		co.CountryAnswer = ""
 		co.CountryErr = true
-		return html.CustOrder.Execute(w, langstr, co)
+		html.CustOrder.Execute(w, string(lang), co)
+		return
 	}
 
 	// VerifyString probably invalidates the captcha, so we check this last
@@ -339,7 +353,8 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 		co.Captcha.Answer = ""
 		co.Captcha.ID = captcha.New()
 		co.Captcha.Err = true
-		return html.CustOrder.Execute(w, langstr, co)
+		html.CustOrder.Execute(w, string(lang), co)
+		return
 	}
 
 	purchase := &digitalgoods.Purchase{
@@ -353,75 +368,85 @@ func custOrderPost(w http.ResponseWriter, r *http.Request, langstr string) error
 	}
 
 	if err := database.AddPurchase(purchase); err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
 
 	// set cookie
-	redirectPath := fmt.Sprintf("/%s/order/%s/%s", langstr, purchase.ID, purchase.AccessKey)
+	redirectPath := lang.Path("/order/%s/%s", purchase.ID, purchase.AccessKey)
 	custSessions.Put(r.Context(), "redirect-path", redirectPath)
 	http.Redirect(w, r, redirectPath, http.StatusSeeOther)
-	return nil
 }
 
-func custPurchaseGetRedirect(w http.ResponseWriter, r *http.Request, langstr string) error {
+func custPurchaseGetRedirect(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
 	params := httprouter.ParamsFromContext(r.Context())
 
 	accessKey := params.ByName("access-key")
 	purchase, err := database.GetPurchaseByAccessKey(accessKey)
 	if err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
 
-	redirectPath := fmt.Sprintf("/%s/order/%s/%s", langstr, purchase.ID, purchase.AccessKey)
+	redirectPath := lang.Path("/order/%s/%s", purchase.ID, purchase.AccessKey)
 	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
-	return nil
+	return
 }
 
-func custPurchaseGetPaymentRedirect(w http.ResponseWriter, r *http.Request, langstr string) error {
+func custPurchaseGetPaymentRedirect(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
 	params := httprouter.ParamsFromContext(r.Context())
 
 	accessKey := params.ByName("access-key")
 	purchase, err := database.GetPurchaseByAccessKey(accessKey)
 	if err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
 
 	paymentMethod := params.ByName("payment")
 
-	redirectPath := fmt.Sprintf("/%s/order/%s/%s/%s", langstr, purchase.ID, purchase.AccessKey, paymentMethod)
+	redirectPath := lang.Path("/%s/order/%s/%s/%s", purchase.ID, purchase.AccessKey, paymentMethod)
 	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
-	return nil
 }
 
-func custPurchaseGet(w http.ResponseWriter, r *http.Request, langstr string) error {
+func custPurchaseGet(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
 	params := httprouter.ParamsFromContext(r.Context())
 
 	accessKey := params.ByName("access-key")
 	purchase, err := database.GetPurchaseByAccessKey(accessKey)
 	if err != nil {
-		return err
+		html.ErrorNotFound.Execute(w, lang)
+		return
 	}
 
 	paymentMethod, err := payment.Get(paymentMethods, params.ByName("payment"))
 	if err != nil {
-		return err
+		html.ErrorNotFound.Execute(w, lang)
+		return
 	}
 
-	return html.CustPurchase.Execute(w, langstr, &html.CustPurchaseData{
+	err = html.CustPurchase.Execute(w, string(lang), &html.CustPurchaseData{
 		GroupedOrder: database.GroupedOrder, // returns empty orderGroups too
 
 		Purchase:       purchase,
 		PaymentMethod:  paymentMethod,
-		URL:            fmt.Sprintf("%s/%s/order/%s/%s", absHost(r), langstr, purchase.ID, purchase.AccessKey),
+		URL:            absHost(r) + lang.Path("order/%s/%s", purchase.ID, purchase.AccessKey),
 		PreferOnion:    strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
-		Language:       html.Language(langstr),
-		HTTPRequest:    r,
+		Lang:           lang,
 		ActiveTab:      paymentMethod.ID(),
 		PaymentMethods: paymentMethods,
 	})
+	if err != nil {
+		// TODO use eco/middleware
+		log.Println(err)
+	}
 }
 
 func byCookie(w http.ResponseWriter, r *http.Request) {
+	// TODO maybe save language in cookie and redirect to user's locale
 	if redirectPath := custSessions.GetString(r.Context(), "redirect-path"); redirectPath != "" {
 		http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 	} else {
@@ -429,18 +454,23 @@ func byCookie(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func siteGet(w http.ResponseWriter, r *http.Request, langstr string) error {
+func siteGet(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
 	name := strings.TrimSuffix(path.Base(r.URL.Path), ".html")
 
-	file, err := sites.Files.Open(filepath.Join(langstr, name+".md"))
+	file, err := sites.Files.Open(filepath.Join(string(lang), name+".md"))
 	if err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
+
 	content, err := io.ReadAll(file)
 	if err != nil {
-		return err
+		html.ErrorInternal.Execute(w, lang)
+		return
 	}
-	return html.Site.Execute(w, langstr, string(content))
+
+	html.Site.Execute(w, string(lang), string(content))
 }
 
 func staffIndexGet(w http.ResponseWriter, r *http.Request) error {
@@ -497,15 +527,13 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
 		CurrencyOptions []rates.Option
-		EUCountryCodes  []string
+		EUCountries     []countries.CountryWithName
 		DB              *db.DB
-		html.Language
 	}{
 		purchase,
 		currencyOptions,
-		digitalgoods.EUCountryCodes[:],
+		countries.TranslateAndSort("de", countries.EuropeanUnion),
 		database,
-		"en",
 	})
 }
 
@@ -534,7 +562,6 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 type staffSelect struct {
 	Articles       []digitalgoods.Article
 	Underdelivered map[string]int // key: articleID-countryID
-	html.Language
 }
 
 func (s *staffSelect) ISOCountryCodes() []string {
@@ -593,7 +620,6 @@ func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffSelect.Execute(w, &staffSelect{
 		articles,
 		underdelivered,
-		"en",
 	})
 }
 
@@ -612,11 +638,9 @@ func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffUploadImage.Execute(w, struct {
 		digitalgoods.Article
 		Country string
-		html.Language
 	}{
 		article,
 		countryID,
-		"en",
 	})
 }
 
@@ -657,11 +681,9 @@ func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffUploadText.Execute(w, struct {
 		digitalgoods.Article
 		Country string
-		html.Language
 	}{
 		article,
 		countryID,
-		"en",
 	})
 }
 

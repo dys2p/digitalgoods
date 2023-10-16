@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"net/http"
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/eco/captcha"
+	"github.com/dys2p/eco/countries"
+	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"gitlab.com/golang-commonmark/markdown"
@@ -39,7 +40,7 @@ func (t LangTemplate) Execute(w io.Writer, lang string, data any) error {
 
 func parse(fn ...string) *template.Template {
 	t := template.New(fn[0]).Funcs(template.FuncMap{
-		"AlertContextualClass": func(status string) string {
+		"AlertContextualClass": func(status digitalgoods.Status) string {
 			switch status {
 			case digitalgoods.StatusNew:
 				return "alert-primary"
@@ -76,8 +77,9 @@ func parse(fn ...string) *template.Template {
 }
 
 var (
-	Error     = parse("layout.en.html", "error.html")
-	CustOrder = LangTemplate{
+	ErrorInternal = parse("layout.en.html", "error-internal.html")
+	ErrorNotFound = parse("layout.en.html", "error-not-found.html")
+	CustOrder     = LangTemplate{
 		"en": parse("layout.en.html", "customer/order.html"),
 		"de": parse("layout.de.html", "customer/order.html"),
 	}
@@ -101,7 +103,7 @@ var (
 type CustOrderData struct {
 	ArticlesByCategory func(category *digitalgoods.Category) ([]digitalgoods.Article, error)
 	Categories         func() ([]*digitalgoods.Category, error)
-	EUCountryCodes     []string
+	EUCountries        []countries.CountryWithName
 
 	Captcha       captcha.TemplateData
 	Cart          map[string]int    // user input: HTML input name -> amount
@@ -109,7 +111,7 @@ type CustOrderData struct {
 	CountryAnswer string
 	CountryErr    bool
 	OrderErr      bool
-	Language
+	lang.Lang
 }
 
 type CustPurchaseData struct {
@@ -121,8 +123,7 @@ type CustPurchaseData struct {
 	URL            string
 	PaysrvErr      error
 	PreferOnion    bool
-	Language
-	HTTPRequest *http.Request
+	lang.Lang
 	ActiveTab   string
 	TabBTCPay   string
 	TabCash     string
