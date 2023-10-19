@@ -51,21 +51,21 @@ var messageKeyToIndex = map[string]int{
 	"Cash":                     39,
 	"Cash in Foreign Currency": 38,
 	"Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.": 64,
-	"Check your order.":     85,
+	"Check your order.":     86,
 	"Chinese renminbi":      45,
-	"Code":                  93,
-	"Create order":          79,
+	"Code":                  94,
+	"Create order":          80,
 	"Croatia":               22,
-	"Current deletion date": 82,
+	"Current deletion date": 83,
 	"Cyprus":                12,
 	"Czech koruna":          46,
 	"Czechia":               13,
 	"Danish krone":          47,
-	"Delivery Date":         92,
+	"Delivery Date":         93,
 	"Denmark":               15,
 	"Enter the amount and press „Order“.": 60,
 	"Estonia":               16,
-	"European Union":        77,
+	"European Union":        76,
 	"Finalized":             7,
 	"Finland":               18,
 	"France":                19,
@@ -74,12 +74,12 @@ var messageKeyToIndex = map[string]int{
 	"Hungary":               23,
 	"Icelandic króna":       49,
 	"In Stock":              71,
-	"Internal server error": 96,
+	"Internal server error": 97,
 	"Ireland":               24,
 	"Italy":                 25,
 	"Item Price":            72,
 	"Japanese yen":          50,
-	"JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.": 83,
+	"JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.": 84,
 	"Latvia":     28,
 	"Lithuania":  26,
 	"Luxembourg": 27,
@@ -93,21 +93,22 @@ var messageKeyToIndex = map[string]int{
 	"New Zealand dollars":       53,
 	"Norwegian krone":           52,
 	"Not in the European Union": 75,
-	"Order":                     80,
-	"Overall Sum":               90,
+	"Options are limited by your IP address and browser language.": 79,
+	"Order":       81,
+	"Overall Sum": 91,
 	"Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)": 62,
-	"Pay your order. (Unpaid orders are deleted after 30 days.)":                            86,
-	"Payment":                                87,
-	"Payment processing":                     5,
-	"Please select a country from the list.": 78,
-	"Please select some products.":           68,
-	"Poland":                                 31,
-	"Polish złoty":                           54,
-	"Portugal":                               32,
-	"Pound sterling":                         48,
-	"Product":                                69,
-	"Romania":                                33,
-	"Romanian leu":                           55,
+	"Pay your order. (Unpaid orders are deleted after 30 days.)":                            87,
+	"Payment":                                  88,
+	"Payment processing":                       5,
+	"Please select some products.":             68,
+	"Please select your country of residence.": 78,
+	"Poland":         31,
+	"Polish złoty":   54,
+	"Portugal":       32,
+	"Pound sterling": 48,
+	"Product":        69,
+	"Romania":        33,
+	"Romanian leu":   55,
 	"SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.": 65,
 	"SEPA Bank Transfer": 40,
 	"Save the URL of your order. You need it to access your goods if you closed the browser tab.": 61,
@@ -115,31 +116,31 @@ var messageKeyToIndex = map[string]int{
 	"Slovakia":      36,
 	"Slovenia":      35,
 	"Spain":         17,
-	"Status":        81,
-	"Sum":           89,
+	"Status":        82,
+	"Sum":           90,
 	"Sweden":        34,
 	"Swedish krona": 57,
 	"Swiss francs":  44,
 	"Switzerland":   11,
-	"There is no such order, or it has been deleted.": 97,
+	"There is no such order, or it has been deleted.": 98,
 	"Underdelivered":                   6,
 	"United Kingdom":                   20,
 	"United States dollars":            59,
 	"We are waiting for your payment.": 0,
 	"We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.": 2,
-	"What's next?": 84,
+	"What's next?": 85,
 	"Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)":     74,
 	"Write down your codes. We will delete them 30 days after delivery.":                                       67,
-	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 94,
-	"You will receive your codes as soon as you payment has arrived.":                                          95,
-	"Your Goods":                      91,
-	"Your Order":                      88,
+	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 95,
+	"You will receive your codes as soon as you payment has arrived.":                                          96,
+	"Your Goods":                      92,
+	"Your Order":                      89,
 	"Your codes have been delivered.": 3,
 	"click here to read more":         73,
-	"non-EU":                          76,
+	"please select":                   77,
 }
 
-var de_DEIndex = []uint32{ // 99 elements
+var de_DEIndex = []uint32{ // 100 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000002b, 0x000000a1, 0x00000155,
 	0x00000176, 0x0000017a, 0x00000193, 0x000001a2,
@@ -162,16 +163,16 @@ var de_DEIndex = []uint32{ // 99 elements
 	0x00000637, 0x000006c9, 0x00000736, 0x00000821,
 	0x0000086f, 0x0000089d, 0x000008a5, 0x000008ac,
 	0x000008b6, 0x000008c2, 0x000008de, 0x0000096d,
-	0x00000990, 0x00000997, 0x000009aa, 0x000009d3,
-	0x000009dd, 0x000009e8, 0x000009ef, 0x00000a07,
-	0x00000a79, 0x00000a8d, 0x00000aa6, 0x00000b14,
-	0x00000b1c, 0x00000b2d, 0x00000b33, 0x00000b3f,
-	0x00000b4a, 0x00000b56, 0x00000b5b, 0x00000bc8,
+	0x00000990, 0x000009a3, 0x000009b4, 0x000009e1,
+	0x00000a33, 0x00000a3d, 0x00000a48, 0x00000a4f,
+	0x00000a67, 0x00000ad9, 0x00000aed, 0x00000b06,
+	0x00000b74, 0x00000b7c, 0x00000b8d, 0x00000b93,
+	0x00000b9f, 0x00000baa, 0x00000bb6, 0x00000bbb,
 	// Entry 60 - 7F
-	0x00000c0d, 0x00000c23, 0x00000c60,
-} // Size: 420 bytes
+	0x00000c28, 0x00000c6d, 0x00000c83, 0x00000cc0,
+} // Size: 424 bytes
 
-const de_DEData string = "" + // Size: 3168 bytes
+const de_DEData string = "" + // Size: 3264 bytes
 	"\x02Wir warten auf den Eingang deiner Zahlung.\x02Eine Zahlung wurde ang" +
 	"ekündigt, aber wir warten noch auf die erforderliche Anzahl Bestätigunge" +
 	"n auf der Blockchain.\x02Wir haben deine Zahlung erhalten, aber unser Vo" +
@@ -208,20 +209,21 @@ const de_DEData string = "" + // Size: 3168 bytes
 	"kte aus.\x02Produkt\x02Anzahl\x02Vorrätig\x02Einzelpreis\x02klicke hier " +
 	"für mehr Infos\x02In welchem Land bist du ansässig? (Das müssen wir aus " +
 	"steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder d" +
-	"ie Leistung.)\x02Außerhalb der Europäischen Union\x02non-EU\x02Europäisc" +
-	"he Union\x02Bitte wähle ein Land aus der Liste aus.\x02Bestellen\x02Best" +
-	"ellung\x02Status\x02Derzeitiges Löschdatum\x02Du hast JavaScript deaktiv" +
-	"iert. Um über Neuigkeiten informiert zu werden, lade die Seite bitte gel" +
-	"egentlich neu.\x02Wie geht es weiter?\x02Prüfe deine Bestellung.\x02Beza" +
-	"hle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen" +
-	" werden nach 30 Tagen gelöscht.)\x02Zahlung\x02Deine Bestellung\x02Summe" +
-	"\x02Gesamtsumme\x02Deine Ware\x02Lieferdatum\x02Code\x02Die fehlenden Co" +
-	"des erhälst du, sobald Nachschub eintroffen ist. Wir bitten die Umstände" +
-	" zu entschuldigen.\x02Sobald deine Zahlung bei uns eingegangen ist, erhä" +
-	"lst du die Codes.\x02Interner Serverfehler\x02Diese Bestellung existiert" +
-	" nicht oder wurde schon gelöscht."
+	"ie Leistung.)\x02Außerhalb der Europäischen Union\x02Europäische Union" +
+	"\x02bitte auswählen\x02Bitte wähle das Land aus, in dem du wohnst.\x02Di" +
+	"e Auswahlmöglichkeiten hängen von deiner IP-Adresse und Spracheinstellun" +
+	"g ab.\x02Bestellen\x02Bestellung\x02Status\x02Derzeitiges Löschdatum\x02" +
+	"Du hast JavaScript deaktiviert. Um über Neuigkeiten informiert zu werden" +
+	", lade die Seite bitte gelegentlich neu.\x02Wie geht es weiter?\x02Prüfe" +
+	" deine Bestellung.\x02Bezahle deine Bestellung mit einer dieser Methoden" +
+	". (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)\x02Zahlung" +
+	"\x02Deine Bestellung\x02Summe\x02Gesamtsumme\x02Deine Ware\x02Lieferdatu" +
+	"m\x02Code\x02Die fehlenden Codes erhälst du, sobald Nachschub eintroffen" +
+	" ist. Wir bitten die Umstände zu entschuldigen.\x02Sobald deine Zahlung " +
+	"bei uns eingegangen ist, erhälst du die Codes.\x02Interner Serverfehler" +
+	"\x02Diese Bestellung existiert nicht oder wurde schon gelöscht."
 
-var en_USIndex = []uint32{ // 99 elements
+var en_USIndex = []uint32{ // 100 elements
 	// Entry 0 - 1F
 	0x00000000, 0x00000021, 0x0000008e, 0x0000012d,
 	0x0000014d, 0x00000151, 0x00000164, 0x00000173,
@@ -244,16 +246,16 @@ var en_USIndex = []uint32{ // 99 elements
 	0x0000054a, 0x000005bc, 0x0000063e, 0x00000702,
 	0x00000745, 0x00000762, 0x0000076a, 0x00000771,
 	0x0000077a, 0x00000785, 0x0000079d, 0x00000802,
-	0x0000081c, 0x00000823, 0x00000832, 0x00000859,
-	0x00000866, 0x0000086c, 0x00000873, 0x00000889,
-	0x00000907, 0x00000914, 0x00000926, 0x00000961,
-	0x00000969, 0x00000974, 0x00000978, 0x00000984,
-	0x0000098f, 0x0000099d, 0x000009a2, 0x00000a0b,
+	0x0000081c, 0x0000082b, 0x00000839, 0x00000862,
+	0x0000089f, 0x000008ac, 0x000008b2, 0x000008b9,
+	0x000008cf, 0x0000094d, 0x0000095a, 0x0000096c,
+	0x000009a7, 0x000009af, 0x000009ba, 0x000009be,
+	0x000009ca, 0x000009d5, 0x000009e3, 0x000009e8,
 	// Entry 60 - 7F
-	0x00000a4b, 0x00000a61, 0x00000a91,
-} // Size: 420 bytes
+	0x00000a51, 0x00000a91, 0x00000aa7, 0x00000ad7,
+} // Size: 424 bytes
 
-const en_USData string = "" + // Size: 2705 bytes
+const en_USData string = "" + // Size: 2775 bytes
 	"\x02We are waiting for your payment.\x02A payment is on the way, but we'" +
 	"re still waiting for the required amount of confirmations on the blockch" +
 	"ain.\x02We have received your payment, but have gone out of stock meanwh" +
@@ -286,15 +288,16 @@ const en_USData string = "" + // Size: 2705 bytes
 	"ome products.\x02Product\x02Amount\x02In Stock\x02Item Price\x02click he" +
 	"re to read more\x02Where do you live? (We have to ask that for tax reaso" +
 	"ns. It does not affect the price or the goods.)\x02Not in the European U" +
-	"nion\x02non-EU\x02European Union\x02Please select a country from the lis" +
-	"t.\x02Create order\x02Order\x02Status\x02Current deletion date\x02JavaSc" +
-	"ript is disabled in your browser. In order to receive updates on your or" +
-	"der, please reload this page from time to time.\x02What's next?\x02Check" +
-	" your order.\x02Pay your order. (Unpaid orders are deleted after 30 days" +
-	".)\x02Payment\x02Your Order\x02Sum\x02Overall Sum\x02Your Goods\x02Deliv" +
-	"ery Date\x02Code\x02You will receive the missing codes here as soon as t" +
-	"hey are in stock again. Sorry for the inconvenience.\x02You will receive" +
-	" your codes as soon as you payment has arrived.\x02Internal server error" +
-	"\x02There is no such order, or it has been deleted."
+	"nion\x02European Union\x02please select\x02Please select your country of" +
+	" residence.\x02Options are limited by your IP address and browser langua" +
+	"ge.\x02Create order\x02Order\x02Status\x02Current deletion date\x02JavaS" +
+	"cript is disabled in your browser. In order to receive updates on your o" +
+	"rder, please reload this page from time to time.\x02What's next?\x02Chec" +
+	"k your order.\x02Pay your order. (Unpaid orders are deleted after 30 day" +
+	"s.)\x02Payment\x02Your Order\x02Sum\x02Overall Sum\x02Your Goods\x02Deli" +
+	"very Date\x02Code\x02You will receive the missing codes here as soon as " +
+	"they are in stock again. Sorry for the inconvenience.\x02You will receiv" +
+	"e your codes as soon as you payment has arrived.\x02Internal server erro" +
+	"r\x02There is no such order, or it has been deleted."
 
-	// Total table size 6713 bytes (6KiB); checksum: 78835E9F
+	// Total table size 6887 bytes (6KiB); checksum: E51EED3

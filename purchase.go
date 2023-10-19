@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/lang"
 )
 
@@ -50,18 +49,6 @@ func (s Status) TranslateName(l lang.Lang) string {
 	default:
 		return ""
 	}
-}
-
-func IsValidCountryCode(s string) bool {
-	if s == "non-EU" {
-		return true
-	}
-	for _, c := range countries.EuropeanUnion {
-		if c.ID == s {
-			return true
-		}
-	}
-	return false
 }
 
 // Mask replaces all but the last six letters of a string by asterisks.

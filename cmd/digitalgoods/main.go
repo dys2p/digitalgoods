@@ -30,6 +30,7 @@ import (
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/countries"
+	"github.com/dys2p/eco/countries/detect"
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
@@ -182,7 +183,9 @@ func main() {
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", byCookie)
 	custRtr.Handler(http.MethodGet, "/captcha/:fn", captcha.Handler())
-	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{btcpayStore})
+	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
+		BTCPay: btcpayStore,
+	})
 	custRtr.NotFound = http.HandlerFunc(langs.Redirect)
 
 	var custSrv = ListenAndServe("tcp", ":9002", custSessions.LoadAndSave(custRtr), stop)
@@ -242,16 +245,21 @@ func main() {
 func custOrderGet(w http.ResponseWriter, r *http.Request) {
 	lang := langs.ByPath(r)
 
-	err := html.CustOrder.Execute(w, string(lang), &html.CustOrderData{
-		ArticlesByCategory: database.GetArticlesByCategory,
-		Categories:         database.GetCategories,
-		EUCountries:        countries.TranslateAndSort(string(lang), countries.EuropeanUnion),
+	availableEUCountries, availableNonEU, err := detect.Countries(r)
+	if err != nil {
+		log.Printf("error detecting countries: %v", err)
+	}
+
+	err = html.CustOrder.Execute(w, string(lang), &html.CustOrderData{
+		ArticlesByCategory:   database.GetArticlesByCategory,
+		Categories:           database.GetCategories,
+		AvailableEUCountries: countries.TranslateAndSort(lang.String(), availableEUCountries),
+		AvailableNonEU:       availableNonEU,
 
 		Captcha: captcha.TemplateData{
 			ID: captcha.New(),
 		},
-		CountryAnswer: lang.Tr("default-eu-country"),
-		Lang:          lang,
+		Lang: lang,
 	})
 	if err != nil {
 		log.Println(err)
@@ -261,21 +269,28 @@ func custOrderGet(w http.ResponseWriter, r *http.Request) {
 func custOrderPost(w http.ResponseWriter, r *http.Request) {
 	lang := langs.ByPath(r)
 
+	availableEUCountries, availableNonEU, err := detect.Countries(r)
+	if err != nil {
+		log.Printf("error detecting countries: %v", err)
+	}
+
 	// read user input
 
 	co := &html.CustOrderData{
-		ArticlesByCategory: database.GetArticlesByCategory,
-		Categories:         database.GetCategories,
-		EUCountries:        countries.TranslateAndSort(string(lang), countries.EuropeanUnion),
+		ArticlesByCategory:   database.GetArticlesByCategory,
+		Categories:           database.GetCategories,
+		AvailableEUCountries: countries.TranslateAndSort(lang.String(), availableEUCountries),
+		AvailableNonEU:       availableNonEU,
 
 		Captcha: captcha.TemplateData{
 			Answer: r.PostFormValue("captcha-answer"),
 			ID:     r.PostFormValue("captcha-id"),
 		},
-		Cart:          make(map[string]int),
-		OtherCountry:  make(map[string]string),
-		CountryAnswer: r.PostFormValue("country"),
-		Lang:          lang,
+		Cart:         make(map[string]int),
+		OtherCountry: make(map[string]string),
+		Area:         r.PostFormValue("area"),
+		EUCountry:    r.PostFormValue("eu-country"),
+		Lang:         lang,
 	}
 
 	articles, err := database.GetArticles()
@@ -341,11 +356,16 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !digitalgoods.IsValidCountryCode(co.CountryAnswer) {
-		co.CountryAnswer = ""
-		co.CountryErr = true
-		html.CustOrder.Execute(w, string(lang), co)
-		return
+	var country countries.Country
+	if co.Area == "non-eu" {
+		country = countries.NonEU
+	} else {
+		country = countries.Country(co.EUCountry)
+		if !countries.InEuropeanUnion(country) {
+			co.CountryErr = true
+			html.CustOrder.Execute(w, string(lang), co)
+			return
+		}
 	}
 
 	// VerifyString probably invalidates the captcha, so we check this last
@@ -364,7 +384,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 		Ordered:     order,
 		CreateDate:  time.Now().Format("2006-01-02"),
 		DeleteDate:  time.Now().AddDate(0, 0, 31).Format("2006-01-02"),
-		CountryCode: co.CountryAnswer,
+		CountryCode: string(country),
 	}
 
 	if err := database.AddPurchase(purchase); err != nil {
@@ -391,7 +411,6 @@ func custPurchaseGetRedirect(w http.ResponseWriter, r *http.Request) {
 
 	redirectPath := lang.Path("/order/%s/%s", purchase.ID, purchase.AccessKey)
 	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
-	return
 }
 
 func custPurchaseGetPaymentRedirect(w http.ResponseWriter, r *http.Request) {
@@ -407,7 +426,7 @@ func custPurchaseGetPaymentRedirect(w http.ResponseWriter, r *http.Request) {
 
 	paymentMethod := params.ByName("payment")
 
-	redirectPath := lang.Path("/%s/order/%s/%s/%s", purchase.ID, purchase.AccessKey, paymentMethod)
+	redirectPath := lang.Path("/order/%s/%s/%s", purchase.ID, purchase.AccessKey, paymentMethod)
 	http.Redirect(w, r, redirectPath, http.StatusMovedPermanently)
 }
 

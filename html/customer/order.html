@@ -97,19 +97,30 @@
 		</tbody>
 	</table>
 
-	<div class="mb-3">
+	<div class="mt-4 mb-3">
 		<label class="form-label">{{.Tr "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"}}</label>
-		<select class="form-select {{if .CountryErr}}is-invalid{{end}}" name="country" required>
-			<optgroup label="{{.Tr "Not in the European Union"}}">
-				<option {{if eq .CountryAnswer "non-EU"}}selected{{end}} value="non-EU">{{.Tr "non-EU"}}</option>
-			</optgroup>
-			<optgroup label="{{.Tr "European Union"}}">
-				{{range $.EUCountries}}
-					<option {{if eq $.CountryAnswer .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
-				{{end}}
-			</optgroup>
-		</select>
-		<div class="invalid-feedback">{{.Tr "Please select a country from the list."}}</div>
+		{{if .AvailableNonEU}}
+			<div class="form-check {{if .CountryErr}}is-invalid{{end}}">
+				<input class="form-check-input"  id="non-eu" type="radio" name="area" value="non-eu" {{if eq $.Area "non-eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = true;">
+				<label class="form-check-label" for="non-eu">{{.Tr "Not in the European Union"}}</label>
+			</div>
+		{{end}}
+		{{if .AvailableEUCountries}}
+			<div class="d-flex align-items-center">
+				<div class="form-check me-2">
+					<input class="form-check-input"  id="eu" type="radio" name="area" value="eu" {{if eq $.Area "eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = false;">
+					<label class="form-check-label" for="eu">{{.Tr "European Union"}}:</label>
+				</div>
+				<select class="form-select d-inline w-auto" id="eu-country" name="eu-country" onchange="document.getElementById('eu').checked = true;">
+					<option class="text-secondary">{{.Tr "please select"}}</option>
+					{{range $.AvailableEUCountries}}
+						<option {{if eq $.EUCountry .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
+					{{end}}
+				</select>
+			</div>
+		{{end}}
+		<div class="invalid-feedback">{{.Tr "Please select your country of residence."}}</div>
+		<div class="form-text">{{.Tr "Options are limited by your IP address and browser language."}}</div>
 	</div>
 
 	{{template "captcha" .Captcha}}

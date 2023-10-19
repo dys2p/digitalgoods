@@ -382,19 +382,24 @@
             "translation": "Außerhalb der Europäischen Union"
         },
         {
-            "id": "non-EU",
-            "message": "non-EU",
-            "translation": "non-EU"
-        },
-        {
             "id": "European Union",
             "message": "European Union",
             "translation": "Europäische Union"
         },
         {
-            "id": "Please select a country from the list.",
-            "message": "Please select a country from the list.",
-            "translation": "Bitte wähle ein Land aus der Liste aus."
+            "id": "please select",
+            "message": "please select",
+            "translation": "bitte auswählen"
+        },
+        {
+            "id": "Please select your country of residence.",
+            "message": "Please select your country of residence.",
+            "translation": "Bitte wähle das Land aus, in dem du wohnst."
+        },
+        {
+            "id": "Options are limited by your IP address and browser language.",
+            "message": "Options are limited by your IP address and browser language.",
+            "translation": "Die Auswahlmöglichkeiten hängen von deiner IP-Adresse und Spracheinstellung ab."
         },
         {
             "id": "Create order",

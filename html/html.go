@@ -101,16 +101,18 @@ var (
 )
 
 type CustOrderData struct {
-	ArticlesByCategory func(category *digitalgoods.Category) ([]digitalgoods.Article, error)
-	Categories         func() ([]*digitalgoods.Category, error)
-	EUCountries        []countries.CountryWithName
+	ArticlesByCategory   func(category *digitalgoods.Category) ([]digitalgoods.Article, error)
+	Categories           func() ([]*digitalgoods.Category, error)
+	AvailableEUCountries []countries.CountryWithName
+	AvailableNonEU       bool
 
-	Captcha       captcha.TemplateData
-	Cart          map[string]int    // user input: HTML input name -> amount
-	OtherCountry  map[string]string // user input: article ID -> country ID
-	CountryAnswer string
-	CountryErr    bool
-	OrderErr      bool
+	Captcha      captcha.TemplateData
+	Cart         map[string]int    // user input: HTML input name -> amount
+	OtherCountry map[string]string // user input: article ID -> country ID
+	Area         string
+	EUCountry    string
+	CountryErr   bool
+	OrderErr     bool
 	lang.Lang
 }
 
@@ -124,8 +126,8 @@ type CustPurchaseData struct {
 	PaysrvErr      error
 	PreferOnion    bool
 	lang.Lang
-	ActiveTab   string
-	TabBTCPay   string
-	TabCash     string
-	TabSepa     string
+	ActiveTab string
+	TabBTCPay string
+	TabCash   string
+	TabSepa   string
 }

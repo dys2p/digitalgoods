@@ -534,13 +534,6 @@
             "fuzzy": true
         },
         {
-            "id": "non-EU",
-            "message": "non-EU",
-            "translation": "non-EU",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "European Union",
             "message": "European Union",
             "translation": "European Union",
@@ -548,9 +541,23 @@
             "fuzzy": true
         },
         {
-            "id": "Please select a country from the list.",
-            "message": "Please select a country from the list.",
-            "translation": "Please select a country from the list.",
+            "id": "please select",
+            "message": "please select",
+            "translation": "please select",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please select your country of residence.",
+            "message": "Please select your country of residence.",
+            "translation": "Please select your country of residence.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Options are limited by your IP address and browser language.",
+            "message": "Options are limited by your IP address and browser language.",
+            "translation": "Options are limited by your IP address and browser language.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
