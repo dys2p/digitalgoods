@@ -10,7 +10,7 @@
 	</li>
 </ul>
 {{if .HasCountry}}
-	<div class="alert alert-warning mt-3">Land: {{$.Translate .Country}}</div>
+	<div class="alert alert-warning mt-3">Land: {{.Country}}</div>
 {{end}}
 <!-- text -->
 <form method="post" action="/upload/{{.ID}}/{{.Country}}/text">

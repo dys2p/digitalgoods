@@ -7,7 +7,7 @@
 	</div>
 	<p>Amount: {{FmtEuro .Ordered.Sum}}</p>
 	<p>Status: {{.Status}}</p>
-	<p>Country: {{.Translate .CountryCode}}</p>
+	<p>Country: {{.CountryCode}}</p>
 
 	<table class="table">
 		<thead>
@@ -22,7 +22,7 @@
 			{{range .DB.GroupedOrder .Ordered}}
 				{{range .Rows}}
 					<tr>
-						<td>{{($.DB.GetArticle .ArticleID).Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Translate .}}){{end}}{{end}}</td>
+						<td>{{($.DB.GetArticle .ArticleID).Name}} {{with .CountryID}}{{if ne . "all"}}({{.}}){{end}}{{end}}</td>
 						<td>{{.Amount}}</td>
 						<td>{{FmtEuro .ItemPrice}}</td>
 						<td>{{FmtEuro .Sum}}</td>
@@ -45,11 +45,11 @@
 			<label class="input-group-text">Adjust country?</label>
 			<select class="form-select" name="country">
 				<optgroup label="Not in the European Union">
-					<option {{if eq .CountryCode "non-EU"}}selected{{end}} value="non-EU">{{.Translate "non-EU"}}</option>
+					<option {{if eq .CountryCode "non-EU"}}selected{{end}} value="non-EU">non-EU</option>
 				</optgroup>
 				<optgroup label="European Union">
 					{{range $.EUCountries}}
-						<option {{if eq $.CountryCode .ID}}selected{{end}} value="{{.ID}}">{{.Name}}</option>
+						<option {{if eq $.CountryCode .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
 					{{end}}
 				</optgroup>
 			</select>
