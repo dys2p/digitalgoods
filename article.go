@@ -13,63 +13,10 @@ func IsISOCountryCode(s string) bool {
 	return false
 }
 
-type Article struct {
+type Variant struct {
 	ID         string
-	CategoryID string
 	Name       string
-	Price      int            // euro cents
-	Stock      map[string]int // key is country or "all"
+	Price      int // euro cents
 	OnDemand   bool
-	Hide       bool // see Portfolio() for precedence
 	HasCountry bool // ISO country
-}
-
-// Max returns the max value which can be ordered (like the HTML input max attribute). The stock quantity should be displayed separately, so users know how many items can be delivered instantly.
-func (a Article) Max(countryID string) int {
-	max := a.Stock[countryID]
-	if a.OnDemand {
-		max += 100
-	}
-	return max
-}
-
-func (a Article) OnDemandOnly(countryID string) bool {
-	return a.Stock[countryID] == 0 && a.OnDemand
-}
-
-// Portfolio determines whether an article is shown in the portfolio. It might be still sold out at the moment.
-func (a Article) Portfolio() bool {
-	//if len(a.Stock) > 0 || a.OnDemand {
-	//	return true
-	//}
-	return !a.Hide
-}
-
-func (a *Article) FeaturedCountryIDs() []string {
-	if !a.HasCountry {
-		return []string{"all"}
-	}
-	ids := []string{}
-	for _, countryID := range ISOCountryCodes {
-		if stock := a.Stock[countryID]; stock > 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
-}
-
-func (a *Article) OtherCountryIDs() []string {
-	if !a.HasCountry {
-		return nil
-	}
-	if !a.OnDemand {
-		return nil
-	}
-	ids := []string{}
-	for _, countryID := range ISOCountryCodes {
-		if stock := a.Stock[countryID]; stock == 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
 }

@@ -101,14 +101,15 @@ var (
 )
 
 type CustOrderData struct {
-	ArticlesByCategory   func(category *digitalgoods.Category) ([]digitalgoods.Article, error)
-	Categories           func() ([]*digitalgoods.Category, error)
+	Articles             func() ([]*digitalgoods.Article, error)
 	AvailableEUCountries []countries.CountryWithName
 	AvailableNonEU       bool
+	Catalog              digitalgoods.Catalog
+	Stock                digitalgoods.Stock
 
 	Captcha      captcha.TemplateData
 	Cart         map[string]int    // user input: HTML input name -> amount
-	OtherCountry map[string]string // user input: article ID -> country ID
+	OtherCountry map[string]string // user input: variant ID -> country ID
 	Area         string
 	EUCountry    string
 	CountryErr   bool
@@ -117,8 +118,7 @@ type CustOrderData struct {
 }
 
 type CustPurchaseData struct {
-	GroupedOrder func(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error)
-
+	GroupedOrder   []digitalgoods.OrderedArticle
 	Purchase       *digitalgoods.Purchase
 	PaymentMethod  payment.Method
 	PaymentMethods []payment.Method

@@ -1,17 +1,15 @@
 {{define "content"}}
-<h1>Digital Goods</h1>
 <ol>
 	<li>{{.Tr "Enter the amount and press „Order“."}}</li>
-	<li>{{.Tr "Save the URL of your order. You need it to access your goods if you closed the browser tab."}}</li>
+	<li>{{.Tr "Save the URL of your order. You will need it to access your goods."}}</li>
 	<li>
-		{{.Tr "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)"}}
+		<a href="/{{.Lang}}/payment.html">{{.Tr "Pay your order."}}</a> ({{.Tr "Unpaid orders are deleted after 30 days."}})
 		<ul>
-			<li>{{.Tr "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain."}}</li>
-			<li>{{.Tr "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing."}}</li>
-			<li>{{.Tr "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day."}}</li>
+			<li>{{.Tr "Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain."}}</li>
+			<li>{{.Tr "Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing."}}</li>
+			<li>{{.Tr "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day."}}</li>
 		</ul>
 	</li>
-	<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
 	<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
 </ol>
 {{if .OrderErr}}
@@ -28,73 +26,64 @@
 				<th>{{.Tr "Item Price"}}</th>
 			</tr>
 		</thead>
-		<tbody>
-		{{range call .Categories}}
-			<tr>
-				<td colspan="5">
-					<!-- same as in purchase.html -->
-					<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
-					<label for="toggle-{{.ID}}">
-						<strong>{{.Name}}</strong>
-						({{$.Tr "click here to read more"}})
-					</label>
-					<style>
-					#toggle-{{.ID}} ~ div {
-						display: none;
-					}
-					#toggle-{{.ID}}:checked ~ div {
-						display: block;
-					}
-					</style>
-					<div class="mt-2 mb-1">
-						{{.TranslateDescription $.Lang}}
-					</div>
-					<!-- end -->
-				</td>
-			</tr>
-			{{range (call $.ArticlesByCategory .)}}
-				{{if .Portfolio}}
-					{{$article := .}}
-					{{range $article.FeaturedCountryIDs}}
-						<tr>
-							<td class="ps-4">{{$article.Name}} {{if $article.OnDemandOnly .}}(on demand){{end}}</td>
-							<td>{{if ne . "all"}}{{.}}{{end}}</td>
-							<td>
-								{{$max := $article.Max .}}
-								{{if gt $max 0}}
-									<input name="{{$article.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-%s" $article.ID .)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-								{{end}}
-							</td>
-							<td>{{index $article.Stock .}}</td>
-							<td>{{FmtEuro $article.Price}}</td>
-						</tr>
-					{{end}}
-					{{with $article.OtherCountryIDs}}
-						{{$selectedCountryID := $.Tr "default-iso-country"}}
-						{{with index $.OtherCountry $article.ID}}
-							{{$selectedCountryID = .}}
-						{{end}}
-						<tr>
-							<td class="ps-4">{{$article.Name}} {{if $article.OnDemand}}(on demand){{end}}</td><!-- assuming other country IDs are always on demand -->
-							<td>
-								<select name="{{$article.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-									<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
-									{{range .}}
-										<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
+		{{range .Catalog}}
+			<tbody class="table-group-divider">
+				<tr>
+					<td colspan="5">
+						<strong><em>{{.TranslateName $.Lang}}</em></strong>
+					</td>
+				</tr>
+				{{range .Articles}}
+					<tr>
+						<td colspan="5">
+							<details>
+								<summary><strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
+								<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+							</details>
+						</td>
+					</tr>
+					{{range .Variants}}
+						{{$variant := .}}
+						{{range $.Stock.FeaturedCountryIDs $variant}}
+							<tr>
+								<td class="ps-4">{{$variant.Name}} {{if $.Stock.OnDemandOnly $variant .}}(on demand){{end}}</td>
+								<td>{{if ne . "all"}}{{.}}{{end}}</td>
+								<td>
+									{{$max := $.Stock.Max $variant .}}
+									{{if gt $max 0}}
+										<input name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-%s" $variant.ID .)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
 									{{end}}
-								</select>
-							</td>
-							<td>
-								<input name="{{$article.ID}}-other-amount" type="number" min="0" max="100" value="{{index $.Cart (printf "%s-other-amount" $article.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-							</td>
-							<td>0</td><!-- assuming non-featured items are not on stock -->
-							<td>{{FmtEuro $article.Price}}</td>
-						</tr>
+								</td>
+								<td>{{$.Stock.Get $variant .}}</td>
+								<td>{{FmtEuro $variant.Price}}</td>
+							</tr>
+						{{end}}
+						{{with $.Stock.OtherCountryIDs $variant}}
+							{{$selectedCountryID := $.Tr "default-iso-country"}}
+							{{with index $.OtherCountry $variant.ID}}
+								{{$selectedCountryID = .}}
+							{{end}}
+							<tr>
+								<td class="ps-4">{{$variant.Name}} {{if $variant.OnDemand}}(on demand){{end}}</td><!-- assuming other country IDs are always on demand -->
+								<td>
+									<select name="{{$variant.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+										<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
+										{{range .}}
+											<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
+										{{end}}
+									</select>
+								</td>
+								<td>
+									<input name="{{$variant.ID}}-other-amount" type="number" min="0" max="100" value="{{index $.Cart (printf "%s-other-amount" $variant.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
+								</td>
+								<td>0</td><!-- assuming non-featured items are not on stock -->
+								<td>{{FmtEuro $variant.Price}}</td>
+							</tr>
+						{{end}}
 					{{end}}
 				{{end}}
-			{{end}}
+			</tbody>
 		{{end}}
-		</tbody>
 	</table>
 
 	<div class="mt-4 mb-3">

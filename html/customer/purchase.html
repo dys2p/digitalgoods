@@ -53,39 +53,26 @@
 		</tr>
 	</thead>
 	<tbody>
-		{{range (call .GroupedOrder .Purchase.Ordered)}}
-			{{if gt (len .Rows) 0}}
+		{{range .GroupedOrder}}
 			<tr>
 				<td colspan="4">
-					{{with .Category}}
-						<!-- same as in order.html -->
-						<input style="display: none" type="checkbox" id="toggle-{{.ID}}">
-						<label for="toggle-{{.ID}}">
-							<strong>{{.Name}}</strong>
-							({{$.Tr "click here to read more"}})
-						</label>
-						<style>
-						#toggle-{{.ID}} ~ div {
-							display: none;
-						}
-						#toggle-{{.ID}}:checked ~ div {
-							display: block;
-						}
-						</style>
-						<div class="mt-2 mb-1">
-							{{.TranslateDescription $.Lang}}
-						</div>
-						<!-- end -->
-					{{end}}
+					<!-- same as in order.html -->
+					<details>
+						<summary><strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
+						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+					</details>
+					<!-- end -->
 				</td>
 			</tr>
+			{{range .Variants}}
+				{{$variant := .}}
 				{{range .Rows}}
-				<tr>
-					<td>{{.Article.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
-					<td>{{.Amount}}</td>
-					<td>{{FmtEuro .ItemPrice}}</td>
-					<td>{{FmtEuro .Sum}}</td>
-				</tr>
+					<tr>
+						<td>{{$variant.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+						<td>{{.Amount}}</td>
+						<td>{{FmtEuro .ItemPrice}}</td>
+						<td>{{FmtEuro .Sum}}</td>
+					</tr>
 				{{end}}
 			{{end}}
 		{{end}}
@@ -107,8 +94,8 @@
 	<tbody>
 		{{range .Purchase.Delivered}}
 		<tr>
-			<td>{{.ArticleID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
-			<td>{{$.FmtDate .ParseDeliveryDate}}</td>
+			<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+			<td>{{.DeliveryDate}}</td>
 			<td>
 				{{if .Image}}
 					<!-- use image as code -->

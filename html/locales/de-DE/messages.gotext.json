@@ -307,34 +307,34 @@
             "translation": "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."
         },
         {
-            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."
+            "id": "Save the URL of your order. You will need it to access your goods.",
+            "message": "Save the URL of your order. You will need it to access your goods.",
+            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen."
         },
         {
-            "id": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
-            "message": "Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)",
-            "translation": "Bezahle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+            "id": "Pay your order.",
+            "message": "Pay your order.",
+            "translation": "Bezahle deine Bestellung."
         },
         {
-            "id": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
-            "message": "Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
-            "translation": "Monero (XMR) oder Bitcoin (BTC): Die schnellste Methode. Deine Gutscheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bestätigt ist."
+            "id": "Unpaid orders are deleted after 30 days.",
+            "message": "Unpaid orders are deleted after 30 days.",
+            "translation": "Unbezahlte Bestellungen werden nach 30 Tagen gelöscht."
         },
         {
-            "id": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
-            "message": "Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.",
-            "translation": "Bargeld: Schicke Bargeld in einem versichertem Brief oder Paket an unsere Adresse in Deutschland. Wir schreddern den Brief nach dem Freischalten."
+            "id": "Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "message": "Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain.",
+            "translation": "Monero (XMR) oder Bitcoin (BTC): Deine Gutscheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bestätigt ist."
         },
         {
-            "id": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
-            "message": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.",
+            "id": "Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing.",
+            "message": "Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing.",
+            "translation": "Bargeld: Schicke Bargeld (wir akzeptieren 20 Währungen) an unsere Adresse in Deutschland. Wir schreddern den Brief nach dem Freischalten."
+        },
+        {
+            "id": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day.",
+            "message": "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day.",
             "translation": "SEPA-Überweisung auf unser deutsches Bankkonto. Wir prüfen es täglich manuell auf neue Zahlungseingänge."
-        },
-        {
-            "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
-            "message": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
-            "translation": "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."
         },
         {
             "id": "Write down your codes. We will delete them 30 days after delivery.",
@@ -365,11 +365,6 @@
             "id": "Item Price",
             "message": "Item Price",
             "translation": "Einzelpreis"
-        },
-        {
-            "id": "click here to read more",
-            "message": "click here to read more",
-            "translation": "klicke hier für mehr Infos"
         },
         {
             "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
@@ -437,9 +432,19 @@
             "translation": "Prüfe deine Bestellung."
         },
         {
+            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."
+        },
+        {
             "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
             "message": "Pay your order. (Unpaid orders are deleted after 30 days.)",
-            "translation": "Bezahle deine Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+            "translation": "Bezahle deine Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+        },
+        {
+            "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "message": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
+            "translation": "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."
         },
         {
             "id": "Payment",

@@ -32,15 +32,7 @@ type DB struct {
 	deleteFromStock *sql.Stmt
 	getFromStock    *sql.Stmt // might return less than n rows
 	getStock        *sql.Stmt
-
-	// article
-	getArticle            *sql.Stmt
-	getArticles           *sql.Stmt
-	getArticlesByCategory *sql.Stmt
-
-	// categories
-	getCategories           *sql.Stmt
-	getCategoryDescriptions *sql.Stmt
+	getStockAll     *sql.Stmt
 
 	// VAT
 	logVAT *sql.Stmt
@@ -58,28 +50,6 @@ func OpenDB() (*DB, error) {
 	}
 
 	_, err = sqlDB.Exec(`
-		pragma foreign_keys = on;
-		create table if not exists category (
-			id   text not null primary key,
-			name text not null
-		);
-		create table if not exists category_description (
-			category text not null,
-			language text not null,
-			htmltext text not null,
-			foreign key (category) references category(id),
-			primary key (category, language)
-		);
-		create table if not exists article (
-			id          text    not null primary key,
-			category    text    not null,
-			name        text    not null,
-			price       integer not null, -- euro cents
-			ondemand    boolean not null,
-			hide        boolean not null, -- article is no longer sold, but we don't delete it from the database because that would break purchases
-			has_country boolean not null, -- taxed separately
-			foreign key (category) references category(id)
-		);
 		create table if not exists purchase (
 			id          text not null primary key,
 			access_key  text not null,
@@ -94,22 +64,20 @@ func OpenDB() (*DB, error) {
 			unique(payment_key)
 		);
 		create table if not exists stock (
-			article text not null,
+			variant text not null,
 			country text not null,
 			itemid  text not null primary key,
 			image   blob,
-			addtime int  not null, -- yyyy-mm-dd, sell oldest first
-			foreign key (article) references article(id)
+			addtime int  not null -- yyyy-mm-dd, sell oldest first
 		);
 		create table if not exists vat_log (
 			purchase       text not null, -- six-digit id
 			deliverydate   text not null, -- yyyy-mm-dd
-			article        text not null,
-			articlecountry text not null,
+			variant        text not null,
+			variantcountry text not null,
 			amount         int  not null,
 			itemprice      int  not null, -- euro cents
-			countrycode    text not null,
-			foreign key (article) references article(id)
+			countrycode    text not null
 		);
 	`)
 	if err != nil {
@@ -140,22 +108,35 @@ func OpenDB() (*DB, error) {
 	db.updatePurchaseStatus = mustPrepare(" update purchase set status = ?, deletedate = ?                where id = ?")
 
 	// stock
-	db.addToStock = mustPrepare("insert into stock (article, country, itemid, image, addtime) values (?, ?, ?, ?, ?)")
-	db.deleteFromStock = mustPrepare("delete from stock where itemid = ?") // itemid is primary key
-	db.getFromStock = mustPrepare("select itemid, image from stock where article = ? and country = ? order by addtime asc limit ?")
-	db.getStock = mustPrepare("select country, count(1) from stock where article = ? group by country")
-
-	// article
-	db.getArticle = mustPrepare("select id, category, name, price, ondemand, hide, has_country from article where id = ?")
-	db.getArticles = mustPrepare("select id, name, price, ondemand, hide, has_country from article group by id order by name")
-	db.getArticlesByCategory = mustPrepare("select id, name, price, ondemand, hide, has_country from article where category = ? group by id order by price asc")
-
-	// categories
-	db.getCategories = mustPrepare("select id, name from category order by name")
-	db.getCategoryDescriptions = mustPrepare("select category, language, htmltext from category_description")
+	db.addToStock = mustPrepare(`
+		insert into stock (variant, country, itemid, image, addtime)
+		values (?, ?, ?, ?, ?)
+	`)
+	db.deleteFromStock = mustPrepare(`
+		delete
+		from stock
+		where itemid = ?
+	`) // itemid is primary key
+	db.getFromStock = mustPrepare(`
+		select itemid, image
+		from stock
+		where variant = ? and country = ?
+		order by addtime asc limit ?
+	`)
+	db.getStock = mustPrepare(`
+		select country, count(1)
+		from stock
+		where variant = ?
+		group by country
+	`)
+	db.getStockAll = mustPrepare(`
+		select variant, country, count(1)
+		from stock
+		group by variant, country
+	`)
 
 	// VAT
-	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, article, articlecountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?, ?)")
+	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, variant, variantcountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -176,9 +157,32 @@ func (db *DB) AddPurchase(purchase *digitalgoods.Purchase) error {
 	return errors.New("database ran out of IDs")
 }
 
-func (db *DB) AddToStock(articleID, countryID, itemID string, image []byte) error {
-	_, err := db.addToStock.Exec(articleID, countryID, itemID, image, time.Now().Format(digitalgoods.DateFmt))
+func (db *DB) AddToStock(variantID, countryID, itemID string, image []byte) error {
+	_, err := db.addToStock.Exec(variantID, countryID, itemID, image, time.Now().Format(digitalgoods.DateFmt))
 	return err
+}
+
+func (db *DB) GetStock() (digitalgoods.Stock, error) {
+	rows, err := db.getStockAll.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var stock = make(digitalgoods.Stock)
+	for rows.Next() {
+		var variant string
+		var country string
+		var count int
+		if err := rows.Scan(&variant, &country, &count); err != nil {
+			return nil, err
+		}
+		if _, ok := stock[variant]; !ok {
+			stock[variant] = make(map[string]int)
+		}
+		stock[variant][country] = stock[variant][country] + count
+	}
+	return stock, nil
 }
 
 func (db *DB) Cleanup() error {
@@ -244,108 +248,6 @@ func (db *DB) FulfilUnderdelivered() error {
 	return nil
 }
 
-func (db *DB) GetArticle(id string) (digitalgoods.Article, error) {
-	var article = digitalgoods.Article{}
-	if err := db.getArticle.QueryRow(id).Scan(&article.ID, &article.CategoryID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
-		return article, err
-	}
-	if err := db.readStock(&article); err != nil {
-		return article, err
-	}
-	return article, nil
-}
-
-func (db *DB) GetArticles() ([]digitalgoods.Article, error) {
-	return db.articles(db.getArticles)
-}
-
-func (db *DB) GetArticlesByCategory(category *digitalgoods.Category) ([]digitalgoods.Article, error) {
-	return db.articles(db.getArticlesByCategory, category.ID)
-}
-
-func (db *DB) articles(stmt *sql.Stmt, args ...interface{}) ([]digitalgoods.Article, error) {
-	rows, err := stmt.Query(args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var articles = []digitalgoods.Article{}
-	for rows.Next() {
-		var article = digitalgoods.Article{}
-		if err := rows.Scan(&article.ID, &article.Name, &article.Price, &article.OnDemand, &article.Hide, &article.HasCountry); err != nil {
-			return nil, err
-		}
-		if err := db.readStock(&article); err != nil {
-			return nil, err
-		}
-		articles = append(articles, article)
-	}
-	return articles, nil
-}
-
-func (db *DB) readStock(article *digitalgoods.Article) error {
-	rows, err := db.getStock.Query(article.ID)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-	article.Stock = make(map[string]int)
-	for rows.Next() {
-		var country string
-		var count int
-		if err := rows.Scan(&country, &count); err != nil {
-			return err
-		}
-		if count > 0 {
-			article.Stock[country] = count
-		}
-	}
-	return nil
-}
-
-func (db *DB) GetCategories() ([]*digitalgoods.Category, error) {
-
-	// table category
-	rows, err := db.getCategories.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var categories = []*digitalgoods.Category{}
-	var catMap = map[string]*digitalgoods.Category{}
-	for rows.Next() {
-		var category = &digitalgoods.Category{}
-		if err := rows.Scan(&category.ID, &category.Name); err != nil {
-			return nil, err
-		}
-		categories = append(categories, category)
-		catMap[category.ID] = category
-	}
-
-	// table category_description
-	rows, err = db.getCategoryDescriptions.Query()
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var categoryID string
-		var lang string
-		var htmltext string
-		if err := rows.Scan(&categoryID, &lang, &htmltext); err != nil {
-			return nil, err
-		}
-		if c, ok := catMap[categoryID]; ok {
-			if c.Description == nil {
-				c.Description = make(map[string]string)
-			}
-			c.Description[lang] = htmltext
-		}
-	}
-
-	return categories, nil
-}
-
 func (db *DB) GetPurchaseByID(id string) (*digitalgoods.Purchase, error) {
 	return db.getPurchaseWithStmt(db.getPurchaseByID, id)
 }
@@ -375,7 +277,7 @@ func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Pu
 	// backwards compatibility
 	for i := range purchase.Delivered {
 		if purchase.Delivered[i].CountryID == "" {
-			switch purchase.Delivered[i].ArticleID {
+			switch purchase.Delivered[i].VariantID {
 			case "tutanota12":
 				fallthrough
 			case "tutanota24":
@@ -440,7 +342,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 		// get from stock
 
-		rows, err := tx.Stmt(db.getFromStock).Query(u.ArticleID, u.CountryID, u.Amount)
+		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.CountryID, u.Amount)
 		if err != nil {
 			return err
 		}
@@ -459,7 +361,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 			}
 			log.Printf("delivering %s: %s", digitalgoods.Mask(purchase.ID), digitalgoods.Mask(itemID))
 			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
-				ArticleID:    u.ArticleID,
+				VariantID:    u.VariantID,
 				CountryID:    u.CountryID,
 				ID:           itemID,
 				Image:        image,
@@ -471,7 +373,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		// log VAT
 
 		if gotAmount > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.ArticleID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}
@@ -501,32 +403,4 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	}
 
 	return tx.Commit()
-}
-
-func (db *DB) GroupedOrder(order digitalgoods.Order) ([]digitalgoods.OrderGroup, error) {
-	categories, err := db.GetCategories()
-	if err != nil {
-		return nil, err
-	}
-	result := make([]digitalgoods.OrderGroup, len(categories))
-	for i := range categories {
-		result[i].Category = categories[i]
-	}
-	for _, row := range order {
-		article, err := db.GetArticle(row.ArticleID)
-		if err != nil {
-			return nil, err
-		}
-		// linear search, well...
-		for i := range categories {
-			if categories[i].ID == article.CategoryID {
-				result[i].Rows = append(result[i].Rows, digitalgoods.OrderArticle{
-					OrderRow: row,
-					Article:  &article,
-				})
-			}
-		}
-		// don't check the unlikely case that no category is found because this is just the "ordered" section and not the "delivered goods" section
-	}
-	return result, nil
 }

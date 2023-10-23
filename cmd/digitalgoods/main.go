@@ -250,12 +250,28 @@ func custOrderGet(w http.ResponseWriter, r *http.Request) {
 		log.Printf("error detecting countries: %v", err)
 	}
 
+	// pre-select area if it's known
+	var area string
+	if len(availableEUCountries) == 0 {
+		area = "non-eu"
+	}
+	if !availableNonEU {
+		area = "eu"
+	}
+
+	stock, err := database.GetStock()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError) // TODO
+		return
+	}
+
 	err = html.CustOrder.Execute(w, string(lang), &html.CustOrderData{
-		ArticlesByCategory:   database.GetArticlesByCategory,
-		Categories:           database.GetCategories,
 		AvailableEUCountries: countries.TranslateAndSort(lang.String(), availableEUCountries),
 		AvailableNonEU:       availableNonEU,
+		Catalog:              catalog,
+		Stock:                stock,
 
+		Area: area,
 		Captcha: captcha.TemplateData{
 			ID: captcha.New(),
 		},
@@ -277,10 +293,9 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 	// read user input
 
 	co := &html.CustOrderData{
-		ArticlesByCategory:   database.GetArticlesByCategory,
-		Categories:           database.GetCategories,
 		AvailableEUCountries: countries.TranslateAndSort(lang.String(), availableEUCountries),
 		AvailableNonEU:       availableNonEU,
+		Catalog:              catalog,
 
 		Captcha: captcha.TemplateData{
 			Answer: r.PostFormValue("captcha-answer"),
@@ -293,56 +308,55 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 		Lang:         lang,
 	}
 
-	articles, err := database.GetArticles()
-	if err != nil {
-		html.ErrorInternal.Execute(w, lang)
-		return
-	}
+	variants := catalog.Variants()
 
 	order := digitalgoods.Order{} // in case of no errors
 
+	stock, err := database.GetStock()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError) // TODO
+		return
+	}
+
 	// same logic as in order template
-	for _, a := range articles {
-		if !a.Portfolio() {
-			continue
-		}
+	for _, variant := range variants {
 		// featured countries
-		for _, countryID := range a.FeaturedCountryIDs() {
-			val := r.PostFormValue(a.ID + "-" + countryID)
+		for _, countryID := range stock.FeaturedCountryIDs(variant) {
+			val := r.PostFormValue(variant.ID + "-" + countryID)
 			if val == "" {
 				continue
 			}
 			amount, _ := strconv.Atoi(val)
-			if max := a.Max(countryID); amount > max {
+			if max := stock.Max(variant, countryID); amount > max {
 				amount = max // client must check their order before payment
 			}
 			if amount > 0 {
-				co.Cart[a.ID+"-"+countryID] = amount
+				co.Cart[variant.ID+"-"+countryID] = amount
 				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
-					ArticleID: a.ID,
+					VariantID: variant.ID,
 					CountryID: countryID,
-					ItemPrice: a.Price,
+					ItemPrice: variant.Price,
 				})
 			}
 		}
 		// other country
-		if amount, _ := strconv.Atoi(r.PostFormValue(a.ID + "-other-amount")); amount > 0 {
-			countryID := r.PostFormValue(a.ID + "-other-country")
+		if amount, _ := strconv.Atoi(r.PostFormValue(variant.ID + "-other-amount")); amount > 0 {
+			countryID := r.PostFormValue(variant.ID + "-other-country")
 			if countryID == "" || !digitalgoods.IsISOCountryCode(countryID) {
 				continue
 			}
-			if max := a.Max(countryID); amount > max {
+			if max := stock.Max(variant, countryID); amount > max {
 				amount = max // client must check their order before payment
 			}
 			if amount > 0 {
-				co.Cart[a.ID+"-other-amount"] = amount
-				co.OtherCountry[a.ID] = countryID
+				co.Cart[variant.ID+"-other-amount"] = amount
+				co.OtherCountry[variant.ID] = countryID
 				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
-					ArticleID: a.ID,
+					VariantID: variant.ID,
 					CountryID: countryID,
-					ItemPrice: a.Price,
+					ItemPrice: variant.Price,
 				})
 			}
 		}
@@ -448,8 +462,7 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = html.CustPurchase.Execute(w, string(lang), &html.CustPurchaseData{
-		GroupedOrder: database.GroupedOrder, // returns empty orderGroups too
-
+		GroupedOrder:   catalog.GroupOrder(purchase.Ordered),
 		Purchase:       purchase,
 		PaymentMethod:  paymentMethod,
 		URL:            absHost(r) + lang.Path("order/%s/%s", purchase.ID, purchase.AccessKey),
@@ -545,11 +558,13 @@ func staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
+		GroupedOrder    []digitalgoods.OrderedArticle
 		CurrencyOptions []rates.Option
 		EUCountries     []countries.CountryWithName
 		DB              *db.DB
 	}{
 		purchase,
+		catalog.GroupOrder(purchase.Ordered),
 		currencyOptions,
 		countries.TranslateAndSort("de", countries.EuropeanUnion),
 		database,
@@ -579,7 +594,8 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type staffSelect struct {
-	Articles       []digitalgoods.Article
+	Stock          digitalgoods.Stock
+	Variants       []digitalgoods.Variant
 	Underdelivered map[string]int // key: articleID-countryID
 }
 
@@ -587,37 +603,9 @@ func (s *staffSelect) ISOCountryCodes() []string {
 	return digitalgoods.ISOCountryCodes[:]
 }
 
-func (s *staffSelect) FeaturedCountryIDs(article digitalgoods.Article) []string {
-	if !article.HasCountry {
-		return []string{"all"}
-	}
-	ids := []string{}
-	for _, countryID := range digitalgoods.ISOCountryCodes {
-		if stock := article.Stock[countryID]; stock > 0 || s.Underdelivered[article.ID+"-"+countryID] > 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
-}
-
-func (s *staffSelect) OtherCountryIDs(article digitalgoods.Article) []string {
-	if !article.HasCountry {
-		return nil
-	}
-	ids := []string{}
-	for _, countryID := range digitalgoods.ISOCountryCodes {
-		if stock := article.Stock[countryID]; stock == 0 && s.Underdelivered[article.ID+"-"+countryID] == 0 {
-			ids = append(ids, countryID)
-		}
-	}
-	return ids
-}
-
 func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
-	articles, err := database.GetArticles()
-	if err != nil {
-		return err
-	}
+	variants := catalog.Variants()
+
 	underdeliveredPurchaseIDs, err := database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
@@ -633,11 +621,18 @@ func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		for _, uf := range unfulfilled {
-			underdelivered[uf.ArticleID+"-"+uf.CountryID] += uf.Amount
+			underdelivered[uf.VariantID+"-"+uf.CountryID] += uf.Amount
 		}
 	}
+
+	stock, err := database.GetStock()
+	if err != nil {
+		return err
+	}
+
 	return html.StaffSelect.Execute(w, &staffSelect{
-		articles,
+		stock,
+		variants,
 		underdelivered,
 	})
 }
@@ -649,16 +644,16 @@ func staffUploadGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
-	article, err := database.GetArticle(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
+	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
 	if err != nil {
 		return err
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
 	return html.StaffUploadImage.Execute(w, struct {
-		digitalgoods.Article
+		digitalgoods.Variant
 		Country string
 	}{
-		article,
+		variant,
 		countryID,
 	})
 }
@@ -692,16 +687,16 @@ func staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
-	article, err := database.GetArticle(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
+	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
 	if err != nil {
 		return err
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
 	return html.StaffUploadText.Execute(w, struct {
-		digitalgoods.Article
+		digitalgoods.Variant
 		Country string
 	}{
-		article,
+		variant,
 		countryID,
 	})
 }

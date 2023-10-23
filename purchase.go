@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"time"
 
 	"github.com/dys2p/eco/lang"
 )
@@ -82,7 +81,7 @@ func (p *Purchase) GetUnfulfilled() (Order, error) {
 			// backwards compatibility: rather fail than risk double fulfilment
 			return nil, nil
 		}
-		if err := unfulfilled.Decrement(d.ArticleID, d.CountryID); err != nil {
+		if err := unfulfilled.Decrement(d.VariantID, d.CountryID); err != nil {
 			return nil, err
 		}
 	}
@@ -112,14 +111,14 @@ func (order Order) Empty() bool {
 	return true
 }
 
-func (order *Order) Decrement(articleID, countryID string) error {
+func (order *Order) Decrement(variantID, countryID string) error {
 	for i := range *order {
-		if (*order)[i].ArticleID == articleID && (*order)[i].CountryID == countryID {
+		if (*order)[i].VariantID == variantID && (*order)[i].CountryID == countryID {
 			(*order)[i].Amount--
 			return nil
 		}
 	}
-	return fmt.Errorf("article %s with country %s not found in order", articleID, countryID)
+	return fmt.Errorf("variant %s with country %s not found in order", variantID, countryID)
 }
 
 func (order Order) Sum() int {
@@ -132,7 +131,7 @@ func (order Order) Sum() int {
 
 type OrderRow struct {
 	Amount    int    `json:"amount"`
-	ArticleID string `json:"article-id"`
+	VariantID string `json:"article-id"` // legacy json id
 	CountryID string `json:"country-id"`
 	ItemPrice int    `json:"item-price"` // euro cents, price at order time
 }
@@ -144,29 +143,13 @@ func (o OrderRow) Sum() int {
 type Delivery []DeliveredItem
 
 type DeliveredItem struct {
-	ArticleID    string `json:"article-id"`
+	VariantID    string `json:"article-id"` // legacy json id
 	CountryID    string `json:"country-id"`
 	ID           string `json:"id"` // can be the code, but not necessarily
 	Image        []byte `json:"image"`
 	DeliveryDate string `json:"delivery-date"`
 }
 
-func (item *DeliveredItem) ParseDeliveryDate() (time.Time, error) {
-	return time.Parse(DateFmt, string(item.DeliveryDate))
-}
-
 func (item *DeliveredItem) ImageSrc() template.URL {
 	return template.URL(fmt.Sprintf("data:%s;base64,%s", http.DetectContentType(item.Image), base64.StdEncoding.EncodeToString(item.Image)))
-}
-
-// Higher-level data structures:
-
-type OrderArticle struct {
-	OrderRow
-	Article *Article
-}
-
-type OrderGroup struct {
-	Category *Category
-	Rows     []OrderArticle
 }

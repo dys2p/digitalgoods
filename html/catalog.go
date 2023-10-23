@@ -41,7 +41,7 @@ func init() {
 var messageKeyToIndex = map[string]int{
 	"A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.": 1,
 	"Amount": 70,
-	"As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.": 66,
+	"As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.": 88,
 	"Australian dollars":       41,
 	"Austria":                  8,
 	"Belgium":                  9,
@@ -50,22 +50,22 @@ var messageKeyToIndex = map[string]int{
 	"Canadian dollars":         43,
 	"Cash":                     39,
 	"Cash in Foreign Currency": 38,
-	"Cash: Send an insured letter or package with cash to our office in Germany. We shred the letter after processing.": 64,
-	"Check your order.":     86,
+	"Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing.": 65,
+	"Check your order.":     85,
 	"Chinese renminbi":      45,
-	"Code":                  94,
-	"Create order":          80,
+	"Code":                  95,
+	"Create order":          79,
 	"Croatia":               22,
-	"Current deletion date": 83,
+	"Current deletion date": 82,
 	"Cyprus":                12,
 	"Czech koruna":          46,
 	"Czechia":               13,
 	"Danish krone":          47,
-	"Delivery Date":         93,
+	"Delivery Date":         94,
 	"Denmark":               15,
 	"Enter the amount and press „Order“.": 60,
 	"Estonia":               16,
-	"European Union":        76,
+	"European Union":        75,
 	"Finalized":             7,
 	"Finland":               18,
 	"France":                19,
@@ -74,17 +74,17 @@ var messageKeyToIndex = map[string]int{
 	"Hungary":               23,
 	"Icelandic króna":       49,
 	"In Stock":              71,
-	"Internal server error": 97,
+	"Internal server error": 98,
 	"Ireland":               24,
 	"Italy":                 25,
 	"Item Price":            72,
 	"Japanese yen":          50,
-	"JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.": 84,
+	"JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.": 83,
 	"Latvia":     28,
 	"Lithuania":  26,
 	"Luxembourg": 27,
 	"Malta":      29,
-	"Monero (XMR) or Bitcoin (BTC): The fastest method. Your voucher codes are shown as soon as your payment is confirmed on the blockchain.": 63,
+	"Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain.": 64,
 	"Monero or Bitcoin":         37,
 	"Netherlands":               30,
 	"New":                       4,
@@ -92,16 +92,16 @@ var messageKeyToIndex = map[string]int{
 	"New Taiwan dollars":        58,
 	"New Zealand dollars":       53,
 	"Norwegian krone":           52,
-	"Not in the European Union": 75,
-	"Options are limited by your IP address and browser language.": 79,
-	"Order":       81,
-	"Overall Sum": 91,
-	"Pay your order using one of these methods. (Unpaid orders are deleted after 30 days.)": 62,
-	"Pay your order. (Unpaid orders are deleted after 30 days.)":                            87,
-	"Payment":                                  88,
+	"Not in the European Union": 74,
+	"Options are limited by your IP address and browser language.": 78,
+	"Order":           80,
+	"Overall Sum":     92,
+	"Pay your order.": 62,
+	"Pay your order. (Unpaid orders are deleted after 30 days.)": 87,
+	"Payment":                                  89,
 	"Payment processing":                       5,
 	"Please select some products.":             68,
-	"Please select your country of residence.": 78,
+	"Please select your country of residence.": 77,
 	"Poland":         31,
 	"Polish złoty":   54,
 	"Portugal":       32,
@@ -109,38 +109,39 @@ var messageKeyToIndex = map[string]int{
 	"Product":        69,
 	"Romania":        33,
 	"Romanian leu":   55,
-	"SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day.": 65,
+	"SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day.": 66,
 	"SEPA Bank Transfer": 40,
-	"Save the URL of your order. You need it to access your goods if you closed the browser tab.": 61,
+	"Save the URL of your order. You need it to access your goods if you closed the browser tab.": 86,
+	"Save the URL of your order. You will need it to access your goods.":                          61,
 	"Serbian dinar": 56,
 	"Slovakia":      36,
 	"Slovenia":      35,
 	"Spain":         17,
-	"Status":        82,
-	"Sum":           90,
+	"Status":        81,
+	"Sum":           91,
 	"Sweden":        34,
 	"Swedish krona": 57,
 	"Swiss francs":  44,
 	"Switzerland":   11,
-	"There is no such order, or it has been deleted.": 98,
-	"Underdelivered":                   6,
-	"United Kingdom":                   20,
-	"United States dollars":            59,
-	"We are waiting for your payment.": 0,
+	"There is no such order, or it has been deleted.": 99,
+	"Underdelivered":                           6,
+	"United Kingdom":                           20,
+	"United States dollars":                    59,
+	"Unpaid orders are deleted after 30 days.": 63,
+	"We are waiting for your payment.":         0,
 	"We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.": 2,
-	"What's next?": 85,
-	"Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)":     74,
+	"What's next?": 84,
+	"Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)":     73,
 	"Write down your codes. We will delete them 30 days after delivery.":                                       67,
-	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 95,
-	"You will receive your codes as soon as you payment has arrived.":                                          96,
-	"Your Goods":                      92,
-	"Your Order":                      89,
+	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 96,
+	"You will receive your codes as soon as you payment has arrived.":                                          97,
+	"Your Goods":                      93,
+	"Your Order":                      90,
 	"Your codes have been delivered.": 3,
-	"click here to read more":         73,
-	"please select":                   77,
+	"please select":                   76,
 }
 
-var de_DEIndex = []uint32{ // 100 elements
+var de_DEIndex = []uint32{ // 101 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000002b, 0x000000a1, 0x00000155,
 	0x00000176, 0x0000017a, 0x00000193, 0x000001a2,
@@ -158,21 +159,22 @@ var de_DEIndex = []uint32{ // 100 elements
 	0x00000395, 0x000003a5, 0x000003b9, 0x000003c8,
 	0x000003e7, 0x000003fa, 0x0000040c, 0x0000041d,
 	0x0000042d, 0x0000043d, 0x00000450, 0x0000045e,
-	0x00000468, 0x000004a6, 0x00000532, 0x000005a0,
+	0x00000468, 0x000004a6, 0x00000504, 0x0000051e,
 	// Entry 40 - 5F
-	0x00000637, 0x000006c9, 0x00000736, 0x00000821,
-	0x0000086f, 0x0000089d, 0x000008a5, 0x000008ac,
-	0x000008b6, 0x000008c2, 0x000008de, 0x0000096d,
-	0x00000990, 0x000009a3, 0x000009b4, 0x000009e1,
-	0x00000a33, 0x00000a3d, 0x00000a48, 0x00000a4f,
-	0x00000a67, 0x00000ad9, 0x00000aed, 0x00000b06,
-	0x00000b74, 0x00000b7c, 0x00000b8d, 0x00000b93,
-	0x00000b9f, 0x00000baa, 0x00000bb6, 0x00000bbb,
+	0x00000556, 0x000005d5, 0x00000660, 0x000006cd,
+	0x0000071b, 0x00000749, 0x00000751, 0x00000758,
+	0x00000762, 0x0000076e, 0x000007fd, 0x00000820,
+	0x00000833, 0x00000844, 0x00000871, 0x000008c3,
+	0x000008cd, 0x000008d8, 0x000008df, 0x000008f7,
+	0x00000969, 0x0000097d, 0x00000996, 0x00000a22,
+	0x00000a76, 0x00000b61, 0x00000b69, 0x00000b7a,
+	0x00000b80, 0x00000b8c, 0x00000b97, 0x00000ba3,
 	// Entry 60 - 7F
-	0x00000c28, 0x00000c6d, 0x00000c83, 0x00000cc0,
-} // Size: 424 bytes
+	0x00000ba8, 0x00000c15, 0x00000c5a, 0x00000c70,
+	0x00000cad,
+} // Size: 428 bytes
 
-const de_DEData string = "" + // Size: 3264 bytes
+const de_DEData string = "" + // Size: 3245 bytes
 	"\x02Wir warten auf den Eingang deiner Zahlung.\x02Eine Zahlung wurde ang" +
 	"ekündigt, aber wir warten noch auf die erforderliche Anzahl Bestätigunge" +
 	"n auf der Blockchain.\x02Wir haben deine Zahlung erhalten, aber unser Vo" +
@@ -193,37 +195,37 @@ const de_DEData string = "" + // Size: 3264 bytes
 	"u\x02Serbische Dinar\x02Schwedische Kronen\x02Taiwan-Dollar\x02US-Dollar" +
 	"\x02Wähle die gewünschte Anzahl aus und klicke „Bestellen“.\x02Speichere" +
 	" die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter z" +
-	"uzugreifen, falls du das Browserfenster geschlossen hast.\x02Bezahle dei" +
-	"ne Bestellung mit einer dieser Methoden. (Unbezahlte Bestellungen werden" +
-	" nach 30 Tagen gelöscht.)\x02Monero (XMR) oder Bitcoin (BTC): Die schnel" +
-	"lste Methode. Deine Gutscheincodes werden angezeigt, sobald deine Zahlun" +
-	"g in der Blockchain bestätigt ist.\x02Bargeld: Schicke Bargeld in einem " +
-	"versichertem Brief oder Paket an unsere Adresse in Deutschland. Wir schr" +
-	"eddern den Brief nach dem Freischalten.\x02SEPA-Überweisung auf unser de" +
-	"utsches Bankkonto. Wir prüfen es täglich manuell auf neue Zahlungseingän" +
-	"ge.\x02Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutschei" +
-	"ncodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt" +
-	" zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, " +
-	"sobald Nachschub da ist.\x02Notiere dir die Codes. Wir werden sie 30 Tag" +
-	"e nach der Auslieferung löschen.\x02Bitte wähle eines oder mehrere Produ" +
-	"kte aus.\x02Produkt\x02Anzahl\x02Vorrätig\x02Einzelpreis\x02klicke hier " +
-	"für mehr Infos\x02In welchem Land bist du ansässig? (Das müssen wir aus " +
-	"steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder d" +
-	"ie Leistung.)\x02Außerhalb der Europäischen Union\x02Europäische Union" +
-	"\x02bitte auswählen\x02Bitte wähle das Land aus, in dem du wohnst.\x02Di" +
-	"e Auswahlmöglichkeiten hängen von deiner IP-Adresse und Spracheinstellun" +
-	"g ab.\x02Bestellen\x02Bestellung\x02Status\x02Derzeitiges Löschdatum\x02" +
-	"Du hast JavaScript deaktiviert. Um über Neuigkeiten informiert zu werden" +
-	", lade die Seite bitte gelegentlich neu.\x02Wie geht es weiter?\x02Prüfe" +
-	" deine Bestellung.\x02Bezahle deine Bestellung mit einer dieser Methoden" +
-	". (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)\x02Zahlung" +
-	"\x02Deine Bestellung\x02Summe\x02Gesamtsumme\x02Deine Ware\x02Lieferdatu" +
-	"m\x02Code\x02Die fehlenden Codes erhälst du, sobald Nachschub eintroffen" +
-	" ist. Wir bitten die Umstände zu entschuldigen.\x02Sobald deine Zahlung " +
-	"bei uns eingegangen ist, erhälst du die Codes.\x02Interner Serverfehler" +
-	"\x02Diese Bestellung existiert nicht oder wurde schon gelöscht."
+	"uzugreifen.\x02Bezahle deine Bestellung.\x02Unbezahlte Bestellungen werd" +
+	"en nach 30 Tagen gelöscht.\x02Monero (XMR) oder Bitcoin (BTC): Deine Gut" +
+	"scheincodes werden angezeigt, sobald deine Zahlung in der Blockchain bes" +
+	"tätigt ist.\x02Bargeld: Schicke Bargeld (wir akzeptieren 20 Währungen) a" +
+	"n unsere Adresse in Deutschland. Wir schreddern den Brief nach dem Freis" +
+	"chalten.\x02SEPA-Überweisung auf unser deutsches Bankkonto. Wir prüfen e" +
+	"s täglich manuell auf neue Zahlungseingänge.\x02Notiere dir die Codes. W" +
+	"ir werden sie 30 Tage nach der Auslieferung löschen.\x02Bitte wähle eine" +
+	"s oder mehrere Produkte aus.\x02Produkt\x02Anzahl\x02Vorrätig\x02Einzelp" +
+	"reis\x02In welchem Land bist du ansässig? (Das müssen wir aus steuerlich" +
+	"en Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistun" +
+	"g.)\x02Außerhalb der Europäischen Union\x02Europäische Union\x02bitte au" +
+	"swählen\x02Bitte wähle das Land aus, in dem du wohnst.\x02Die Auswahlmög" +
+	"lichkeiten hängen von deiner IP-Adresse und Spracheinstellung ab.\x02Bes" +
+	"tellen\x02Bestellung\x02Status\x02Derzeitiges Löschdatum\x02Du hast Java" +
+	"Script deaktiviert. Um über Neuigkeiten informiert zu werden, lade die S" +
+	"eite bitte gelegentlich neu.\x02Wie geht es weiter?\x02Prüfe deine Beste" +
+	"llung.\x02Speichere die Webadresse deiner Bestellung. Du brauchst sie, u" +
+	"m auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen h" +
+	"ast.\x02Bezahle deine Bestellung. (Unbezahlte Bestellungen werden nach 3" +
+	"0 Tagen gelöscht.)\x02Sobald deine Zahlung bei uns eintrifft, werden dir" +
+	" deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, d" +
+	"ass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Co" +
+	"des angezeigt, sobald Nachschub da ist.\x02Zahlung\x02Deine Bestellung" +
+	"\x02Summe\x02Gesamtsumme\x02Deine Ware\x02Lieferdatum\x02Code\x02Die feh" +
+	"lenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir bitten die" +
+	" Umstände zu entschuldigen.\x02Sobald deine Zahlung bei uns eingegangen " +
+	"ist, erhälst du die Codes.\x02Interner Serverfehler\x02Diese Bestellung " +
+	"existiert nicht oder wurde schon gelöscht."
 
-var en_USIndex = []uint32{ // 100 elements
+var en_USIndex = []uint32{ // 101 elements
 	// Entry 0 - 1F
 	0x00000000, 0x00000021, 0x0000008e, 0x0000012d,
 	0x0000014d, 0x00000151, 0x00000164, 0x00000173,
@@ -241,21 +243,22 @@ var en_USIndex = []uint32{ // 100 elements
 	0x0000031e, 0x0000032d, 0x0000033e, 0x0000034b,
 	0x00000364, 0x00000374, 0x00000388, 0x00000396,
 	0x000003a3, 0x000003b1, 0x000003bf, 0x000003d2,
-	0x000003e8, 0x00000410, 0x0000046c, 0x000004c2,
+	0x000003e8, 0x00000410, 0x00000453, 0x00000463,
 	// Entry 40 - 5F
-	0x0000054a, 0x000005bc, 0x0000063e, 0x00000702,
-	0x00000745, 0x00000762, 0x0000076a, 0x00000771,
-	0x0000077a, 0x00000785, 0x0000079d, 0x00000802,
-	0x0000081c, 0x0000082b, 0x00000839, 0x00000862,
-	0x0000089f, 0x000008ac, 0x000008b2, 0x000008b9,
-	0x000008cf, 0x0000094d, 0x0000095a, 0x0000096c,
-	0x000009a7, 0x000009af, 0x000009ba, 0x000009be,
-	0x000009ca, 0x000009d5, 0x000009e3, 0x000009e8,
+	0x0000048c, 0x00000500, 0x0000056a, 0x000005e3,
+	0x00000626, 0x00000643, 0x0000064b, 0x00000652,
+	0x0000065b, 0x00000666, 0x000006cb, 0x000006e5,
+	0x000006f4, 0x00000702, 0x0000072b, 0x00000768,
+	0x00000775, 0x0000077b, 0x00000782, 0x00000798,
+	0x00000816, 0x00000823, 0x00000835, 0x00000891,
+	0x000008cc, 0x00000990, 0x00000998, 0x000009a3,
+	0x000009a7, 0x000009b3, 0x000009be, 0x000009cc,
 	// Entry 60 - 7F
-	0x00000a51, 0x00000a91, 0x00000aa7, 0x00000ad7,
-} // Size: 424 bytes
+	0x000009d1, 0x00000a3a, 0x00000a7a, 0x00000a90,
+	0x00000ac0,
+} // Size: 428 bytes
 
-const en_USData string = "" + // Size: 2775 bytes
+const en_USData string = "" + // Size: 2752 bytes
 	"\x02We are waiting for your payment.\x02A payment is on the way, but we'" +
 	"re still waiting for the required amount of confirmations on the blockch" +
 	"ain.\x02We have received your payment, but have gone out of stock meanwh" +
@@ -273,31 +276,31 @@ const en_USData string = "" + // Size: 2775 bytes
 	"raeli shekel (NIS)\x02Norwegian krone\x02New Zealand dollars\x02Polish z" +
 	"łoty\x02Romanian leu\x02Serbian dinar\x02Swedish krona\x02New Taiwan do" +
 	"llars\x02United States dollars\x02Enter the amount and press „Order“." +
-	"\x02Save the URL of your order. You need it to access your goods if you " +
-	"closed the browser tab.\x02Pay your order using one of these methods. (U" +
-	"npaid orders are deleted after 30 days.)\x02Monero (XMR) or Bitcoin (BTC" +
-	"): The fastest method. Your voucher codes are shown as soon as your paym" +
-	"ent is confirmed on the blockchain.\x02Cash: Send an insured letter or p" +
-	"ackage with cash to our office in Germany. We shred the letter after pro" +
-	"cessing.\x02SEPA (Single Euro Payments Area) bank transfer to our German" +
-	" bank account. We manually check for new incoming payments every day." +
+	"\x02Save the URL of your order. You will need it to access your goods." +
+	"\x02Pay your order.\x02Unpaid orders are deleted after 30 days.\x02Moner" +
+	"o (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your p" +
+	"ayment is confirmed on the blockchain.\x02Cash: Send cash (we accept 20 " +
+	"currencies) to our office in Germany. We shred the letter after processi" +
+	"ng.\x02SEPA (Single Euro Payments Area) bank transfer to our German bank" +
+	" account. We manually check for new payments every day.\x02Write down yo" +
+	"ur codes. We will delete them 30 days after delivery.\x02Please select s" +
+	"ome products.\x02Product\x02Amount\x02In Stock\x02Item Price\x02Where do" +
+	" you live? (We have to ask that for tax reasons. It does not affect the " +
+	"price or the goods.)\x02Not in the European Union\x02European Union\x02p" +
+	"lease select\x02Please select your country of residence.\x02Options are " +
+	"limited by your IP address and browser language.\x02Create order\x02Orde" +
+	"r\x02Status\x02Current deletion date\x02JavaScript is disabled in your b" +
+	"rowser. In order to receive updates on your order, please reload this pa" +
+	"ge from time to time.\x02What's next?\x02Check your order.\x02Save the U" +
+	"RL of your order. You need it to access your goods if you closed the bro" +
+	"wser tab.\x02Pay your order. (Unpaid orders are deleted after 30 days.)" +
 	"\x02As soon as your payment arrives, your voucher codes are shown. In th" +
 	"e unlikely case that your goods have become sold out in the meantime, yo" +
-	"ur codes will appear as soon as they are back in stock.\x02Write down yo" +
-	"ur codes. We will delete them 30 days after delivery.\x02Please select s" +
-	"ome products.\x02Product\x02Amount\x02In Stock\x02Item Price\x02click he" +
-	"re to read more\x02Where do you live? (We have to ask that for tax reaso" +
-	"ns. It does not affect the price or the goods.)\x02Not in the European U" +
-	"nion\x02European Union\x02please select\x02Please select your country of" +
-	" residence.\x02Options are limited by your IP address and browser langua" +
-	"ge.\x02Create order\x02Order\x02Status\x02Current deletion date\x02JavaS" +
-	"cript is disabled in your browser. In order to receive updates on your o" +
-	"rder, please reload this page from time to time.\x02What's next?\x02Chec" +
-	"k your order.\x02Pay your order. (Unpaid orders are deleted after 30 day" +
-	"s.)\x02Payment\x02Your Order\x02Sum\x02Overall Sum\x02Your Goods\x02Deli" +
-	"very Date\x02Code\x02You will receive the missing codes here as soon as " +
-	"they are in stock again. Sorry for the inconvenience.\x02You will receiv" +
-	"e your codes as soon as you payment has arrived.\x02Internal server erro" +
-	"r\x02There is no such order, or it has been deleted."
+	"ur codes will appear as soon as they are back in stock.\x02Payment\x02Yo" +
+	"ur Order\x02Sum\x02Overall Sum\x02Your Goods\x02Delivery Date\x02Code" +
+	"\x02You will receive the missing codes here as soon as they are in stock" +
+	" again. Sorry for the inconvenience.\x02You will receive your codes as s" +
+	"oon as you payment has arrived.\x02Internal server error\x02There is no " +
+	"such order, or it has been deleted."
 
-	// Total table size 6887 bytes (6KiB); checksum: E51EED3
+	// Total table size 6853 bytes (6KiB); checksum: EA06BD5D
