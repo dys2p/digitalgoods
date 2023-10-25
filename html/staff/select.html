@@ -20,7 +20,7 @@
 			{{$variant := .}}
 			{{range $.Stock.FeaturedCountryIDs $variant}}
 				<tr>
-					<td>{{$variant.Name}}</td>
+					<td>{{$variant.NameHTML}}</td>
 					<td>{{$variant.ID}}</td>
 					<td>{{FmtEuro $variant.Price}}</td>
 					<td>{{$.Stock.Get $variant .}}</td>
@@ -30,7 +30,7 @@
 			{{end}}
 			{{with $.Stock.OtherCountryIDs $variant}}
 				<tr>
-					<td>{{$variant.Name}}</td>
+					<td>{{$variant.NameHTML}}</td>
 					<td>{{$variant.ID}}</td>
 					<td>{{FmtEuro $variant.Price}}</td>
 					<td>0</td><!-- assuming non-featured items are not on stock -->
