@@ -58,7 +58,7 @@
 				<td colspan="4">
 					<!-- same as in order.html -->
 					<details>
-						<summary><strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
+						<summary><strong>{{.NameHTML}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
 						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
 					</details>
 					<!-- end -->
@@ -68,7 +68,7 @@
 				{{$variant := .}}
 				{{range .Rows}}
 					<tr>
-						<td>{{$variant.Name}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+						<td>{{$variant.NameHTML}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
 						<td>{{.Amount}}</td>
 						<td>{{FmtEuro .ItemPrice}}</td>
 						<td>{{FmtEuro .Sum}}</td>
