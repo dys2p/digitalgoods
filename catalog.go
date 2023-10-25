@@ -33,19 +33,13 @@ func (catalog Catalog) Variants() []Variant {
 }
 
 type Category struct {
-	Name        map[string]string
-	Description map[string]string
-	Articles    []Article
+	Name     map[string]string
+	Articles []Article
 }
 
 // only supports langs which exist as Name key, TODO: language.Matcher
 func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 	return template.HTML(cat.Name[string(l)])
-}
-
-// only supports langs which exist as Description key, TODO: language.Matcher
-func (cat *Category) TranslateDescription(l lang.Lang) template.HTML {
-	return template.HTML(cat.Description[string(l)])
 }
 
 type Article struct {
@@ -54,9 +48,13 @@ type Article struct {
 	Variants    []Variant
 }
 
+func (article Article) NameHTML() template.HTML {
+	return template.HTML(article.Name)
+}
+
 // only supports langs which exist as Description key, TODO: language.Matcher
-func (art *Article) TranslateDescription(l lang.Lang) template.HTML {
-	return template.HTML(art.Description[string(l)])
+func (article Article) TranslateDescription(l lang.Lang) template.HTML {
+	return template.HTML(article.Description[string(l)])
 }
 
 // groups order by article

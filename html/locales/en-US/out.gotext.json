@@ -422,6 +422,20 @@
             "fuzzy": true
         },
         {
+            "id": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
+            "message": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
+            "translation": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Read more",
+            "message": "Read more",
+            "translation": "Read more",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Enter the amount and press „Order“.",
             "message": "Enter the amount and press „Order“.",
             "translation": "Enter the amount and press „Order“.",
@@ -485,30 +499,16 @@
             "fuzzy": true
         },
         {
-            "id": "Product",
-            "message": "Product",
-            "translation": "Product",
+            "id": "View products",
+            "message": "View products",
+            "translation": "View products",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
         {
-            "id": "Amount",
-            "message": "Amount",
-            "translation": "Amount",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "In Stock",
-            "message": "In Stock",
-            "translation": "In Stock",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Item Price",
-            "message": "Item Price",
-            "translation": "Item Price",
+            "id": "currently not available",
+            "message": "currently not available",
+            "translation": "currently not available",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -548,9 +548,9 @@
             "fuzzy": true
         },
         {
-            "id": "Options are limited by your IP address and browser language.",
-            "message": "Options are limited by your IP address and browser language.",
-            "translation": "Options are limited by your IP address and browser language.",
+            "id": "Country options are limited by your IP address and browser language.",
+            "message": "Country options are limited by your IP address and browser language.",
+            "translation": "Country options are limited by your IP address and browser language.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -635,6 +635,27 @@
             "id": "Your Order",
             "message": "Your Order",
             "translation": "Your Order",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Product",
+            "message": "Product",
+            "translation": "Product",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Amount",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Item Price",
+            "message": "Item Price",
+            "translation": "Item Price",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

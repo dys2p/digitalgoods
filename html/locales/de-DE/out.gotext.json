@@ -302,6 +302,16 @@
             "translation": "US-Dollar"
         },
         {
+            "id": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
+            "message": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
+            "translation": "Bestelle mit wenigen Klicks. Bezahle mit Monero, Bitcoin, Bargeld in 20 Währungen, oder SEPA-Banküberweisung."
+        },
+        {
+            "id": "Read more",
+            "message": "Read more",
+            "translation": "Weiterlesen"
+        },
+        {
             "id": "Enter the amount and press „Order“.",
             "message": "Enter the amount and press „Order“.",
             "translation": "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."
@@ -347,24 +357,14 @@
             "translation": "Bitte wähle eines oder mehrere Produkte aus."
         },
         {
-            "id": "Product",
-            "message": "Product",
-            "translation": "Produkt"
+            "id": "View products",
+            "message": "View products",
+            "translation": "Produkten anzeigen"
         },
         {
-            "id": "Amount",
-            "message": "Amount",
-            "translation": "Anzahl"
-        },
-        {
-            "id": "In Stock",
-            "message": "In Stock",
-            "translation": "Vorrätig"
-        },
-        {
-            "id": "Item Price",
-            "message": "Item Price",
-            "translation": "Einzelpreis"
+            "id": "currently not available",
+            "message": "currently not available",
+            "translation": "im Moment nicht verfügbar"
         },
         {
             "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
@@ -392,9 +392,9 @@
             "translation": "Bitte wähle das Land aus, in dem du wohnst."
         },
         {
-            "id": "Options are limited by your IP address and browser language.",
-            "message": "Options are limited by your IP address and browser language.",
-            "translation": "Die Auswahlmöglichkeiten hängen von deiner IP-Adresse und Spracheinstellung ab."
+            "id": "Country options are limited by your IP address and browser language.",
+            "message": "Country options are limited by your IP address and browser language.",
+            "translation": "Die Länderoptionen hängen von deiner IP-Adresse und Spracheinstellung ab."
         },
         {
             "id": "Create order",
@@ -455,6 +455,21 @@
             "id": "Your Order",
             "message": "Your Order",
             "translation": "Deine Bestellung"
+        },
+        {
+            "id": "Product",
+            "message": "Product",
+            "translation": "Produkt"
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Anzahl"
+        },
+        {
+            "id": "Item Price",
+            "message": "Item Price",
+            "translation": "Einzelpreis"
         },
         {
             "id": "Sum",

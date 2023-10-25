@@ -1,121 +1,118 @@
 {{define "content"}}
-<ol>
-	<li>{{.Tr "Enter the amount and press „Order“."}}</li>
-	<li>{{.Tr "Save the URL of your order. You will need it to access your goods."}}</li>
-	<li>
-		<a href="/{{.Lang}}/payment.html">{{.Tr "Pay your order."}}</a> ({{.Tr "Unpaid orders are deleted after 30 days."}})
-		<ul>
-			<li>{{.Tr "Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain."}}</li>
-			<li>{{.Tr "Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing."}}</li>
-			<li>{{.Tr "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day."}}</li>
-		</ul>
-	</li>
-	<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
-</ol>
-{{if .OrderErr}}
-	<div class="alert alert-danger">{{.Tr "Please select some products."}}</div>
-{{end}}
-<form method="post">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>{{.Tr "Product"}}</th>
-				<th></th>
-				<th>{{.Tr "Amount"}}</th>
-				<th>{{.Tr "In Stock"}}</th>
-				<th>{{.Tr "Item Price"}}</th>
-			</tr>
-		</thead>
+	<details>
+		<summary>{{.Tr "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer."}}<span class="btn btn-outline-primary btn-sm ms-2">{{$.Tr "Read more"}}</span></summary>
+		<ol class="mt-2">
+			<li>{{.Tr "Enter the amount and press „Order“."}}</li>
+			<li>{{.Tr "Save the URL of your order. You will need it to access your goods."}}</li>
+			<li>
+				<a href="/{{.Lang}}/payment.html">{{.Tr "Pay your order."}}</a> ({{.Tr "Unpaid orders are deleted after 30 days."}})
+				<ul>
+					<li>{{.Tr "Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain."}}</li>
+					<li>{{.Tr "Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing."}}</li>
+					<li>{{.Tr "SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day."}}</li>
+				</ul>
+			</li>
+			<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
+		</ol>
+	</details>
+
+	{{if .OrderErr}}
+		<div class="alert alert-danger mt-3">{{.Tr "Please select some products."}}</div>
+	{{end}}
+
+	<form method="post">
 		{{range .Catalog}}
-			<tbody class="table-group-divider">
-				<tr>
-					<td colspan="5">
-						<strong><em>{{.TranslateName $.Lang}}</em></strong>
-					</td>
-				</tr>
-				{{range .Articles}}
-					<tr>
-						<td colspan="5">
-							<details>
-								<summary><strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
-								<p class="my-2">{{.TranslateDescription $.Lang}}</p>
-							</details>
-						</td>
-					</tr>
-					{{range .Variants}}
-						{{$variant := .}}
-						{{range $.Stock.FeaturedCountryIDs $variant}}
-							<tr>
-								<td class="ps-4">{{$variant.Name}} {{if $.Stock.OnDemandOnly $variant .}}(on demand){{end}}</td>
-								<td>{{if ne . "all"}}{{.}}{{end}}</td>
-								<td>
-									{{$max := $.Stock.Max $variant .}}
-									{{if gt $max 0}}
-										<input name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{index $.Cart (printf "%s-%s" $variant.ID .)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-									{{end}}
-								</td>
-								<td>{{$.Stock.Get $variant .}}</td>
-								<td>{{FmtEuro $variant.Price}}</td>
-							</tr>
-						{{end}}
-						{{with $.Stock.OtherCountryIDs $variant}}
-							{{$selectedCountryID := $.Tr "default-iso-country"}}
-							{{with index $.OtherCountry $variant.ID}}
-								{{$selectedCountryID = .}}
-							{{end}}
-							<tr>
-								<td class="ps-4">{{$variant.Name}} {{if $variant.OnDemand}}(on demand){{end}}</td><!-- assuming other country IDs are always on demand -->
-								<td>
-									<select name="{{$variant.ID}}-other-country" class="form-select" style="padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-										<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
-										{{range .}}
-											<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
+			<div class="pt-3">
+				<h3>{{.TranslateName $.Lang}}</h3>
+			</div>
+			{{range .Articles}}
+				<div class="pt-2">
+					<details {{if $.Cart.Has .}}open{{end}}>
+						<summary>
+							<strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">{{$.Tr "View products"}}</span>
+						</summary>
+						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+						{{range .Variants}}
+							{{$variant := .}}
+							{{range $.Stock.FeaturedCountryIDs $variant}}
+								<div class="row border-top mx-0 align-items-center">
+									<div class="col-md-6 py-2">{{$variant.NameHTML}}{{if $.Stock.OnDemandOnly $variant .}} (on demand){{end}}: {{FmtEuro $variant.Price}}</div>
+									<div class="col-md-2">{{if ne . "all"}}{{.}}{{end}}</div>
+									<div class="col-md-4 pb-2 pb-md-0 text-end">
+										{{$max := $.Stock.Max $variant .}}
+										{{if gt $max 0}}
+											<div class="input-group py-1 justify-content-end">
+												<input class="form-control py-1 flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
+												<span class="input-group-text py-1">{{$.Stock.Get $variant .}} on stock</span>
+											</div>
+										{{else}}
+											{{$.Tr "currently not available"}}
 										{{end}}
-									</select>
-								</td>
-								<td>
-									<input name="{{$variant.ID}}-other-amount" type="number" min="0" max="100" value="{{index $.Cart (printf "%s-other-amount" $variant.ID)}}" class="form-control" style="width: calc(1.75rem + 2px + 5ch); padding-top: 0.1875rem; padding-bottom: 0.1875rem; margin-top: -0.1875rem; margin-bottom: -0.1875rem">
-								</td>
-								<td>0</td><!-- assuming non-featured items are not on stock -->
-								<td>{{FmtEuro $variant.Price}}</td>
-							</tr>
+									</div>
+								</div>
+							{{end}}
+							{{with $.Stock.OtherCountryIDs $variant}}
+								{{$selectedCountryID := $.Tr "default-iso-country"}}
+								{{with index $.OtherCountry $variant.ID}}
+									{{$selectedCountryID = .}}
+								{{end}}
+								<div class="row border-top mx-0 align-items-center">
+									<div class="col-md-6 py-2">{{$variant.NameHTML}} {{if $variant.OnDemandOnly}}(on demand){{end}}: {{FmtEuro $variant.Price}}</div>
+									<div class="col-md-2">
+										<select name="{{$variant.ID}}-other-country" class="form-select">
+											<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
+											{{range .}}
+												<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
+											{{end}}
+										</select>
+									</div>
+									<div class="col-md-4 pb-2 pb-md-0 text-end">
+										<input name="{{$variant.ID}}-other-amount" type="number" min="0" max="100" value="{{$.Cart.Get $variant.ID "other"}}" class="form-control" style="width: calc(1.75rem + 2px + 6ch);">
+									</div>
+								</div>
+							{{end}}
 						{{end}}
-					{{end}}
-				{{end}}
-			</tbody>
-		{{end}}
-	</table>
-
-	<div class="mt-4 mb-3">
-		<label class="form-label">{{.Tr "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"}}</label>
-		{{if .AvailableNonEU}}
-			<div class="form-check {{if .CountryErr}}is-invalid{{end}}">
-				<input class="form-check-input"  id="non-eu" type="radio" name="area" value="non-eu" {{if eq $.Area "non-eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = true;">
-				<label class="form-check-label" for="non-eu">{{.Tr "Not in the European Union"}}</label>
-			</div>
-		{{end}}
-		{{if .AvailableEUCountries}}
-			<div class="d-flex align-items-center">
-				<div class="form-check me-2">
-					<input class="form-check-input"  id="eu" type="radio" name="area" value="eu" {{if eq $.Area "eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = false;">
-					<label class="form-check-label" for="eu">{{.Tr "European Union"}}:</label>
+					</details>
 				</div>
-				<select class="form-select d-inline w-auto" id="eu-country" name="eu-country" onchange="document.getElementById('eu').checked = true;">
-					<option class="text-secondary">{{.Tr "please select"}}</option>
-					{{range $.AvailableEUCountries}}
-						<option {{if eq $.EUCountry .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
-					{{end}}
-				</select>
-			</div>
+			{{end}}
 		{{end}}
-		<div class="invalid-feedback">{{.Tr "Please select your country of residence."}}</div>
-		<div class="form-text">{{.Tr "Options are limited by your IP address and browser language."}}</div>
-	</div>
 
-	{{template "captcha" .Captcha}}
+		<div class="mt-4 mb-3" id="section-country">
+			<label class="form-label">{{.Tr "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)"}}</label>
+			{{if .AvailableNonEU}}
+				<div class="form-check">
+					<input class="form-check-input {{if .CountryErr}}is-invalid{{end}}" id="non-eu" type="radio" name="area" value="non-eu" {{if eq $.Area "non-eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = true;">
+					<label class="form-check-label" for="non-eu">{{.Tr "Not in the European Union"}}</label>
+				</div>
+			{{end}}
+			{{if .AvailableEUCountries}}
+				<div class="d-flex align-items-center">
+					<div class="form-check me-2">
+						<input class="form-check-input {{if .CountryErr}}is-invalid{{end}}" id="eu" type="radio" name="area" value="eu" {{if eq $.Area "eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = false;">
+						<label class="form-check-label" for="eu">{{.Tr "European Union"}}:</label>
+					</div>
+					<select class="form-select d-inline w-auto {{if .CountryErr}}is-invalid{{end}}" id="eu-country" name="eu-country" onchange="document.getElementById('eu').checked = true;">
+						<option class="text-secondary">{{.Tr "please select"}}</option>
+						{{range $.AvailableEUCountries}}
+							<option {{if eq $.EUCountry .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
+						{{end}}
+					</select>
+				</div>
+			{{end}}
+			<div class="invalid-feedback">{{.Tr "Please select your country of residence."}}</div>
+			<div class="form-text">{{.Tr "Country options are limited by your IP address and browser language."}}</div>
+		</div>
 
-	<div class="text-end">
-		<input class="btn btn-success" type="submit" value="{{.Tr "Create order"}}">
-	</div>
-</form>
+		{{template "captcha" .Captcha}}
+
+		<div class="text-end">
+			<button class="btn btn-success" type="submit">{{.Tr "Create order"}}</button>
+		</div>
+	</form>
+
+	{{if .CountryErr}}
+		<script>
+			document.getElementById("section-country").scrollIntoView();
+		</script>
+	{{end}}
 {{end}}

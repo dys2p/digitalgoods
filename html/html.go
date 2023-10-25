@@ -108,7 +108,7 @@ type CustOrderData struct {
 	Stock                digitalgoods.Stock
 
 	Captcha      captcha.TemplateData
-	Cart         map[string]int    // user input: HTML input name -> amount
+	Cart         *digitalgoods.Cart
 	OtherCountry map[string]string // user input: variant ID -> country ID
 	Area         string
 	EUCountry    string

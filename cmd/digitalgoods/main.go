@@ -290,18 +290,25 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 		log.Printf("error detecting countries: %v", err)
 	}
 
+	stock, err := database.GetStock()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError) // TODO
+		return
+	}
+
 	// read user input
 
 	co := &html.CustOrderData{
 		AvailableEUCountries: countries.TranslateAndSort(lang.String(), availableEUCountries),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              catalog,
+		Stock:                stock,
 
 		Captcha: captcha.TemplateData{
 			Answer: r.PostFormValue("captcha-answer"),
 			ID:     r.PostFormValue("captcha-id"),
 		},
-		Cart:         make(map[string]int),
+		Cart:         &digitalgoods.Cart{},
 		OtherCountry: make(map[string]string),
 		Area:         r.PostFormValue("area"),
 		EUCountry:    r.PostFormValue("eu-country"),
@@ -310,13 +317,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 
 	variants := catalog.Variants()
 
-	order := digitalgoods.Order{} // in case of no errors
-
-	stock, err := database.GetStock()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError) // TODO
-		return
-	}
+	order := digitalgoods.Order{} // in case of no errors, TODO: create order from cart
 
 	// same logic as in order template
 	for _, variant := range variants {
@@ -331,7 +332,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 				amount = max // client must check their order before payment
 			}
 			if amount > 0 {
-				co.Cart[variant.ID+"-"+countryID] = amount
+				co.Cart.Add(variant.ID, countryID, amount)
 				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
 					VariantID: variant.ID,
@@ -350,7 +351,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 				amount = max // client must check their order before payment
 			}
 			if amount > 0 {
-				co.Cart[variant.ID+"-other-amount"] = amount
+				co.Cart.Add(variant.ID, "other", amount)
 				co.OtherCountry[variant.ID] = countryID
 				order = append(order, digitalgoods.OrderRow{
 					Amount:    amount,
