@@ -166,18 +166,18 @@ var de_DEIndex = []uint32{ // 104 elements
 	// Entry 40 - 5F
 	0x00000580, 0x0000059a, 0x000005d2, 0x00000651,
 	0x000006dc, 0x00000749, 0x00000797, 0x000007c5,
-	0x000007d8, 0x000007f3, 0x00000882, 0x000008a5,
-	0x000008b8, 0x000008c9, 0x000008f6, 0x00000942,
-	0x0000094c, 0x00000957, 0x0000095e, 0x00000976,
-	0x000009e8, 0x000009fc, 0x00000a15, 0x00000aa1,
-	0x00000af5, 0x00000be0, 0x00000be8, 0x00000bf9,
-	0x00000c01, 0x00000c08, 0x00000c14, 0x00000c1a,
+	0x000007d7, 0x000007f2, 0x00000881, 0x000008a4,
+	0x000008b7, 0x000008c8, 0x000008f5, 0x00000941,
+	0x0000094b, 0x00000956, 0x0000095d, 0x00000975,
+	0x000009e7, 0x000009fb, 0x00000a14, 0x00000aa0,
+	0x00000af4, 0x00000bdf, 0x00000be7, 0x00000bf8,
+	0x00000c00, 0x00000c07, 0x00000c13, 0x00000c19,
 	// Entry 60 - 7F
-	0x00000c26, 0x00000c31, 0x00000c3d, 0x00000c42,
-	0x00000caf, 0x00000cf4, 0x00000d0a, 0x00000d47,
+	0x00000c25, 0x00000c30, 0x00000c3c, 0x00000c41,
+	0x00000cae, 0x00000cf3, 0x00000d09, 0x00000d46,
 } // Size: 440 bytes
 
-const de_DEData string = "" + // Size: 3399 bytes
+const de_DEData string = "" + // Size: 3398 bytes
 	"\x02Wir warten auf den Eingang deiner Zahlung.\x02Eine Zahlung wurde ang" +
 	"ekündigt, aber wir warten noch auf die erforderliche Anzahl Bestätigunge" +
 	"n auf der Blockchain.\x02Wir haben deine Zahlung erhalten, aber unser Vo" +
@@ -208,18 +208,18 @@ const de_DEData string = "" + // Size: 3399 bytes
 	"-Überweisung auf unser deutsches Bankkonto. Wir prüfen es täglich manuel" +
 	"l auf neue Zahlungseingänge.\x02Notiere dir die Codes. Wir werden sie 30" +
 	" Tage nach der Auslieferung löschen.\x02Bitte wähle eines oder mehrere P" +
-	"rodukte aus.\x02Produkten anzeigen\x02im Moment nicht verfügbar\x02In we" +
-	"lchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fr" +
-	"agen. Es hat keinen Einfluss auf den Preis oder die Leistung.)\x02Außerh" +
-	"alb der Europäischen Union\x02Europäische Union\x02bitte auswählen\x02Bi" +
-	"tte wähle das Land aus, in dem du wohnst.\x02Die Länderoptionen hängen v" +
-	"on deiner IP-Adresse und Spracheinstellung ab.\x02Bestellen\x02Bestellun" +
-	"g\x02Status\x02Derzeitiges Löschdatum\x02Du hast JavaScript deaktiviert." +
-	" Um über Neuigkeiten informiert zu werden, lade die Seite bitte gelegent" +
-	"lich neu.\x02Wie geht es weiter?\x02Prüfe deine Bestellung.\x02Speichere" +
-	" die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter z" +
-	"uzugreifen, falls du das Browserfenster geschlossen hast.\x02Bezahle dei" +
-	"ne Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)" +
+	"rodukte aus.\x02Produkte anzeigen\x02im Moment nicht verfügbar\x02In wel" +
+	"chem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fra" +
+	"gen. Es hat keinen Einfluss auf den Preis oder die Leistung.)\x02Außerha" +
+	"lb der Europäischen Union\x02Europäische Union\x02bitte auswählen\x02Bit" +
+	"te wähle das Land aus, in dem du wohnst.\x02Die Länderoptionen hängen vo" +
+	"n deiner IP-Adresse und Spracheinstellung ab.\x02Bestellen\x02Bestellung" +
+	"\x02Status\x02Derzeitiges Löschdatum\x02Du hast JavaScript deaktiviert. " +
+	"Um über Neuigkeiten informiert zu werden, lade die Seite bitte gelegentl" +
+	"ich neu.\x02Wie geht es weiter?\x02Prüfe deine Bestellung.\x02Speichere " +
+	"die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zu" +
+	"zugreifen, falls du das Browserfenster geschlossen hast.\x02Bezahle dein" +
+	"e Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)" +
 	"\x02Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheinco" +
 	"des angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zw" +
 	"ischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sob" +
@@ -310,4 +310,4 @@ const en_USData string = "" + // Size: 2896 bytes
 	"s soon as you payment has arrived.\x02Internal server error\x02There is " +
 	"no such order, or it has been deleted."
 
-	// Total table size 7175 bytes (7KiB); checksum: DE4D83F3
+	// Total table size 7174 bytes (7KiB); checksum: 602840F1
