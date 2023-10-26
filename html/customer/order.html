@@ -29,7 +29,7 @@
 				<div class="pt-2">
 					<details {{if $.Cart.Has .}}open{{end}}>
 						<summary>
-							<strong>{{.Name}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">{{$.Tr "View products"}}</span>
+							<strong class="text-success">{{.Name}}</strong>
 						</summary>
 						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
 						{{range .Variants}}
