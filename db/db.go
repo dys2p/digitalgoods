@@ -195,24 +195,6 @@ func (db *DB) Cleanup() error {
 		log.Printf("deleted %d new purchases", ra)
 	}
 
-	// btcpay-created
-	result, err = db.cleanupPurchases.Exec("btcpay-created", time.Now().Format(digitalgoods.DateFmt))
-	if err != nil {
-		return err
-	}
-	if ra, _ := result.RowsAffected(); ra > 0 {
-		log.Printf("deleted %d created purchases", ra)
-	}
-
-	// btcpay-expired
-	result, err = db.cleanupPurchases.Exec("btcpay-expired", time.Now().Format(digitalgoods.DateFmt))
-	if err != nil {
-		return err
-	}
-	if ra, _ := result.RowsAffected(); ra > 0 {
-		log.Printf("deleted %d expired purchases", ra)
-	}
-
 	// finalized
 	result, err = db.cleanupPurchases.Exec(digitalgoods.StatusFinalized, time.Now().Format(digitalgoods.DateFmt))
 	if err != nil {

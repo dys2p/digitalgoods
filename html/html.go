@@ -44,14 +44,8 @@ func parse(fn ...string) *template.Template {
 			switch status {
 			case digitalgoods.StatusNew:
 				return "alert-primary"
-			case "btcpay-created": // temp, backward compatibility
-				return "alert-primary"
-			case "btcpay-processing": // temp, backward compatibility
-				return "alert-success"
 			case digitalgoods.StatusPaymentProcessing:
 				return "alert-success"
-			case "btcpay-expired": // temp, backward compatibility
-				return "alert-danger"
 			case digitalgoods.StatusUnderdelivered:
 				return "alert-warning"
 			case digitalgoods.StatusFinalized:
