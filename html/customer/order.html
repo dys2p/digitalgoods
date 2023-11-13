@@ -43,7 +43,7 @@
 										{{if gt $max 0}}
 											<div class="input-group py-1 justify-content-end">
 												<input class="form-control py-1 flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
-												<span class="input-group-text py-1">{{$.Stock.Get $variant .}} on stock</span>
+												<span class="input-group-text py-1">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
 											</div>
 										{{else}}
 											{{$.Tr "currently not available"}}
@@ -52,7 +52,7 @@
 								</div>
 							{{end}}
 							{{with $.Stock.OtherCountryIDs $variant}}
-								{{$selectedCountryID := $.Tr "default-iso-country"}}
+								{{$selectedCountryID := "de"}}
 								{{with index $.OtherCountry $variant.ID}}
 									{{$selectedCountryID = .}}
 								{{end}}

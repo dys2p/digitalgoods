@@ -2,6 +2,34 @@
     "language": "en-US",
     "messages": [
         {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero or Bitcoin",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Cash in Foreign Currency",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Cash",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA Bank Transfer",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "We are waiting for your payment.",
             "message": "We are waiting for your payment.",
             "translation": "We are waiting for your payment.",
@@ -261,34 +289,6 @@
             "fuzzy": true
         },
         {
-            "id": "Monero or Bitcoin",
-            "message": "Monero or Bitcoin",
-            "translation": "Monero or Bitcoin",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Cash in Foreign Currency",
-            "message": "Cash in Foreign Currency",
-            "translation": "Cash in Foreign Currency",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Cash",
-            "message": "Cash",
-            "translation": "Cash",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "SEPA Bank Transfer",
-            "message": "SEPA Bank Transfer",
-            "translation": "SEPA Bank Transfer",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Australian dollars",
             "message": "Australian dollars",
             "translation": "Australian dollars",
@@ -499,9 +499,9 @@
             "fuzzy": true
         },
         {
-            "id": "View products",
-            "message": "View products",
-            "translation": "View products",
+            "id": "on stock",
+            "message": "on stock",
+            "translation": "on stock",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -509,6 +509,13 @@
             "id": "currently not available",
             "message": "currently not available",
             "translation": "currently not available",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Select other country",
+            "message": "Select other country",
+            "translation": "Select other country",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -719,6 +726,132 @@
             "id": "There is no such order, or it has been deleted.",
             "message": "There is no such order, or it has been deleted.",
             "translation": "There is no such order, or it has been deleted.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
+            "message": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
+            "translation": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay using Monero or Bitcoin",
+            "message": "Pay using Monero or Bitcoin",
+            "translation": "Pay using Monero or Bitcoin",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
+            "message": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
+            "translation": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please include a note with this order number",
+            "message": "Please include a note with this order number",
+            "translation": "Please include a note with this order number",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay the specified amount in one of the following currencies.",
+            "message": "Pay the specified amount in one of the following currencies.",
+            "translation": "Pay the specified amount in one of the following currencies.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "message": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "translation": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Currency",
+            "message": "Currency",
+            "translation": "Currency",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "%.2f",
+            "message": "%.2f",
+            "translation": "%.2f",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
+            "message": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
+            "translation": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.",
+            "message": "If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.",
+            "translation": "If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "message": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "translation": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Account holder",
+            "message": "Account holder",
+            "translation": "Account holder",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "IBAN",
+            "message": "IBAN",
+            "translation": "IBAN",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "BIC (if required)",
+            "message": "BIC (if required)",
+            "translation": "BIC (if required)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Bank name (if required)",
+            "message": "Bank name (if required)",
+            "translation": "Bank name (if required)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "%.2f EUR",
+            "message": "%.2f EUR",
+            "translation": "%.2f EUR",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Purpose",
+            "message": "Purpose",
+            "translation": "Purpose",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Or scan the EPC QR code:",
+            "message": "Or scan the EPC QR code:",
+            "translation": "Or scan the EPC QR code:",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         }

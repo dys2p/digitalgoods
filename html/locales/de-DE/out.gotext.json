@@ -2,6 +2,26 @@
     "language": "de-DE",
     "messages": [
         {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero oder Bitcoin"
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Bargeld in Fremdwährung"
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Bargeld"
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA-Banküberweisung"
+        },
+        {
             "id": "We are waiting for your payment.",
             "message": "We are waiting for your payment.",
             "translation": "Wir warten auf den Eingang deiner Zahlung."
@@ -187,26 +207,6 @@
             "translation": "Slowakei"
         },
         {
-            "id": "Monero or Bitcoin",
-            "message": "Monero or Bitcoin",
-            "translation": "Monero oder Bitcoin"
-        },
-        {
-            "id": "Cash in Foreign Currency",
-            "message": "Cash in Foreign Currency",
-            "translation": "Bargeld in Fremdwährung"
-        },
-        {
-            "id": "Cash",
-            "message": "Cash",
-            "translation": "Bargeld"
-        },
-        {
-            "id": "SEPA Bank Transfer",
-            "message": "SEPA Bank Transfer",
-            "translation": "SEPA-Banküberweisung"
-        },
-        {
             "id": "Australian dollars",
             "message": "Australian dollars",
             "translation": "Australische Dollar"
@@ -357,14 +357,19 @@
             "translation": "Bitte wähle eines oder mehrere Produkte aus."
         },
         {
-            "id": "View products",
-            "message": "View products",
-            "translation": "Produkte anzeigen"
+            "id": "on stock",
+            "message": "on stock",
+            "translation": "vorrätig"
         },
         {
             "id": "currently not available",
             "message": "currently not available",
             "translation": "im Moment nicht verfügbar"
+        },
+        {
+            "id": "Select other country",
+            "message": "Select other country",
+            "translation": "Anderes Land auswählen"
         },
         {
             "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
@@ -515,6 +520,96 @@
             "id": "There is no such order, or it has been deleted.",
             "message": "There is no such order, or it has been deleted.",
             "translation": "Diese Bestellung existiert nicht oder wurde schon gelöscht."
+        },
+        {
+            "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
+            "message": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
+            "translation": "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."
+        },
+        {
+            "id": "Pay using Monero or Bitcoin",
+            "message": "Pay using Monero or Bitcoin",
+            "translation": "Zur Bezahlung mit Monero oder Bitcoin"
+        },
+        {
+            "id": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
+            "message": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
+            "translation": "Sende uns Bargeld in einem versichertem Brief oder Paket. Nachdem wir das Geld entnommen haben, schreddern wir den Brief. Bitte beachte die Höchstgrenzen deines Postunternehmens für den Bargeldversand (z. B. Deutsche Post „Einschreiben Wert“ bis 100 Euro innerhalb Deutschlands, DHL Paket bis 500 Euro). Sende es an:"
+        },
+        {
+            "id": "Please include a note with this order number",
+            "message": "Please include a note with this order number",
+            "translation": "Bitte lege einen Zettel mit der Bestellnummer bei"
+        },
+        {
+            "id": "Pay the specified amount in one of the following currencies.",
+            "message": "Pay the specified amount in one of the following currencies.",
+            "translation": "Zahle den angegebenen Betrag in einer der folgenden Währungen."
+        },
+        {
+            "id": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "message": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "translation": "Bitte sende nur Banknoten und runde gegebenenfalls auf. Wir nehmen keine Münzen an."
+        },
+        {
+            "id": "Currency",
+            "message": "Currency",
+            "translation": "Währung"
+        },
+        {
+            "id": "%.2f",
+            "message": "%.2f",
+            "translation": "%,2f"
+        },
+        {
+            "id": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
+            "message": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
+            "translation": "Wir übermitteln nur die Bestellnummer an PayPal. Deine bestellten Artikel sowie die Details zu Lieferung oder Abholung werden nicht an PayPal gesendet."
+        },
+        {
+            "id": "If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.",
+            "message": "If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.",
+            "translation": "Falls du TOR oder einen VPN benutzt: Die angezeigten Bezahlmöglichkeiten sind von der Länderzuordnung deiner IP-Adresse abhängig. Darüber hinaus blockiert PayPal manche TOR Exit Nodes. In dem Fall versuche es mit „New Circuit for this Site“."
+        },
+        {
+            "id": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "message": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "translation": "Führe eine SEPA-Überweisung (einheitlicher Euro-Zahlungsverkehrsraum) auf unser deutsches Bankkonto aus. Wir prüfen es täglich manuell auf neue Zahlungseingänge. Wir werden deinen Namen und deine IBAN auf unserem Kontoauszug sehen. Bei einer Auslandsüberweisung wähle bitte die Gebührenregelung „OUR“."
+        },
+        {
+            "id": "Account holder",
+            "message": "Account holder",
+            "translation": "Kontoinhaber"
+        },
+        {
+            "id": "IBAN",
+            "message": "IBAN",
+            "translation": "IBAN"
+        },
+        {
+            "id": "BIC (if required)",
+            "message": "BIC (if required)",
+            "translation": "BIC (falls nötig)"
+        },
+        {
+            "id": "Bank name (if required)",
+            "message": "Bank name (if required)",
+            "translation": "Bank (falls nötig)"
+        },
+        {
+            "id": "%.2f EUR",
+            "message": "%.2f EUR",
+            "translation": "%,2f €"
+        },
+        {
+            "id": "Purpose",
+            "message": "Purpose",
+            "translation": "Überweisungszweck"
+        },
+        {
+            "id": "Or scan the EPC QR code:",
+            "message": "Or scan the EPC QR code:",
+            "translation": "Oder scanne den EPC-QR-Code:"
         }
     ]
 }
