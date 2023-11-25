@@ -562,9 +562,9 @@
             "fuzzy": true
         },
         {
-            "id": "Create order",
-            "message": "Create order",
-            "translation": "Create order",
+            "id": "Buy",
+            "message": "Buy",
+            "translation": "Buy",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

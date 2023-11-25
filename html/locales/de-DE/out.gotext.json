@@ -402,9 +402,9 @@
             "translation": "Die Länderoptionen hängen von deiner IP-Adresse und Spracheinstellung ab."
         },
         {
-            "id": "Create order",
-            "message": "Create order",
-            "translation": "Bestellen"
+            "id": "Buy",
+            "message": "Buy",
+            "translation": "Kaufen"
         },
         {
             "id": "Order",
