@@ -436,9 +436,9 @@
             "fuzzy": true
         },
         {
-            "id": "Enter the amount and press „Order“.",
-            "message": "Enter the amount and press „Order“.",
-            "translation": "Enter the amount and press „Order“.",
+            "id": "Enter the amount and press „Buy“.",
+            "message": "Enter the amount and press „Buy“.",
+            "translation": "Enter the amount and press „Buy“.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

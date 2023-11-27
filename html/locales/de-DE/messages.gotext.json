@@ -312,9 +312,9 @@
             "translation": "Weiterlesen"
         },
         {
-            "id": "Enter the amount and press „Order“.",
-            "message": "Enter the amount and press „Order“.",
-            "translation": "Wähle die gewünschte Anzahl aus und klicke „Bestellen“."
+            "id": "Enter the amount and press „Buy“.",
+            "message": "Enter the amount and press „Buy“.",
+            "translation": "Wähle die gewünschte Anzahl aus und klicke „Kaufen“."
         },
         {
             "id": "Save the URL of your order. You will need it to access your goods.",
