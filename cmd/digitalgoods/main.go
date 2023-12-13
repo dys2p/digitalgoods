@@ -185,6 +185,7 @@ func main() {
 	custRtr.Handler(http.MethodGet, "/captcha/:fn", captcha.Handler())
 	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
 		BTCPay: btcpayStore,
+		Rates:  ratesHistory,
 	})
 	custRtr.NotFound = http.HandlerFunc(langs.Redirect)
 
