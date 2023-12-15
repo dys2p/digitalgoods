@@ -265,7 +265,7 @@ const de_DEData string = "" + // Size: 5114 bytes
 	". Sende es an:\x02Bitte lege einen Zettel mit der Bestellnummer bei\x02Z" +
 	"ahle den angegebenen Betrag in einer der folgenden Währungen.\x02Bitte s" +
 	"ende nur Banknoten und runde gegebenenfalls auf. Wir nehmen keine Münzen" +
-	" an.\x02Währung\x02%,2f\x02Wir übermitteln nur die Bestellnummer an PayP" +
+	" an.\x02Währung\x02%.2f\x02Wir übermitteln nur die Bestellnummer an PayP" +
 	"al. Deine bestellten Artikel sowie die Details zu Lieferung oder Abholun" +
 	"g werden nicht an PayPal gesendet.\x02Falls du TOR oder einen VPN benutz" +
 	"t: Die angezeigten Bezahlmöglichkeiten sind von der Länderzuordnung dein" +
@@ -276,7 +276,7 @@ const de_DEData string = "" + // Size: 5114 bytes
 	"ngseingänge. Wir werden deinen Namen und deine IBAN auf unserem Kontoaus" +
 	"zug sehen. Bei einer Auslandsüberweisung wähle bitte die Gebührenregelun" +
 	"g „OUR“.\x02Kontoinhaber\x02IBAN\x02BIC (falls nötig)\x02Bank (falls nöt" +
-	"ig)\x02%,2f €\x02Überweisungszweck\x02Oder scanne den EPC-QR-Code:"
+	"ig)\x02%.2f €\x02Überweisungszweck\x02Oder scanne den EPC-QR-Code:"
 
 var en_USIndex = []uint32{ // 123 elements
 	// Entry 0 - 1F
@@ -384,4 +384,4 @@ const en_USData string = "" + // Size: 4382 bytes
 	"ee option.\x02Account holder\x02IBAN\x02BIC (if required)\x02Bank name (" +
 	"if required)\x02%.2f EUR\x02Purpose\x02Or scan the EPC QR code:"
 
-	// Total table size 10528 bytes (10KiB); checksum: E432FD98
+	// Total table size 10528 bytes (10KiB); checksum: E00E20

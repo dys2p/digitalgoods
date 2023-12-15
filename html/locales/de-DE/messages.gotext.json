@@ -559,7 +559,7 @@
         {
             "id": "%.2f",
             "message": "%.2f",
-            "translation": "%,2f"
+            "translation": "%.2f"
         },
         {
             "id": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",
@@ -599,7 +599,7 @@
         {
             "id": "%.2f EUR",
             "message": "%.2f EUR",
-            "translation": "%,2f €"
+            "translation": "%.2f €"
         },
         {
             "id": "Purpose",
