@@ -436,9 +436,9 @@
             "fuzzy": true
         },
         {
-            "id": "Enter the amount and press „Buy“.",
-            "message": "Enter the amount and press „Buy“.",
-            "translation": "Enter the amount and press „Buy“.",
+            "id": "Enter the quantity and press „Buy“.",
+            "message": "Enter the quantity and press „Buy“.",
+            "translation": "Enter the quantity and press „Buy“.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -653,9 +653,9 @@
             "fuzzy": true
         },
         {
-            "id": "Amount",
-            "message": "Amount",
-            "translation": "Amount",
+            "id": "Quantity",
+            "message": "Quantity",
+            "translation": "Quantity",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -768,6 +768,13 @@
             "id": "Please send banknotes only and round up if necessary. We do not accept coins.",
             "message": "Please send banknotes only and round up if necessary. We do not accept coins.",
             "translation": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Amount",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

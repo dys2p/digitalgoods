@@ -324,13 +324,13 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 		// get from stock
 
-		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.CountryID, u.Amount)
+		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.CountryID, u.Quantity)
 		if err != nil {
 			return err
 		}
 		defer rows.Close()
 
-		var gotAmount = 0
+		var gotQuantity = 0
 
 		for rows.Next() {
 			var itemID string
@@ -349,13 +349,13 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 				Image:        image,
 				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
-			gotAmount++
+			gotQuantity++
 		}
 
 		// log VAT
 
-		if gotAmount > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, u.CountryID, gotAmount, u.ItemPrice, purchase.CountryCode); err != nil {
+		if gotQuantity > 0 {
+			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, u.CountryID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}

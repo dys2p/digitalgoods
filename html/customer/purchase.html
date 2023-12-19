@@ -47,7 +47,7 @@
 	<thead>
 		<tr>
 			<th>{{.Tr "Product"}}</th>
-			<th>{{.Tr "Amount"}}</th>
+			<th>{{.Tr "Quantity"}}</th>
 			<th>{{.Tr "Item Price"}}</th>
 			<th>{{.Tr "Sum"}}</th>
 		</tr>
@@ -69,7 +69,7 @@
 				{{range .Rows}}
 					<tr>
 						<td>{{$variant.NameHTML}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
-						<td>{{.Amount}}</td>
+						<td>{{.Quantity}}</td>
 						<td>{{FmtEuro .ItemPrice}}</td>
 						<td>{{FmtEuro .Sum}}</td>
 					</tr>

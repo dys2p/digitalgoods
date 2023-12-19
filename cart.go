@@ -2,14 +2,14 @@ package digitalgoods
 
 type Cart struct {
 	CountryID string
-	Units     map[CartItem]int // item -> amount
+	Units     map[CartItem]int // item -> quantity
 }
 
-func (cart *Cart) Add(variantID, variantCountry string, amount int) {
+func (cart *Cart) Add(variantID, variantCountry string, quantity int) {
 	if cart.Units == nil {
 		cart.Units = make(map[CartItem]int)
 	}
-	cart.Units[CartItem{variantID, variantCountry}] += amount
+	cart.Units[CartItem{variantID, variantCountry}] += quantity
 }
 
 func (cart *Cart) Get(variantID, variantCountry string) int {

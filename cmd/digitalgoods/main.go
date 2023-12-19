@@ -328,14 +328,14 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 			if val == "" {
 				continue
 			}
-			amount, _ := strconv.Atoi(val)
-			if max := stock.Max(variant, countryID); amount > max {
-				amount = max // client must check their order before payment
+			quantity, _ := strconv.Atoi(val)
+			if max := stock.Max(variant, countryID); quantity > max {
+				quantity = max // client must check their order before payment
 			}
-			if amount > 0 {
-				co.Cart.Add(variant.ID, countryID, amount)
+			if quantity > 0 {
+				co.Cart.Add(variant.ID, countryID, quantity)
 				order = append(order, digitalgoods.OrderRow{
-					Amount:    amount,
+					Quantity:  quantity,
 					VariantID: variant.ID,
 					CountryID: countryID,
 					ItemPrice: variant.Price,
@@ -343,19 +343,19 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		// other country
-		if amount, _ := strconv.Atoi(r.PostFormValue(variant.ID + "-other-amount")); amount > 0 {
+		if quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID + "-other-quantity")); quantity > 0 {
 			countryID := r.PostFormValue(variant.ID + "-other-country")
 			if countryID == "" || !digitalgoods.IsISOCountryCode(countryID) {
 				continue
 			}
-			if max := stock.Max(variant, countryID); amount > max {
-				amount = max // client must check their order before payment
+			if max := stock.Max(variant, countryID); quantity > max {
+				quantity = max // client must check their order before payment
 			}
-			if amount > 0 {
-				co.Cart.Add(variant.ID, "other", amount)
+			if quantity > 0 {
+				co.Cart.Add(variant.ID, "other", quantity)
 				co.OtherCountry[variant.ID] = countryID
 				order = append(order, digitalgoods.OrderRow{
-					Amount:    amount,
+					Quantity:  quantity,
 					VariantID: variant.ID,
 					CountryID: countryID,
 					ItemPrice: variant.Price,
@@ -623,7 +623,7 @@ func staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		for _, uf := range unfulfilled {
-			underdelivered[uf.VariantID+"-"+uf.CountryID] += uf.Amount
+			underdelivered[uf.VariantID+"-"+uf.CountryID] += uf.Quantity
 		}
 	}
 

@@ -104,7 +104,7 @@ type Order []OrderRow
 
 func (order Order) Empty() bool {
 	for _, row := range order {
-		if row.Amount > 0 {
+		if row.Quantity > 0 {
 			return false
 		}
 	}
@@ -114,7 +114,7 @@ func (order Order) Empty() bool {
 func (order *Order) Decrement(variantID, countryID string) error {
 	for i := range *order {
 		if (*order)[i].VariantID == variantID && (*order)[i].CountryID == countryID {
-			(*order)[i].Amount--
+			(*order)[i].Quantity--
 			return nil
 		}
 	}
@@ -130,14 +130,14 @@ func (order Order) Sum() int {
 }
 
 type OrderRow struct {
-	Amount    int    `json:"amount"`
+	Quantity  int    `json:"amount"`     // legacy json id
 	VariantID string `json:"article-id"` // legacy json id
 	CountryID string `json:"country-id"`
 	ItemPrice int    `json:"item-price"` // euro cents, price at order time
 }
 
 func (o OrderRow) Sum() int {
-	return o.Amount * o.ItemPrice
+	return o.Quantity * o.ItemPrice
 }
 
 type Delivery []DeliveredItem

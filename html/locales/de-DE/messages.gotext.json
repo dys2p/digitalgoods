@@ -312,8 +312,8 @@
             "translation": "Weiterlesen"
         },
         {
-            "id": "Enter the amount and press „Buy“.",
-            "message": "Enter the amount and press „Buy“.",
+            "id": "Enter the quantity and press „Buy“.",
+            "message": "Enter the quantity and press „Buy“.",
             "translation": "Wähle die gewünschte Anzahl aus und klicke „Kaufen“."
         },
         {
@@ -467,8 +467,8 @@
             "translation": "Produkt"
         },
         {
-            "id": "Amount",
-            "message": "Amount",
+            "id": "Quantity",
+            "message": "Quantity",
             "translation": "Anzahl"
         },
         {
@@ -550,6 +550,11 @@
             "id": "Please send banknotes only and round up if necessary. We do not accept coins.",
             "message": "Please send banknotes only and round up if necessary. We do not accept coins.",
             "translation": "Bitte sende nur Banknoten und runde gegebenenfalls auf. Wir nehmen keine Münzen an."
+        },
+        {
+            "id": "Amount",
+            "message": "Amount",
+            "translation": "Betrag"
         },
         {
             "id": "Currency",
