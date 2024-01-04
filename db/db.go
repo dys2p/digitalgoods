@@ -17,7 +17,7 @@ type DB struct {
 	sqlDB *sql.DB
 
 	// purchases
-	addPurchase                  *sql.Stmt
+	insertPurchase               *sql.Stmt
 	cleanupPurchases             *sql.Stmt
 	getPurchaseByAccessKey       *sql.Stmt
 	getPurchaseByID              *sql.Stmt
@@ -97,7 +97,7 @@ func OpenDB() (*DB, error) {
 	}
 
 	// purchase
-	db.addPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, '[]', ?, ?, ?)")
+	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, '[]', ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
 	db.getPurchaseByAccessKey = mustPrepare("      select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where access_key = ? limit 1")
 	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
@@ -141,15 +141,15 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-// AddPurchase sets purchase.ID and purchase.Status.
-func (db *DB) AddPurchase(purchase *digitalgoods.Purchase) error {
+// InsertPurchase sets purchase.ID.
+func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	orderJson, err := json.Marshal(purchase.Ordered)
 	if err != nil {
 		return err
 	}
 	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewID
 		purchase.ID = digitalgoods.NewID()
-		if _, err = db.addPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, digitalgoods.StatusNew, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
+		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, digitalgoods.StatusNew, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
 			return nil
 		}
 	}

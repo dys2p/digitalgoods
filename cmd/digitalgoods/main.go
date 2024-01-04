@@ -403,7 +403,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 		CountryCode: string(country),
 	}
 
-	if err := database.AddPurchase(purchase); err != nil {
+	if err := database.InsertPurchase(purchase); err != nil {
 		html.ErrorInternal.Execute(w, lang)
 		return
 	}
