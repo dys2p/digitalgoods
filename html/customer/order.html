@@ -32,6 +32,9 @@
 							<strong class="text-success">{{.Name}}</strong>
 						</summary>
 						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+						{{if .Alert}}
+							<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+						{{end}}
 						{{range .Variants}}
 							{{$variant := .}}
 							{{range $.Stock.FeaturedCountryIDs $variant}}

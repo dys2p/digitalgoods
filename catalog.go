@@ -44,12 +44,18 @@ func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 
 type Article struct {
 	Name        string // not translated
+	Alert       map[string]string
 	Description map[string]string
 	Variants    []Variant
 }
 
 func (article Article) NameHTML() template.HTML {
 	return template.HTML(article.Name)
+}
+
+// only supports langs which exist as Alert key, TODO: language.Matcher
+func (article Article) TranslateAlert(l lang.Lang) template.HTML {
+	return template.HTML(article.Alert[string(l)])
 }
 
 // only supports langs which exist as Description key, TODO: language.Matcher

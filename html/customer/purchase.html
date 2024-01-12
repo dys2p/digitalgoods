@@ -56,12 +56,13 @@
 		{{range .GroupedOrder}}
 			<tr>
 				<td colspan="4">
-					<!-- same as in order.html -->
-					<details>
+					<details class="mb-3">
 						<summary><strong>{{.NameHTML}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
 						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
 					</details>
-					<!-- end -->
+					{{if .Alert}}
+						<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+					{{end}}
 				</td>
 			</tr>
 			{{range .Variants}}
