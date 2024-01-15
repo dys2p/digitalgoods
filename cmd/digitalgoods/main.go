@@ -535,6 +535,9 @@ func custPurchasePost(w http.ResponseWriter, r *http.Request) {
 
 	notifyProto := r.PostFormValue("notify-proto")
 	notifyAddr := r.PostFormValue("notify-addr")
+	if len(notifyAddr) > 1024 {
+		notifyAddr = notifyAddr[:1024]
+	}
 	switch notifyProto {
 	case "email":
 		notifyAddr = strings.TrimSpace(notifyAddr)
@@ -544,6 +547,7 @@ func custPurchasePost(w http.ResponseWriter, r *http.Request) {
 	case "ntfysh":
 		notifyAddr = ntfysh.ValidateAddress(notifyAddr)
 	default:
+		notifyAddr = ""
 		notifyProto = ""
 	}
 
