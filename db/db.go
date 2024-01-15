@@ -25,6 +25,7 @@ type DB struct {
 	getPurchasesByStatus         *sql.Stmt
 	updatePurchase               *sql.Stmt
 	updatePurchaseCountry        *sql.Stmt
+	updatePurchaseNotify         *sql.Stmt
 	updatePurchaseStatus         *sql.Stmt
 
 	// stock
@@ -55,6 +56,8 @@ func OpenDB() (*DB, error) {
 			access_key  text not null,
 			payment_key text not null,
 			status      text not null,
+			notifyproto text not null,
+			notifyaddr  text not null,
 			ordered     text not null, -- json
 			delivered   text not null, -- json (codes removed from stock)
 			create_date text not null, -- yyyy-mm-dd
@@ -97,15 +100,16 @@ func OpenDB() (*DB, error) {
 	}
 
 	// purchase
-	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, '[]', ?, ?, ?)")
+	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
-	db.getPurchaseByAccessKey = mustPrepare("      select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where access_key = ? limit 1")
-	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
-	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
+	db.getPurchaseByAccessKey = mustPrepare("      select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where access_key = ? limit 1")
+	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
+	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
-	db.updatePurchase = mustPrepare("       update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
-	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ?                           where id = ?")
-	db.updatePurchaseStatus = mustPrepare(" update purchase set status = ?, deletedate = ?                where id = ?")
+	db.updatePurchase = mustPrepare("update purchase set status = ?, notifyproto = ?, notifyaddr = ?, delivered = ?, deletedate = ? where id = ?")
+	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ?                 where id = ?")
+	db.updatePurchaseNotify = mustPrepare(" update purchase set notifyproto = ?, notifyaddr = ? where id = ?")
+	db.updatePurchaseStatus = mustPrepare(" update purchase set status = ?, deletedate = ?      where id = ?")
 
 	// stock
 	db.addToStock = mustPrepare(`
@@ -141,7 +145,6 @@ func OpenDB() (*DB, error) {
 	return db, nil
 }
 
-// InsertPurchase sets purchase.ID.
 func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	orderJson, err := json.Marshal(purchase.Ordered)
 	if err != nil {
@@ -149,7 +152,7 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	}
 	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewID
 		purchase.ID = digitalgoods.NewID()
-		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, digitalgoods.StatusNew, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
+		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, purchase.Status, purchase.NotifyProto, purchase.NotifyAddr, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
 			return nil
 		}
 	}
@@ -247,7 +250,7 @@ func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Pu
 	var purchase = &digitalgoods.Purchase{}
 	var ordered string
 	var delivered string
-	if err := stmt.QueryRow(args...).Scan(&purchase.ID, &purchase.AccessKey, &purchase.PaymentKey, &purchase.Status, &ordered, &delivered, &purchase.CreateDate, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
+	if err := stmt.QueryRow(args...).Scan(&purchase.ID, &purchase.AccessKey, &purchase.PaymentKey, &purchase.Status, &purchase.NotifyProto, &purchase.NotifyAddr, &ordered, &delivered, &purchase.CreateDate, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
 		return nil, err
 	}
 	if err := json.Unmarshal([]byte(ordered), &purchase.Ordered); err != nil {
@@ -300,6 +303,11 @@ func (db *DB) SetProcessing(purchase *digitalgoods.Purchase) error {
 
 func (db *DB) SetCountry(purchase *digitalgoods.Purchase, countryCode string) error {
 	_, err := db.updatePurchaseCountry.Exec(countryCode, purchase.ID)
+	return err
+}
+
+func (db *DB) SetNotify(purchase *digitalgoods.Purchase) error {
+	_, err := db.updatePurchaseNotify.Exec(purchase.NotifyProto, purchase.NotifyAddr, purchase.ID)
 	return err
 }
 
@@ -368,6 +376,8 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 	var newDeleteDate string
 	var newStatus digitalgoods.Status
+	var newNotifyProto string
+	var newNotifyAddr string
 	unfulfilled, err = purchase.GetUnfulfilled()
 	if err != nil {
 		return err
@@ -375,12 +385,16 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	if unfulfilled.Empty() {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt)
 		newStatus = digitalgoods.StatusFinalized
+		newNotifyProto = ""
+		newNotifyAddr = ""
 	} else {
 		newDeleteDate = "" // don't delete
 		newStatus = digitalgoods.StatusUnderdelivered
+		newNotifyProto = purchase.NotifyProto // keep
+		newNotifyAddr = purchase.NotifyAddr   // keep
 	}
 
-	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
+	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, newNotifyProto, newNotifyAddr, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
 		return err
 	}
 

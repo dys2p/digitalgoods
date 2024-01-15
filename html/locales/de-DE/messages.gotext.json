@@ -2,26 +2,6 @@
     "language": "de-DE",
     "messages": [
         {
-            "id": "Monero or Bitcoin",
-            "message": "Monero or Bitcoin",
-            "translation": "Monero oder Bitcoin"
-        },
-        {
-            "id": "Cash in Foreign Currency",
-            "message": "Cash in Foreign Currency",
-            "translation": "Bargeld in Fremdwährung"
-        },
-        {
-            "id": "Cash",
-            "message": "Cash",
-            "translation": "Bargeld"
-        },
-        {
-            "id": "SEPA Bank Transfer",
-            "message": "SEPA Bank Transfer",
-            "translation": "SEPA-Banküberweisung"
-        },
-        {
             "id": "We are waiting for your payment.",
             "message": "We are waiting for your payment.",
             "translation": "Wir warten auf den Eingang deiner Zahlung."
@@ -167,6 +147,11 @@
             "translation": "Lettland"
         },
         {
+            "id": "Montenegro",
+            "message": "Montenegro",
+            "translation": "Montenegro"
+        },
+        {
             "id": "Malta",
             "message": "Malta",
             "translation": "Malta"
@@ -205,6 +190,26 @@
             "id": "Slovakia",
             "message": "Slovakia",
             "translation": "Slowakei"
+        },
+        {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero oder Bitcoin"
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Bargeld in Fremdwährung"
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Bargeld"
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA-Banküberweisung"
         },
         {
             "id": "Australian dollars",
@@ -347,6 +352,11 @@
             "translation": "SEPA-Überweisung auf unser deutsches Bankkonto. Wir prüfen es täglich manuell auf neue Zahlungseingänge."
         },
         {
+            "id": "Optional: Get notified by email or ntfy.sh when your payment arrives.",
+            "message": "Optional: Get notified by email or ntfy.sh when your payment arrives.",
+            "translation": "Optional: Lass dich per E-Mail oder ntfy.sh benachrichtigen, wenn deine Zahlung eintrifft."
+        },
+        {
             "id": "Write down your codes. We will delete them 30 days after delivery.",
             "message": "Write down your codes. We will delete them 30 days after delivery.",
             "translation": "Notiere dir die Codes. Wir werden sie 30 Tage nach der Auslieferung löschen."
@@ -455,6 +465,26 @@
             "id": "Payment",
             "message": "Payment",
             "translation": "Zahlung"
+        },
+        {
+            "id": "Optional: Get notified when your payment arrives",
+            "message": "Optional: Get notified when your payment arrives",
+            "translation": "Optional: Lass dich benachrichtigen, wenn deine Zahlung eintrifft"
+        },
+        {
+            "id": "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.",
+            "message": "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.",
+            "translation": "Lass dich benachrichtigen, wenn deine Zahlung eingegangen ist und die Voucher-Codes angezeigt werden. Die Benachrichtigung wird weder die Bestellnummer noch den Link enthalten. Deine Kontaktdaten werden danach gelöscht."
+        },
+        {
+            "id": "Address",
+            "message": "Address",
+            "translation": "Addresse"
+        },
+        {
+            "id": "Save",
+            "message": "Save",
+            "translation": "Speichern"
         },
         {
             "id": "Your Order",

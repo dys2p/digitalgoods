@@ -2,34 +2,6 @@
     "language": "en-US",
     "messages": [
         {
-            "id": "Monero or Bitcoin",
-            "message": "Monero or Bitcoin",
-            "translation": "Monero or Bitcoin",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Cash in Foreign Currency",
-            "message": "Cash in Foreign Currency",
-            "translation": "Cash in Foreign Currency",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Cash",
-            "message": "Cash",
-            "translation": "Cash",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "SEPA Bank Transfer",
-            "message": "SEPA Bank Transfer",
-            "translation": "SEPA Bank Transfer",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "We are waiting for your payment.",
             "message": "We are waiting for your payment.",
             "translation": "We are waiting for your payment.",
@@ -233,6 +205,13 @@
             "fuzzy": true
         },
         {
+            "id": "Montenegro",
+            "message": "Montenegro",
+            "translation": "Montenegro",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Malta",
             "message": "Malta",
             "translation": "Malta",
@@ -285,6 +264,34 @@
             "id": "Slovakia",
             "message": "Slovakia",
             "translation": "Slovakia",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Monero or Bitcoin",
+            "message": "Monero or Bitcoin",
+            "translation": "Monero or Bitcoin",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash in Foreign Currency",
+            "message": "Cash in Foreign Currency",
+            "translation": "Cash in Foreign Currency",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cash",
+            "message": "Cash",
+            "translation": "Cash",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "SEPA Bank Transfer",
+            "message": "SEPA Bank Transfer",
+            "translation": "SEPA Bank Transfer",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -485,6 +492,13 @@
             "fuzzy": true
         },
         {
+            "id": "Optional: Get notified by email or ntfy.sh when your payment arrives.",
+            "message": "Optional: Get notified by email or ntfy.sh when your payment arrives.",
+            "translation": "Optional: Get notified by email or ntfy.sh when your payment arrives.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Write down your codes. We will delete them 30 days after delivery.",
             "message": "Write down your codes. We will delete them 30 days after delivery.",
             "translation": "Write down your codes. We will delete them 30 days after delivery.",
@@ -635,6 +649,34 @@
             "id": "Payment",
             "message": "Payment",
             "translation": "Payment",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Optional: Get notified when your payment arrives",
+            "message": "Optional: Get notified when your payment arrives",
+            "translation": "Optional: Get notified when your payment arrives",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.",
+            "message": "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.",
+            "translation": "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Address",
+            "message": "Address",
+            "translation": "Address",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Save",
+            "message": "Save",
+            "translation": "Save",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

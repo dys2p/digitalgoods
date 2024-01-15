@@ -31,7 +31,9 @@ import (
 	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/countries/detect"
+	"github.com/dys2p/eco/email"
 	"github.com/dys2p/eco/lang"
+	"github.com/dys2p/eco/ntfysh"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
@@ -47,6 +49,35 @@ var paymentMethods []payment.Method
 var ratesHistory *rates.History
 var users userdb.Authenticator
 var langs lang.Languages
+var emailer email.Emailer
+
+func NotifyPaymentReceived(p *digitalgoods.Purchase) error {
+	const subject = "digitalgoods.proxysto.re payment received"
+	const msg = "We have received your payment. Please download your vouchers within the next 30 days."
+
+	switch p.NotifyProto {
+	case "email":
+		err := emailer.Send(p.NotifyAddr, subject, []byte(msg))
+		if err != nil {
+			return err
+		}
+	case "ntfysh":
+		err := ntfysh.Publish(p.NotifyAddr, subject, msg)
+		if err != nil {
+			return err
+		}
+	}
+
+	if p.Status == digitalgoods.StatusFinalized {
+		p.NotifyProto = ""
+		p.NotifyAddr = ""
+		err := database.SetNotify(p)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func main() {
 
@@ -79,6 +110,16 @@ func main() {
 
 	// captcha
 	captcha.Initialize(filepath.Join(os.Getenv("STATE_DIRECTORY"), "captcha.sqlite3"))
+
+	// emailer
+	if *test {
+		emailer = email.DummyMailer{}
+		log.Println("\033[33m" + "warning: using dummy emailer" + "\033[0m")
+	} else {
+		emailer = email.Sendmail{
+			From: emailFrom,
+		}
+	}
 
 	// foreign currency cash
 
@@ -165,7 +206,9 @@ func main() {
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/i/:access-key", custPurchaseGetRedirect)
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/i/:access-key/:payment", custPurchaseGetPaymentRedirect)
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/order/:id/:access-key", custPurchaseGet)
+		custRtr.HandlerFunc(http.MethodPost, "/"+id+"/order/:id/:access-key", custPurchasePost)
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/order/:id/:access-key/:payment", custPurchaseGet)
+		custRtr.HandlerFunc(http.MethodPost, "/"+id+"/order/:id/:access-key/:payment", custPurchasePost)
 
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/terms.html", siteGet)
 		custRtr.HandlerFunc(http.MethodGet, "/"+id+"/privacy.html", siteGet)
@@ -479,6 +522,41 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func custPurchasePost(w http.ResponseWriter, r *http.Request) {
+	lang := langs.ByPath(r)
+	params := httprouter.ParamsFromContext(r.Context())
+
+	accessKey := params.ByName("access-key")
+	purchase, err := database.GetPurchaseByAccessKey(accessKey)
+	if err != nil {
+		html.ErrorNotFound.Execute(w, lang)
+		return
+	}
+
+	notifyProto := r.PostFormValue("notify-proto")
+	notifyAddr := r.PostFormValue("notify-addr")
+	switch notifyProto {
+	case "email":
+		notifyAddr = strings.TrimSpace(notifyAddr)
+		if !email.AddressValid(notifyAddr) {
+			notifyAddr = ""
+		}
+	case "ntfysh":
+		notifyAddr = ntfysh.ValidateAddress(notifyAddr)
+	default:
+		notifyProto = ""
+	}
+
+	purchase.NotifyProto = notifyProto
+	purchase.NotifyAddr = notifyAddr
+	if err := database.SetNotify(purchase); err != nil {
+		html.ErrorInternal.Execute(w, lang)
+		return
+	}
+
+	http.Redirect(w, r, r.URL.Path+"#notify", http.StatusSeeOther)
+}
+
 func byCookie(w http.ResponseWriter, r *http.Request) {
 	// TODO maybe save language in cookie and redirect to user's locale
 	if redirectPath := custSessions.GetString(r.Context(), "redirect-path"); redirectPath != "" {
@@ -589,6 +667,9 @@ func staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 	if err := database.SetSettled(purchase); err != nil {
+		return err
+	}
+	if err := NotifyPaymentReceived(purchase); err != nil {
 		return err
 	}
 	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
@@ -753,7 +834,10 @@ func (purchases Purchases) SetPurchasePaid(id, paymentKey string) error {
 	if err != nil {
 		return err
 	}
-	return purchases.db.SetSettled(purchase)
+	if err := purchases.db.SetSettled(purchase); err != nil {
+		return err
+	}
+	return NotifyPaymentReceived(purchase)
 }
 
 func (purchases Purchases) SetPurchaseProcessing(id, paymentKey string) error {

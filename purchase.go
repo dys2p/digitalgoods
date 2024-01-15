@@ -64,6 +64,8 @@ type Purchase struct {
 	AccessKey   string
 	PaymentKey  string
 	Status      Status
+	NotifyProto string
+	NotifyAddr  string
 	Ordered     Order
 	Delivered   Delivery
 	CreateDate  string // yyyy-mm-dd
