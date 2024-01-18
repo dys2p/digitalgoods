@@ -59,12 +59,12 @@ func NotifyPaymentReceived(p *digitalgoods.Purchase) error {
 	case "email":
 		err := emailer.Send(p.NotifyAddr, subject, []byte(msg))
 		if err != nil {
-			return err
+			return fmt.Errorf("sending email notification: %w", err)
 		}
 	case "ntfysh":
 		err := ntfysh.Publish(p.NotifyAddr, subject, msg)
 		if err != nil {
-			return err
+			return fmt.Errorf("sending ntfysh notification: %w", err)
 		}
 	}
 
@@ -73,7 +73,7 @@ func NotifyPaymentReceived(p *digitalgoods.Purchase) error {
 		p.NotifyAddr = ""
 		err := database.SetNotify(p)
 		if err != nil {
-			return err
+			return fmt.Errorf("removing notify data from database: %w", err)
 		}
 	}
 	return nil
