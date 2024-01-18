@@ -106,7 +106,7 @@ func OpenDB() (*DB, error) {
 	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
 	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
-	db.updatePurchase = mustPrepare("update purchase set status = ?, notifyproto = ?, notifyaddr = ?, delivered = ?, deletedate = ? where id = ?")
+	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
 	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ?                 where id = ?")
 	db.updatePurchaseNotify = mustPrepare(" update purchase set notifyproto = ?, notifyaddr = ? where id = ?")
 	db.updatePurchaseStatus = mustPrepare(" update purchase set status = ?, deletedate = ?      where id = ?")
@@ -376,8 +376,6 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 	var newDeleteDate string
 	var newStatus digitalgoods.Status
-	var newNotifyProto string
-	var newNotifyAddr string
 	unfulfilled, err = purchase.GetUnfulfilled()
 	if err != nil {
 		return err
@@ -385,16 +383,12 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	if unfulfilled.Empty() {
 		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt)
 		newStatus = digitalgoods.StatusFinalized
-		newNotifyProto = ""
-		newNotifyAddr = ""
 	} else {
 		newDeleteDate = "" // don't delete
 		newStatus = digitalgoods.StatusUnderdelivered
-		newNotifyProto = purchase.NotifyProto // keep
-		newNotifyAddr = purchase.NotifyAddr   // keep
 	}
 
-	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, newNotifyProto, newNotifyAddr, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
+	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
 		return err
 	}
 
