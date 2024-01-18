@@ -279,6 +279,11 @@ func main() {
 		}
 	}()
 
+	// notify us
+	if err := emailer.Send(emailFrom, "digitalgoods service started", []byte("the digitalgoods service has been started")); err != nil {
+		log.Println(err)
+	}
+
 	// run until we receive an interrupt or any of the listeners fails
 
 	log.Printf("running")
