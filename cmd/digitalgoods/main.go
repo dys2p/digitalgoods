@@ -741,12 +741,19 @@ func staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
+	stock, err := database.GetStock()
+	if err != nil {
+		return err
+	}
+
 	return html.StaffUploadImage.Execute(w, struct {
 		digitalgoods.Variant
 		Country string
+		Stock   int
 	}{
 		variant,
 		countryID,
+		stock.Get(variant, countryID),
 	})
 }
 
@@ -784,12 +791,19 @@ func staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
+	stock, err := database.GetStock()
+	if err != nil {
+		return err
+	}
+
 	return html.StaffUploadText.Execute(w, struct {
 		digitalgoods.Variant
 		Country string
+		Stock   int
 	}{
 		variant,
 		countryID,
+		stock.Get(variant, countryID),
 	})
 }
 
