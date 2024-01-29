@@ -372,11 +372,6 @@
             "translation": "vorrätig"
         },
         {
-            "id": "currently not available",
-            "message": "currently not available",
-            "translation": "im Moment nicht verfügbar"
-        },
-        {
             "id": "Select other country",
             "message": "Select other country",
             "translation": "Anderes Land auswählen"

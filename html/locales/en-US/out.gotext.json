@@ -520,13 +520,6 @@
             "fuzzy": true
         },
         {
-            "id": "currently not available",
-            "message": "currently not available",
-            "translation": "currently not available",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Select other country",
             "message": "Select other country",
             "translation": "Select other country",
