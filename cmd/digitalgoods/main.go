@@ -32,6 +32,7 @@ import (
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/countries/detect"
 	"github.com/dys2p/eco/email"
+	"github.com/dys2p/eco/id"
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/ntfysh"
 	"github.com/dys2p/eco/payment"
@@ -442,8 +443,8 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	purchase := &digitalgoods.Purchase{
-		AccessKey:   digitalgoods.NewKey(),
-		PaymentKey:  digitalgoods.NewKey(),
+		AccessKey:   id.New(16, id.AlphanumCaseSensitiveDigits), // 16 digits * log2(58) = 94 bits
+		PaymentKey:  id.New(16, id.AlphanumCaseSensitiveDigits), // 16 digits * log2(58) = 94 bits
 		Status:      digitalgoods.StatusNew,
 		Ordered:     order,
 		CreateDate:  time.Now().Format("2006-01-02"),

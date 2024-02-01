@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/dys2p/digitalgoods"
+	"github.com/dys2p/eco/id"
 )
 
 type DB struct {
@@ -150,8 +151,8 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	if err != nil {
 		return err
 	}
-	for i := 0; i < 5; i++ { // try five times if pay id already exists, see NewID
-		purchase.ID = digitalgoods.NewID()
+	for i := 0; i < 5; i++ { // try five times if pay id already exists, see id.New
+		purchase.ID = id.New(6, id.AlphanumCaseInsensitiveDigits)
 		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, purchase.Status, purchase.NotifyProto, purchase.NotifyAddr, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
 			return nil
 		}
