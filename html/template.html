@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="{{.BCP47}}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="referrer" content="no-referrer">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/static/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/style.css">
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/fontawesome-selection.css">
+		<link rel="stylesheet" href="/static/fontawesome-free-6.2.1-web/css/solid.css">
+		{{block "head" .}}{{end}}
+	</head>
+	<body>
+		<header>
+			<nav class="navbar navbar-expand-xl navbar-light py-0" style="background-color: rgb(240,242,244) !important">
+				<div class="container-fluid">
+					<!-- checkbox -->
+					<input type="checkbox" class="toggler" aria-hidden="true" id="open-shopbar">
+					<!-- togglers -->
+					<label for="open-shopbar" class="navbar-toggler my-2">
+						<div class="open navbar-toggler-icon"></div>
+						<div class="close btn-close"></div>
+					</label>
+					<div class="d-xl-none">
+						<a class="open visually-hidden-focusable" role="button" href="#open-shopbar">{{.Tr "Open shops menu"}}</a>
+						<a class="close visually-hidden-focusable" role="button" href="#">{{.Tr "Close shops menu"}}</a>
+					</div>
+					<!-- closed -->
+					<label for="open-shopbar" class="d-xl-none me-2">
+						<div class="navbar-text">{{.Tr "All Services and Projects"}}</div>
+					</label>
+					<!-- opened -->
+					<div class="collapse navbar-collapse">
+						<div class="navbar-brand equal-width-xl"></div>
+						<div class="navbar-nav equal-width-xl d-flex justify-content-center">
+							<a class="nav-item nav-link text-dark text-nowrap p-3" rel="noreferrer" href="https://dys2p.com/{{.Prefix}}">
+								<i class="fa-solid fa-flask"></i> dys2p
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3" rel="noreferrer" href="https://proxysto.re/{{.Prefix}}/warum.html">
+								<i class="fa-solid fa-biohazard"></i> {{.Tr "Why?"}}
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3" rel="noreferrer" href="https://proxysto.re/{{.Prefix}}">
+								<i class="fa-solid fa-store"></i> {{.Tr "Local Store"}}
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 active" rel="noreferrer" href="https://digitalgoods.proxysto.re/{{.Prefix}}">
+								<i class="fa-solid fa-ticket"></i> {{.Tr "Digital Goods"}}
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://shop.proxysto.re">
+								<i class="fa-solid fa-cart-shopping"></i> {{.Tr "Online Shop"}}
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://order.proxysto.re">
+								<i class="fa-solid fa-tags"></i> {{.Tr "Order Service"}}
+							</a>
+							<a class="nav-item nav-link text-dark text-nowrap p-3 " rel="noreferrer" href="https://druck.proxysto.re">
+								<i class="fa-solid fa-print"></i> {{.Tr "Online Printing"}}
+							</a>
+						</div>
+						<div class="equal-width-xl text-end text-nowrap">
+
+
+<!-- TODO function which replaces first url segment by prefix of other language -->
+									<a class="btn btn-sm btn-secondary" href="/de/">DE</a> <a class="btn btn-sm btn-secondary active" href="/en/">EN</a>
+
+
+						</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		{{template "main" .}}
+
+		<footer class="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-3">
+						{{block "payment" .}}{{end}}
+					</div>
+					<div class="col-lg-3">
+						{{block "delivery" .}}{{end}}
+					</div>
+					<div class="col-lg-2">
+						<h4>{{.Tr "Legal"}}</h4>
+						<ul>
+							<li><a href="/{{.Prefix}}/terms.html">{{.Tr "Terms and Conditions"}}</a></li>
+							<li><a href="/{{.Prefix}}/privacy.html">{{.Tr "Privacy policy"}}</a></li>
+							<li><a href="/{{.Prefix}}/imprint.html">{{.Tr "Imprint"}}</a></li>
+							<li><a href="/{{.Prefix}}/cancellation-policy.html">{{.Tr "Cancellation Policy"}}</a></li>
+						</ul>
+					</div>
+					<div class="col-lg-2">
+						<h4>{{.Tr "Contact & News"}}</h4>
+						<ul>
+							<li><a rel="noreferrer" href="/{{.Prefix}}/contact.html"><strong>{{.Tr "Contact us"}}</strong></a></li>
+							<li><a rel="noreferrer" href="https://dys2p.com/{{.Prefix}}/news.html">Blog</a></li>
+							<li><a rel="noreferrer" href="https://github.com/dys2p">GitHub</a></li>
+							<li><a rel="noreferrer" href="https://chaos.social/@dys2p">Mastodon</a> + <a rel="noreferrer" href="https://chaos.social/@dys2p.rss">RSS</a></li>
+							<li><a rel="noreferrer" href="https://www.reddit.com/r/dys2p">Reddit</a></li>
+						</ul>
+					</div>
+					<div class="col-lg-2">
+						<h4><a rel="noreferrer" href="https://proxysto.re/en">{{.Tr "Local Store"}}</a></h4>
+						<p>
+							Bernhard-Göring-Straße 162<br>
+							04277 Leipzig<br>
+							{{.Tr "Germany"}}
+						</p>
+						<p>
+							{{.Tr "Mon+Thu 10am-6pm"}}<br>
+							{{.Tr "Tue+Wed+Fri+Sat 10am-2pm"}}<br>
+							{{.Tr "and by arrangement"}}
+						</p>
+					</div>
+				</div>
+				<p class="px-0">
+					<a href="/{{.Prefix}}/contact.html">{{.Tr "Got an idea or found an error? Drop us a note!"}}</a>
+				</p>
+			</div>
+		</footer>
+
+		<!-- HTML noscript tag does not work with NoScript browser addon, so we go this way -->
+		<script>
+			document.querySelectorAll("[name='apply-changes-nojs']").forEach(e => e.remove());
+		</script>
+	</body>
+</html>

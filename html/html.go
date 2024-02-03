@@ -4,7 +4,6 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
-	"io"
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
@@ -14,29 +13,12 @@ import (
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"gitlab.com/golang-commonmark/markdown"
-	"golang.org/x/text/language"
 )
 
 //go:embed *
 var files embed.FS
 
 var md = markdown.New(markdown.HTML(true), markdown.Linkify(false))
-
-type LangTemplate map[string]*template.Template
-
-func (t LangTemplate) Execute(w io.Writer, lang string, data any) error {
-	// prepare matcher
-	keys := []string{}
-	tags := []language.Tag{}
-	for key := range t {
-		keys = append(keys, key)
-		tags = append(tags, language.Make(key))
-	}
-	matcher := language.NewMatcher(tags)
-	// match
-	_, i := language.MatchStrings(matcher, lang)
-	return t[keys[i]].Execute(w, data)
-}
 
 func parse(fn ...string) *template.Template {
 	t := template.New(fn[0]).Funcs(template.FuncMap{
@@ -71,27 +53,17 @@ func parse(fn ...string) *template.Template {
 }
 
 var (
-	ErrorInternal = parse("layout.en.html", "error-internal.html")
-	ErrorNotFound = parse("layout.en.html", "error-not-found.html")
-	CustOrder     = LangTemplate{
-		"en": parse("layout.en.html", "customer/order.html"),
-		"de": parse("layout.de.html", "customer/order.html"),
-	}
-	CustPurchase = LangTemplate{
-		"en": parse("layout.en.html", "customer/purchase.html"),
-		"de": parse("layout.de.html", "customer/purchase.html"),
-	}
-	Site = LangTemplate{
-		"en": parse("layout.en.html", "site.html"),
-		"de": parse("layout.de.html", "site.html"),
-	}
-	StaffIndex       = parse("layout.de.html", "staff.html", "staff/index.html")
-	StaffView        = parse("layout.de.html", "staff.html", "staff/view.html")
-	StaffMarkPaid    = parse("layout.de.html", "staff.html", "staff/mark-paid.html")
-	StaffLogin       = parse("layout.de.html", "staff/login.html")
-	StaffSelect      = parse("layout.de.html", "staff.html", "staff/select.html")
-	StaffUploadImage = parse("layout.de.html", "staff.html", "staff/upload-image.html")
-	StaffUploadText  = parse("layout.de.html", "staff.html", "staff/upload-text.html")
+	Error            = parse("template.html", "layout.html", "error.html")
+	CustOrder        = parse("template.html", "layout.html", "customer/order.html")
+	CustPurchase     = parse("template.html", "layout.html", "customer/purchase.html")
+	Site             = parse("template.html", "layout.html", "site.html")
+	StaffIndex       = parse("template.html", "layout.html", "staff.html", "staff/index.html")
+	StaffView        = parse("template.html", "layout.html", "staff.html", "staff/view.html")
+	StaffMarkPaid    = parse("template.html", "layout.html", "staff.html", "staff/mark-paid.html")
+	StaffLogin       = parse("template.html", "layout.html", "staff/login.html")
+	StaffSelect      = parse("template.html", "layout.html", "staff.html", "staff/select.html")
+	StaffUploadImage = parse("template.html", "layout.html", "staff.html", "staff/upload-image.html")
+	StaffUploadText  = parse("template.html", "layout.html", "staff.html", "staff/upload-text.html")
 )
 
 type CustOrderData struct {

@@ -1,13 +1,13 @@
 {{define "content"}}
-<h1>Hi</h1>
-{{with .}}
-	<h2>Underdelivered purchases</h2>
-	<ul>
-	{{range .}}
-		<li>{{.}}</li>
+	<h1>Hi</h1>
+	{{with .Underdelivered}}
+		<h2>Underdelivered purchases</h2>
+		<ul>
+		{{range .}}
+			<li>{{.}}</li>
+		{{end}}
+		</ul>
+	{{else}}
+		<p>No underdelivered purchases.</p>
 	{{end}}
-	</ul>
-{{else}}
-	<p>No underdelivered purchases.</p>
-{{end}}
 {{end}}

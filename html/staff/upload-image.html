@@ -1,31 +1,31 @@
 {{define "content"}}
-<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
-<!-- tabs -->
-<ul class="nav nav-tabs">
-	<li class="nav-item">
-		<a class="nav-link active" href="/upload/{{.ID}}/{{.Country}}/image">Image</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/upload/{{.ID}}/{{.Country}}/text">Text</a>
-	</li>
-</ul>
-{{if .HasCountry}}
-	<div class="alert alert-warning mt-3">Land: {{.Country}}</div>
-{{end}}
-<!-- image dropzone -->
-<link rel="stylesheet" href="/static/dropzone-min/basic.min.css">
-<link rel="stylesheet" href="/static/dropzone-min/dropzone.min.css">
-<script src="/static/dropzone-min/dropzone.min.js"></script>
-<style>
-.dz-error-mark g g {
-	fill: #dd0000;
-}
-.dz-success-mark g path {
-	fill: #009900;
-}
-</style>
-<form action="/upload/{{.ID}}/{{.Country}}/image" class="dropzone my-4" id="my-awesome-dropzone"></form>
-<div class="text-end">
-	<a class="btn btn-secondary" href="/">Back</a>
-</div>
+	<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
+	<!-- tabs -->
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a class="nav-link active" href="/upload/{{.ID}}/{{.Country}}/image">Image</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/upload/{{.ID}}/{{.Country}}/text">Text</a>
+		</li>
+	</ul>
+	{{if .HasCountry}}
+		<div class="alert alert-warning mt-3">Land: {{.Country}}</div>
+	{{end}}
+	<!-- image dropzone -->
+	<link rel="stylesheet" href="/static/dropzone-min/basic.min.css">
+	<link rel="stylesheet" href="/static/dropzone-min/dropzone.min.css">
+	<script src="/static/dropzone-min/dropzone.min.js"></script>
+	<style>
+	.dz-error-mark g g {
+		fill: #dd0000;
+	}
+	.dz-success-mark g path {
+		fill: #009900;
+	}
+	</style>
+	<form action="/upload/{{.ID}}/{{.Country}}/image" class="dropzone my-4" id="my-awesome-dropzone"></form>
+	<div class="text-end">
+		<a class="btn btn-secondary" href="/">Back</a>
+	</div>
 {{end}}

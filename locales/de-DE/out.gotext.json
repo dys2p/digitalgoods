@@ -42,6 +42,46 @@
             "translation": "Abgeschlossen"
         },
         {
+            "id": "Error getting stock from database. Please try again later.",
+            "message": "Error getting stock from database. Please try again later.",
+            "translation": "Fehler beim Abrufen des Bestands aus der Datenbank. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "Error displaying website. Please try again later.",
+            "message": "Error displaying website. Please try again later.",
+            "translation": "Fehler beim Anzeigen der Seite. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "Error inserting purchase into database. Please try again later.",
+            "message": "Error inserting purchase into database. Please try again later.",
+            "translation": "Fehler beim Einfügen der Bestellung in die Datenbank. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "There is no such purchase, or it has been deleted.",
+            "message": "There is no such purchase, or it has been deleted.",
+            "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."
+        },
+        {
+            "id": "Payment method not found.",
+            "message": "Payment method not found.",
+            "translation": "Diese Zahlungsmethode wurde leider nicht gefunden."
+        },
+        {
+            "id": "Error saving notify information. Please try again later.",
+            "message": "Error saving notify information. Please try again later.",
+            "translation": "Fehler beim Speichern der Benachrichtigungseinstellungen. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "Error loading site content. Please try again later.",
+            "message": "Error loading site content. Please try again later.",
+            "translation": "Fehler beim Laden der Seite. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "Error displaying site content. Please try again later.",
+            "message": "Error displaying site content. Please try again later.",
+            "translation": "Fehler beim Anzeigen der Seite. Bitte versuche es später noch einmal."
+        },
+        {
             "id": "Austria",
             "message": "Austria",
             "translation": "Österreich"
@@ -537,14 +577,119 @@
             "translation": "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."
         },
         {
-            "id": "Internal server error",
-            "message": "Internal server error",
-            "translation": "Interner Serverfehler"
+            "id": "Cash by mail in 20 currencies",
+            "message": "Cash by mail in 20 currencies",
+            "translation": "Bargeld per Post in 20 Währungen"
         },
         {
-            "id": "There is no such order, or it has been deleted.",
-            "message": "There is no such order, or it has been deleted.",
-            "translation": "Diese Bestellung existiert nicht oder wurde schon gelöscht."
+            "id": "Monero and Bitcoin",
+            "message": "Monero and Bitcoin",
+            "translation": "Monero und Bitcoin"
+        },
+        {
+            "id": "SEPA bank transfer",
+            "message": "SEPA bank transfer",
+            "translation": "SEPA-Banküberweisung"
+        },
+        {
+            "id": "Open shops menu",
+            "message": "Open shops menu",
+            "translation": "Liste unserer Shops öffnen"
+        },
+        {
+            "id": "Close shops menu",
+            "message": "Close shops menu",
+            "translation": "Liste unserer Shops schließen"
+        },
+        {
+            "id": "All Services and Projects",
+            "message": "All Services and Projects",
+            "translation": "Alle Angebote und Projekte"
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Warum?"
+        },
+        {
+            "id": "Local Store",
+            "message": "Local Store",
+            "translation": "Ladengeschäft"
+        },
+        {
+            "id": "Digital Goods",
+            "message": "Digital Goods",
+            "translation": "Digitale Güter"
+        },
+        {
+            "id": "Online Shop",
+            "message": "Online Shop",
+            "translation": "Onlineshop"
+        },
+        {
+            "id": "Order Service",
+            "message": "Order Service",
+            "translation": "Bestellservice"
+        },
+        {
+            "id": "Online Printing",
+            "message": "Online Printing",
+            "translation": "Onlinedruck"
+        },
+        {
+            "id": "Legal",
+            "message": "Legal",
+            "translation": "Rechtliches"
+        },
+        {
+            "id": "Terms and Conditions",
+            "message": "Terms and Conditions",
+            "translation": "AGB"
+        },
+        {
+            "id": "Privacy policy",
+            "message": "Privacy policy",
+            "translation": "Datenschutz"
+        },
+        {
+            "id": "Imprint",
+            "message": "Imprint",
+            "translation": "Impressum"
+        },
+        {
+            "id": "Cancellation Policy",
+            "message": "Cancellation Policy",
+            "translation": "Widerrufs\u0026shy;belehrung"
+        },
+        {
+            "id": "Contact \u0026 News",
+            "message": "Contact \u0026 News",
+            "translation": "Kontakt \u0026 News"
+        },
+        {
+            "id": "Contact us",
+            "message": "Contact us",
+            "translation": "Kontakt"
+        },
+        {
+            "id": "Mon+Thu 10am-6pm",
+            "message": "Mon+Thu 10am-6pm",
+            "translation": "Mo+Do 10-18 Uhr"
+        },
+        {
+            "id": "Tue+Wed+Fri+Sat 10am-2pm",
+            "message": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translation": "Di+Mi+Fr+Sa 10-14 Uhr"
+        },
+        {
+            "id": "and by arrangement",
+            "message": "and by arrangement",
+            "translation": "und nach Vereinbarung"
+        },
+        {
+            "id": "Got an idea or found an error? Drop us a note!",
+            "message": "Got an idea or found an error? Drop us a note!",
+            "translation": "Fehler oder Hinweise? Schreib uns!"
         },
         {
             "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",

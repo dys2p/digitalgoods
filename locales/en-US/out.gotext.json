@@ -58,6 +58,62 @@
             "fuzzy": true
         },
         {
+            "id": "Error getting stock from database. Please try again later.",
+            "message": "Error getting stock from database. Please try again later.",
+            "translation": "Error getting stock from database. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error displaying website. Please try again later.",
+            "message": "Error displaying website. Please try again later.",
+            "translation": "Error displaying website. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error inserting purchase into database. Please try again later.",
+            "message": "Error inserting purchase into database. Please try again later.",
+            "translation": "Error inserting purchase into database. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "There is no such purchase, or it has been deleted.",
+            "message": "There is no such purchase, or it has been deleted.",
+            "translation": "There is no such purchase, or it has been deleted.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Payment method not found.",
+            "message": "Payment method not found.",
+            "translation": "Payment method not found.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error saving notify information. Please try again later.",
+            "message": "Error saving notify information. Please try again later.",
+            "translation": "Error saving notify information. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error loading site content. Please try again later.",
+            "message": "Error loading site content. Please try again later.",
+            "translation": "Error loading site content. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error displaying site content. Please try again later.",
+            "message": "Error displaying site content. Please try again later.",
+            "translation": "Error displaying site content. Please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Austria",
             "message": "Austria",
             "translation": "Austria",
@@ -751,16 +807,163 @@
             "fuzzy": true
         },
         {
-            "id": "Internal server error",
-            "message": "Internal server error",
-            "translation": "Internal server error",
+            "id": "Cash by mail in 20 currencies",
+            "message": "Cash by mail in 20 currencies",
+            "translation": "Cash by mail in 20 currencies",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
         {
-            "id": "There is no such order, or it has been deleted.",
-            "message": "There is no such order, or it has been deleted.",
-            "translation": "There is no such order, or it has been deleted.",
+            "id": "Monero and Bitcoin",
+            "message": "Monero and Bitcoin",
+            "translation": "Monero and Bitcoin",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "SEPA bank transfer",
+            "message": "SEPA bank transfer",
+            "translation": "SEPA bank transfer",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Open shops menu",
+            "message": "Open shops menu",
+            "translation": "Open shops menu",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Close shops menu",
+            "message": "Close shops menu",
+            "translation": "Close shops menu",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "All Services and Projects",
+            "message": "All Services and Projects",
+            "translation": "All Services and Projects",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Why?",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Local Store",
+            "message": "Local Store",
+            "translation": "Local Store",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Digital Goods",
+            "message": "Digital Goods",
+            "translation": "Digital Goods",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Online Shop",
+            "message": "Online Shop",
+            "translation": "Online Shop",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Order Service",
+            "message": "Order Service",
+            "translation": "Order Service",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Online Printing",
+            "message": "Online Printing",
+            "translation": "Online Printing",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Legal",
+            "message": "Legal",
+            "translation": "Legal",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Terms and Conditions",
+            "message": "Terms and Conditions",
+            "translation": "Terms and Conditions",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Privacy policy",
+            "message": "Privacy policy",
+            "translation": "Privacy policy",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Imprint",
+            "message": "Imprint",
+            "translation": "Imprint",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cancellation Policy",
+            "message": "Cancellation Policy",
+            "translation": "Cancellation Policy",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Contact \u0026 News",
+            "message": "Contact \u0026 News",
+            "translation": "Contact \u0026 News",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Contact us",
+            "message": "Contact us",
+            "translation": "Contact us",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Mon+Thu 10am-6pm",
+            "message": "Mon+Thu 10am-6pm",
+            "translation": "Mon+Thu 10am-6pm",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Tue+Wed+Fri+Sat 10am-2pm",
+            "message": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translation": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "and by arrangement",
+            "message": "and by arrangement",
+            "translation": "and by arrangement",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Got an idea or found an error? Drop us a note!",
+            "message": "Got an idea or found an error? Drop us a note!",
+            "translation": "Got an idea or found an error? Drop us a note!",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

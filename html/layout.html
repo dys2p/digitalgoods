@@ -1,0 +1,36 @@
+{{define "head"}}
+	<link rel="stylesheet" href="/static/digitalgoods.css">
+	<link rel="icon" type="image/png" href="https://proxysto.re/assets/images/favicon-96.png" sizes="96x96">
+    <meta name="author" content="ProxyStore">
+    <meta name="description" content="Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter.">
+
+	<script src="/static/scripts.js"></script>
+	<title>Digital Goods – ProxyStore</title>
+{{end}}
+
+{{define "main"}}
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-light bg-light">
+			<div class="container">
+				<a class="navbar-brand" href="/en/">Digital Goods</a>
+				<div>
+					{{block "menu" .}}{{end}}
+					<div>{{template "health"}}</div>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<main class="container pt-3 pb-4">
+		{{template "content" .}}
+	</main>
+{{end}}
+
+{{define "payment"}}
+	<h4><a href="/{{.Prefix}}/payment.html">{{.Tr "Payment"}}</a></h4>
+	<ul>
+		<li>{{.Tr "Cash"}}</li>
+		<li>{{.Tr "Cash by mail in 20 currencies"}}</li>
+		<li>{{.Tr "Monero and Bitcoin"}}</li>
+		<li>{{.Tr "SEPA bank transfer"}}</li>
+	</ul>
+{{end}}

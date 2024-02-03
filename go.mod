@@ -6,14 +6,14 @@ require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
 	github.com/dys2p/btcpay v0.5.0
-	github.com/dys2p/eco v0.0.0-20240114115838-816634b59db4
+	github.com/dys2p/eco v0.0.0-20240203145257-ecefec6a503c
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
-	golang.org/x/text v0.13.0
+	golang.org/x/text v0.14.0
 )
 
 require (
