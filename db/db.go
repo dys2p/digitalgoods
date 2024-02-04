@@ -20,8 +20,8 @@ type DB struct {
 	// purchases
 	insertPurchase               *sql.Stmt
 	cleanupPurchases             *sql.Stmt
-	getPurchaseByAccessKey       *sql.Stmt
 	getPurchaseByID              *sql.Stmt
+	getPurchaseByIDAndAccessKey  *sql.Stmt
 	getPurchaseByIDAndPaymentKey *sql.Stmt
 	getPurchasesByStatus         *sql.Stmt
 	updatePurchase               *sql.Stmt
@@ -103,8 +103,8 @@ func OpenDB() (*DB, error) {
 	// purchase
 	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
-	db.getPurchaseByAccessKey = mustPrepare("      select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where access_key = ? limit 1")
 	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
+	db.getPurchaseByIDAndAccessKey = mustPrepare(" select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and access_key = ? limit 1")
 	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
 	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
@@ -238,8 +238,8 @@ func (db *DB) GetPurchaseByID(id string) (*digitalgoods.Purchase, error) {
 	return db.getPurchaseWithStmt(db.getPurchaseByID, id)
 }
 
-func (db *DB) GetPurchaseByAccessKey(accessKey string) (*digitalgoods.Purchase, error) {
-	return db.getPurchaseWithStmt(db.getPurchaseByAccessKey, accessKey)
+func (db *DB) GetPurchaseByIDAndAccessKey(id, accessKey string) (*digitalgoods.Purchase, error) {
+	return db.getPurchaseWithStmt(db.getPurchaseByIDAndAccessKey, id, accessKey)
 }
 
 func (db *DB) GetPurchaseByIDAndPaymentKey(id, paymentKey string) (*digitalgoods.Purchase, error) {

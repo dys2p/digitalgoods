@@ -533,9 +533,7 @@ func custOrderPost(w http.ResponseWriter, r *http.Request) http.Handler {
 func custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Handler {
 	l, _ := langs.FromPath(r.URL.Path)
 	params := httprouter.ParamsFromContext(r.Context())
-
-	accessKey := params.ByName("access-key")
-	purchase, err := database.GetPurchaseByAccessKey(accessKey)
+	purchase, err := database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
 	if err != nil {
 		return frontendNotFound(l.Tr("There is no such purchase, or it has been deleted."))
 	}
@@ -564,9 +562,7 @@ func custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Handler {
 func custPurchasePost(w http.ResponseWriter, r *http.Request) http.Handler {
 	l, _ := langs.FromPath(r.URL.Path)
 	params := httprouter.ParamsFromContext(r.Context())
-
-	accessKey := params.ByName("access-key")
-	purchase, err := database.GetPurchaseByAccessKey(accessKey)
+	purchase, err := database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
 	if err != nil {
 		return frontendNotFound(l.Tr("There is no such purchase, or it has been deleted."))
 	}
