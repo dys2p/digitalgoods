@@ -676,14 +676,12 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 		GroupedOrder    []digitalgoods.OrderedArticle
 		CurrencyOptions []rates.Option
 		EUCountries     []countries.CountryWithName
-		DB              *db.DB
 	}{
 		staffLang,
 		purchase,
 		catalog.GroupOrder(purchase.Ordered),
 		currencyOptions,
 		countries.TranslateAndSort(staffLang, countries.EuropeanUnion),
-		s.Database,
 	})
 }
 
