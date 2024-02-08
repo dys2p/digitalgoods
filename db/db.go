@@ -375,21 +375,19 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		return err
 	}
 
-	var newDeleteDate string
-	var newStatus digitalgoods.Status
 	unfulfilled, err = purchase.GetUnfulfilled()
 	if err != nil {
 		return err
 	}
 	if unfulfilled.Empty() {
-		newDeleteDate = time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt)
-		newStatus = digitalgoods.StatusFinalized
+		purchase.DeleteDate = time.Now().AddDate(0, 0, 31).Format(digitalgoods.DateFmt)
+		purchase.Status = digitalgoods.StatusFinalized
 	} else {
-		newDeleteDate = "" // don't delete
-		newStatus = digitalgoods.StatusUnderdelivered
+		purchase.DeleteDate = "" // don't delete
+		purchase.Status = digitalgoods.StatusUnderdelivered
 	}
 
-	if _, err := tx.Stmt(db.updatePurchase).Exec(newStatus, string(deliveredBytes), newDeleteDate, purchase.ID); err != nil {
+	if _, err := tx.Stmt(db.updatePurchase).Exec(purchase.Status, string(deliveredBytes), purchase.DeleteDate, purchase.ID); err != nil {
 		return err
 	}
 
