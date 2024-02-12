@@ -28,7 +28,6 @@ import (
 	"github.com/dys2p/digitalgoods/html/sites"
 	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
-	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/countries/detect"
 	"github.com/dys2p/eco/email"
@@ -83,9 +82,6 @@ func main() {
 			return
 		}
 	}
-
-	// captcha
-	captcha.Initialize(filepath.Join(os.Getenv("STATE_DIRECTORY"), "captcha.sqlite3"))
 
 	// emailer
 	var emailer email.Emailer
@@ -213,7 +209,6 @@ func (s *Shop) ListenAndServe() {
 	}
 	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
-	custRtr.Handler(http.MethodGet, "/captcha/:fn", captcha.Handler())
 	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
 		BTCPay: s.Btcpay,
 		Rates:  s.RatesHistory,
@@ -290,7 +285,7 @@ func (s *Shop) ListenAndServe() {
 func (s *Shop) frontendErr(err error, message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		l, _ := s.Langs.FromPath(r.URL.Path)
-		fmt.Println(l.BCP47)
+
 		w.WriteHeader(http.StatusInternalServerError)
 		html.Error.Execute(w, struct {
 			lang.Lang
@@ -299,8 +294,11 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 			Lang:    l,
 			Message: message,
 		})
-		log.Printf("internal server error: %v", err)
-		ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
+
+		if err != nil {
+			log.Printf("internal server error: %v", err)
+			ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
+		}
 	})
 }
 
@@ -374,9 +372,6 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 		Stock:                stock,
 
 		Area: area,
-		Captcha: captcha.TemplateData{
-			ID: captcha.New(),
-		},
 		Lang: l,
 	})
 	if err != nil {
@@ -387,6 +382,10 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 
 func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handler {
 	l, _ := s.Langs.FromPath(r.URL.Path)
+
+	if val := r.PostFormValue("n-o-b-o-t-s"); val != "" {
+		return s.frontendErr(nil, l.Tr("Our service thinks that you are a bot. If you are not, please contact us."))
+	}
 
 	availableEUCountries, availableNonEU, err := detect.Countries(r)
 	if err != nil {
@@ -406,10 +405,6 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		Catalog:              catalog,
 		Stock:                stock,
 
-		Captcha: captcha.TemplateData{
-			Answer: r.PostFormValue("captcha-answer"),
-			ID:     r.PostFormValue("captcha-id"),
-		},
 		Cart:         &digitalgoods.Cart{},
 		OtherCountry: make(map[string]string),
 		Area:         r.PostFormValue("area"),
@@ -483,15 +478,6 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 			html.CustOrder.Execute(w, co)
 			return nil
 		}
-	}
-
-	// VerifyString probably invalidates the captcha, so we check this last
-	if !captcha.Verify(co.Captcha.ID, co.Captcha.Answer) {
-		co.Captcha.Answer = ""
-		co.Captcha.ID = captcha.New()
-		co.Captcha.Err = true
-		html.CustOrder.Execute(w, co)
-		return nil
 	}
 
 	purchase := &digitalgoods.Purchase{

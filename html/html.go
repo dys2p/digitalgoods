@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
-	"github.com/dys2p/eco/captcha"
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/payment"
@@ -46,7 +45,6 @@ func parse(fn ...string) *template.Template {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},
 	})
-	t = template.Must(t.Parse(captcha.TemplateString))
 	t = template.Must(t.Parse(health.TemplateString))
 	t = template.Must(t.ParseFS(files, fn...))
 	return t
@@ -73,7 +71,6 @@ type CustOrderData struct {
 	Catalog              digitalgoods.Catalog
 	Stock                digitalgoods.Stock
 
-	Captcha      captcha.TemplateData
 	Cart         *digitalgoods.Cart
 	OtherCountry map[string]string // user input: variant ID -> country ID
 	Area         string

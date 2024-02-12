@@ -4,8 +4,6 @@ github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a h1:5S
 github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a/go.mod h1:Iyk7S76cxGaiEX/mSYmTZzYehp4KfyylcLaV3OnToss=
 github.com/alexedwards/scs/v2 v2.4.0 h1:XfnMamKnvp1muJVNr1WzikQTclopsBXWZtzz0NBjOK0=
 github.com/alexedwards/scs/v2 v2.4.0/go.mod h1:ToaROZxyKukJKT/xLcVQAChi5k6+Pn1Gvmdl7h3RRj8=
-github.com/dchest/captcha v1.0.0 h1:vw+bm/qMFvTgcjQlYVTuQBJkarm5R0YSsDKhm1HZI2o=
-github.com/dchest/captcha v1.0.0/go.mod h1:7zoElIawLp7GUMLcj54K9kbw+jEyvz2K0FDdRRYhvWo=
 github.com/dys2p/btcpay v0.5.0 h1:37V0YtPbGZKMuDtbjL8DCKBW4rHR2Oqfxdalms3ZzTU=
 github.com/dys2p/btcpay v0.5.0/go.mod h1:PhoRfQYTu1hAThbCh0dutuUonLf0WPb72huHr19ujgU=
 github.com/dys2p/eco v0.0.0-20240204172659-a5eb3e74238d h1:gQ6EUZoRAb57Cc0R64w1Vd8VvAsP2XCU2NOcYTL20m8=

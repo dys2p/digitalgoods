@@ -107,7 +107,10 @@
 			<div class="form-text">{{.Tr "Country options are limited by your IP address and browser language."}}</div>
 		</div>
 
-		{{template "captcha" .Captcha}}
+		<div class="d-none mb-3">
+			<label for="n-o-b-o-t-s" class="form-label">Please leave this field empty</label>
+			<input class="form-control" id="n-o-b-o-t-s" name="n-o-b-o-t-s">
+		</div>
 
 		<div class="text-end">
 			<button class="btn btn-success w-100" type="submit">{{.Tr "Buy"}}</button>

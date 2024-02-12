@@ -18,7 +18,6 @@ require (
 
 require (
 	github.com/abh/geoip v0.0.0-20160510155516-07cea4480daa // indirect
-	github.com/dchest/captcha v1.0.0 // indirect
 	github.com/dys2p/paypal v0.2.2 // indirect
 	github.com/emersion/go-sasl v0.0.0-20220912192320-0145f2c60ead // indirect
 	github.com/emersion/go-smtp v0.16.1-0.20230108191019-90d596c5fb00 // indirect

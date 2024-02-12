@@ -42,11 +42,6 @@
             "translation": "Abgeschlossen"
         },
         {
-            "id": "Payment",
-            "message": "Payment",
-            "translation": "Zahlung"
-        },
-        {
             "id": "Error getting stock from database. Please try again later.",
             "message": "Error getting stock from database. Please try again later.",
             "translation": "Fehler beim Abrufen des Bestands aus der Datenbank. Bitte versuche es später noch einmal."
@@ -55,6 +50,11 @@
             "id": "Error displaying website. Please try again later.",
             "message": "Error displaying website. Please try again later.",
             "translation": "Fehler beim Anzeigen der Seite. Bitte versuche es später noch einmal."
+        },
+        {
+            "id": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "message": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "translation": "Unser Server denkt, dass du ein Bot bist. Falls du kein Bot bist, kontaktiere uns bitte."
         },
         {
             "id": "Error inserting purchase into database. Please try again later.",
@@ -500,6 +500,11 @@
             "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
             "message": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
             "translation": "Sobald deine Zahlung bei uns eintrifft, werden dir deine Gutscheincodes angezeigt. In seltenen Fällen kann es passieren, dass das Produkt zwischenzeitlich ausverkauft ist. Dann werden dir die Codes angezeigt, sobald Nachschub da ist."
+        },
+        {
+            "id": "Payment",
+            "message": "Payment",
+            "translation": "Zahlung"
         },
         {
             "id": "Optional: Get notified when your payment arrives",

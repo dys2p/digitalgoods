@@ -52,6 +52,11 @@
             "translation": "Fehler beim Anzeigen der Seite. Bitte versuche es später noch einmal."
         },
         {
+            "id": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "message": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "translation": "Unser Server denkt, dass du ein Bot bist. Falls du kein Bot bist, kontaktiere uns bitte."
+        },
+        {
             "id": "Error inserting purchase into database. Please try again later.",
             "message": "Error inserting purchase into database. Please try again later.",
             "translation": "Fehler beim Einfügen der Bestellung in die Datenbank. Bitte versuche es später noch einmal."

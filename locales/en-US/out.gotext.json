@@ -72,6 +72,13 @@
             "fuzzy": true
         },
         {
+            "id": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "message": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "translation": "Our service thinks that you are a bot. If you are not, please contact us.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Error inserting purchase into database. Please try again later.",
             "message": "Error inserting purchase into database. Please try again later.",
             "translation": "Error inserting purchase into database. Please try again later.",
