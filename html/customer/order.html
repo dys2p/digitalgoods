@@ -43,16 +43,12 @@
 									<div class="col-md-6 py-2">{{$variant.NameHTML}}{{if $.Stock.OnDemandOnly $variant .}} (on demand){{end}}</div>
 									<div class="col-md-2">{{if ne . "all"}}{{.}}{{end}}</div>
 									<div class="col-md-4 pb-2 pb-md-0 text-end">
-										{{$max := $.Stock.Max $variant .}}
-										{{if gt $max 0}}
-											<div class="input-group py-1 justify-content-end">
-												<span class="input-group-text py-1">{{FmtEuro $variant.Price}}</span>
-												<input class="form-control py-1 flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
-												<span class="input-group-text py-1">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
-											</div>
-										{{else}}
-											0 {{$.Tr "on stock"}}
-										{{end}}
+										<div class="input-group py-1 justify-content-end">
+											<span class="input-group-text py-1">{{FmtEuro $variant.Price}}</span>
+											{{$max := $.Stock.Max $variant .}}
+											<input class="form-control py-1 flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" {{if eq $max 0}}disabled{{end}} value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
+											<span class="input-group-text py-1">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
+										</div>
 									</div>
 								</div>
 							{{end}}
