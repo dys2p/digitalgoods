@@ -44,6 +44,7 @@ func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 
 type Article struct {
 	Name        string // not translated
+	ID          string // for <details>
 	Alert       map[string]string
 	Description map[string]string
 	Variants    []Variant

@@ -28,7 +28,7 @@
 			</div>
 			{{range .Articles}}
 				<div class="pt-2">
-					<details {{if $.Cart.Has .}}open{{end}}>
+					<details id="{{.ID}}" {{if $.Cart.Has .}}open{{end}}>
 						<summary>
 							<strong class="text-success">{{.Name}}</strong>
 						</summary>
@@ -119,4 +119,19 @@
 			document.getElementById("section-country").scrollIntoView();
 		</script>
 	{{end}}
+
+	<script>
+		// open details element if url has #anchor
+		function openTarget() {
+			let hash = location.hash.substring(1);
+			if(hash) {
+				let details = document.getElementById(hash);
+				if(details && details.tagName.toLowerCase() === 'details') {
+					details.open = true;
+				}
+			}
+		}
+		openTarget();
+		window.addEventListener('hashchange', openTarget);
+	</script>
 {{end}}
