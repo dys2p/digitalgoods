@@ -538,10 +538,16 @@ func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Han
 	}
 
 	notifyProto := r.PostFormValue("notify-proto")
-	notifyAddr := r.PostFormValue("notify-addr")
+	notifyAddr := strings.TrimSpace(r.PostFormValue("notify-addr"))
 	if len(notifyAddr) > 1024 {
 		notifyAddr = notifyAddr[:1024]
 	}
+
+	// reset proto if addr is empty
+	if notifyAddr == "" {
+		notifyProto = ""
+	}
+
 	switch notifyProto {
 	case "email":
 		notifyAddr = strings.TrimSpace(notifyAddr)
