@@ -54,7 +54,7 @@ type Shop struct {
 	StaffUsers       userdb.Authenticator
 }
 
-var staffLang, _ = lang.MakeLanguages("de", "en").FromPath("de")
+var staffLang, _, _ = lang.MakeLanguages(nil, "de", "en").FromPath("de")
 
 func main() {
 	log.SetFlags(0)
@@ -147,7 +147,7 @@ func main() {
 		Btcpay:           btcpayStore,
 		Database:         database,
 		Emailer:          emailer,
-		Langs:            lang.MakeLanguages("de", "en"),
+		Langs:            lang.MakeLanguages(nil, "de", "en"),
 		RatesHistory:     ratesHistory,
 		CustomerSessions: custSessions,
 		StaffSessions:    staffSessions,
@@ -213,7 +213,7 @@ func (s *Shop) ListenAndServe() {
 		BTCPay: s.Btcpay,
 		Rates:  s.RatesHistory,
 	})
-	custRtr.NotFound = http.HandlerFunc(s.Langs.Redirect)
+	custRtr.NotFound = http.HandlerFunc(s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()
@@ -284,7 +284,7 @@ func (s *Shop) ListenAndServe() {
 // frontend error handler, logs err and displays a message
 func (s *Shop) frontendErr(err error, message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l, _ := s.Langs.FromPath(r.URL.Path)
+		l, _, _ := s.Langs.FromPath(r.URL.Path)
 
 		w.WriteHeader(http.StatusInternalServerError)
 		html.Error.Execute(w, struct {
@@ -305,7 +305,7 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 // frontend notfound handler, logs err and displays a message
 func (s *Shop) frontendNotFound(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l, _ := s.Langs.FromPath(r.URL.Path)
+		l, _, _ := s.Langs.FromPath(r.URL.Path)
 		w.WriteHeader(http.StatusNotFound)
 		html.Error.Execute(w, struct {
 			lang.Lang
@@ -330,7 +330,7 @@ func returnErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFun
 // middleware for backend HTML GET only
 func (s *Shop) showErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		l, _ := s.Langs.FromPath(r.URL.Path)
+		l, _, _ := s.Langs.FromPath(r.URL.Path)
 		if err := f(w, r); err != nil {
 			html.Error.Execute(w, struct {
 				lang.Lang
@@ -344,7 +344,7 @@ func (s *Shop) showErr(f func(http.ResponseWriter, *http.Request) error) http.Ha
 }
 
 func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _ := s.Langs.FromPath(r.URL.Path)
+	l, _, _ := s.Langs.FromPath(r.URL.Path)
 
 	availableEUCountries, availableNonEU, err := detect.Countries(r)
 	if err != nil {
@@ -381,7 +381,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 }
 
 func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _ := s.Langs.FromPath(r.URL.Path)
+	l, _, _ := s.Langs.FromPath(r.URL.Path)
 
 	if val := r.PostFormValue("n-o-b-o-t-s"); val != "" {
 		return s.frontendErr(nil, l.Tr("Our service thinks that you are a bot. If you are not, please contact us."))
@@ -501,7 +501,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 }
 
 func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _ := s.Langs.FromPath(r.URL.Path)
+	l, _, _ := s.Langs.FromPath(r.URL.Path)
 	params := httprouter.ParamsFromContext(r.Context())
 	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
 	if err != nil {
@@ -530,7 +530,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 }
 
 func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _ := s.Langs.FromPath(r.URL.Path)
+	l, _, _ := s.Langs.FromPath(r.URL.Path)
 	params := httprouter.ParamsFromContext(r.Context())
 	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
 	if err != nil {
@@ -580,7 +580,7 @@ func (s *Shop) byCookie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Shop) siteGet(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _ := s.Langs.FromPath(r.URL.Path)
+	l, _, _ := s.Langs.FromPath(r.URL.Path)
 	name := strings.TrimSuffix(path.Base(r.URL.Path), ".html")
 
 	file, err := sites.Files.Open(filepath.Join(l.Prefix, name+".md"))
