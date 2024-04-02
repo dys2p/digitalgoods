@@ -107,20 +107,6 @@
             "fuzzy": true
         },
         {
-            "id": "Error loading site content. Please try again later.",
-            "message": "Error loading site content. Please try again later.",
-            "translation": "Error loading site content. Please try again later.",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Error displaying site content. Please try again later.",
-            "message": "Error displaying site content. Please try again later.",
-            "translation": "Error displaying site content. Please try again later.",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Austria",
             "message": "Austria",
             "translation": "Austria",
@@ -814,6 +800,41 @@
             "fuzzy": true
         },
         {
+            "id": "Legal",
+            "message": "Legal",
+            "translation": "Legal",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Terms and Conditions",
+            "message": "Terms and Conditions",
+            "translation": "Terms and Conditions",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Privacy policy",
+            "message": "Privacy policy",
+            "translation": "Privacy policy",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Imprint",
+            "message": "Imprint",
+            "translation": "Imprint",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Cancellation Policy",
+            "message": "Cancellation Policy",
+            "translation": "Cancellation Policy",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Cash by mail in 20 currencies",
             "message": "Cash by mail in 20 currencies",
             "translation": "Cash by mail in 20 currencies",
@@ -831,20 +852,6 @@
             "id": "SEPA bank transfer",
             "message": "SEPA bank transfer",
             "translation": "SEPA bank transfer",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Open shops menu",
-            "message": "Open shops menu",
-            "translation": "Open shops menu",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Close shops menu",
-            "message": "Close shops menu",
-            "translation": "Close shops menu",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -877,9 +884,9 @@
             "fuzzy": true
         },
         {
-            "id": "Online Shop",
-            "message": "Online Shop",
-            "translation": "Online Shop",
+            "id": "Online shop",
+            "message": "Online shop",
+            "translation": "Online shop",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -891,44 +898,9 @@
             "fuzzy": true
         },
         {
-            "id": "Online Printing",
-            "message": "Online Printing",
-            "translation": "Online Printing",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Legal",
-            "message": "Legal",
-            "translation": "Legal",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Terms and Conditions",
-            "message": "Terms and Conditions",
-            "translation": "Terms and Conditions",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Privacy policy",
-            "message": "Privacy policy",
-            "translation": "Privacy policy",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Imprint",
-            "message": "Imprint",
-            "translation": "Imprint",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Cancellation Policy",
-            "message": "Cancellation Policy",
-            "translation": "Cancellation Policy",
+            "id": "Online printing",
+            "message": "Online printing",
+            "translation": "Online printing",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

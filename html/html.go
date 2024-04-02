@@ -8,19 +8,19 @@ import (
 
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/eco/countries"
-	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
+	"github.com/dys2p/eco/ssg"
 	"gitlab.com/golang-commonmark/markdown"
 )
 
 //go:embed *
-var files embed.FS
+var Files embed.FS
 
 var md = markdown.New(markdown.HTML(true), markdown.Linkify(false))
 
 func parse(fn ...string) *template.Template {
-	t := template.New(fn[0]).Funcs(template.FuncMap{
+	t := template.New("html").Funcs(template.FuncMap{
 		"AlertContextualClass": func(status digitalgoods.Status) string {
 			switch status {
 			case digitalgoods.StatusNew:
@@ -46,25 +46,27 @@ func parse(fn ...string) *template.Template {
 		},
 	})
 	t = template.Must(t.Parse(health.TemplateString))
-	t = template.Must(t.ParseFS(files, fn...))
+	t = template.Must(t.ParseFS(Files, fn...))
 	return t
 }
 
 var (
-	Error            = parse("template.html", "layout.html", "error.html")
-	CustOrder        = parse("template.html", "layout.html", "customer/order.html")
-	CustPurchase     = parse("template.html", "layout.html", "customer/purchase.html")
-	Site             = parse("template.html", "layout.html", "site.html")
-	StaffIndex       = parse("template.html", "layout.html", "staff.html", "staff/index.html")
-	StaffView        = parse("template.html", "layout.html", "staff.html", "staff/view.html")
-	StaffMarkPaid    = parse("template.html", "layout.html", "staff.html", "staff/mark-paid.html")
-	StaffLogin       = parse("template.html", "layout.html", "staff/login.html")
-	StaffSelect      = parse("template.html", "layout.html", "staff.html", "staff/select.html")
-	StaffUploadImage = parse("template.html", "layout.html", "staff.html", "staff/upload-image.html")
-	StaffUploadText  = parse("template.html", "layout.html", "staff.html", "staff/upload-text.html")
+	Error            = parse("digitalgoods.proxysto.re/*.html", "layout.html", "error.html")
+	CustOrder        = parse("digitalgoods.proxysto.re/*.html", "layout.html", "customer/order.html")
+	CustPurchase     = parse("digitalgoods.proxysto.re/*.html", "layout.html", "customer/purchase.html")
+	Layout           = parse("layout.html")
+	StaffIndex       = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/index.html")
+	StaffView        = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/view.html")
+	StaffMarkPaid    = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/mark-paid.html")
+	StaffLogin       = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff/login.html")
+	StaffSelect      = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/select.html")
+	StaffUploadImage = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/upload-image.html")
+	StaffUploadText  = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/upload-text.html")
 )
 
 type CustOrderData struct {
+	ssg.TemplateData
+
 	Articles             func() ([]*digitalgoods.Article, error)
 	AvailableEUCountries []countries.CountryWithName
 	AvailableNonEU       bool
@@ -77,10 +79,10 @@ type CustOrderData struct {
 	EUCountry    string
 	CountryErr   bool
 	OrderErr     bool
-	lang.Lang
 }
 
 type CustPurchaseData struct {
+	ssg.TemplateData
 	GroupedOrder   []digitalgoods.OrderedArticle
 	Purchase       *digitalgoods.Purchase
 	PaymentMethod  payment.Method
@@ -88,9 +90,8 @@ type CustPurchaseData struct {
 	URL            string
 	PaysrvErr      error
 	PreferOnion    bool
-	lang.Lang
-	ActiveTab string
-	TabBTCPay string
-	TabCash   string
-	TabSepa   string
+	ActiveTab      string
+	TabBTCPay      string
+	TabCash        string
+	TabSepa        string
 }

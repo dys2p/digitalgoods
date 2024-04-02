@@ -13,9 +13,10 @@
 		<nav class="navbar navbar-expand-sm navbar-light bg-light">
 			<div class="container">
 				<a class="navbar-brand" href="/en/">Digital Goods</a>
+				{{block "menu" .}}{{end}}
 				<div>
-					{{block "menu" .}}{{end}}
-					<div>{{template "health"}}</div>
+					{{template "health"}}
+					{{template "languages" .}}
 				</div>
 			</div>
 		</nav>
@@ -23,14 +24,4 @@
 	<main class="container pt-3 pb-4">
 		{{template "content" .}}
 	</main>
-{{end}}
-
-{{define "payment"}}
-	<h4><a href="/{{.Prefix}}/payment.html">{{.Tr "Payment"}}</a></h4>
-	<ul>
-		<li>{{.Tr "Cash"}}</li>
-		<li>{{.Tr "Cash by mail in 20 currencies"}}</li>
-		<li>{{.Tr "Monero and Bitcoin"}}</li>
-		<li>{{.Tr "SEPA bank transfer"}}</li>
-	</ul>
 {{end}}

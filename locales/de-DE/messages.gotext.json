@@ -77,16 +77,6 @@
             "translation": "Fehler beim Speichern der Benachrichtigungseinstellungen. Bitte versuche es später noch einmal."
         },
         {
-            "id": "Error loading site content. Please try again later.",
-            "message": "Error loading site content. Please try again later.",
-            "translation": "Fehler beim Laden der Seite. Bitte versuche es später noch einmal."
-        },
-        {
-            "id": "Error displaying site content. Please try again later.",
-            "message": "Error displaying site content. Please try again later.",
-            "translation": "Fehler beim Anzeigen der Seite. Bitte versuche es später noch einmal."
-        },
-        {
             "id": "Austria",
             "message": "Austria",
             "translation": "Österreich"
@@ -582,66 +572,6 @@
             "translation": "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."
         },
         {
-            "id": "Cash by mail in 20 currencies",
-            "message": "Cash by mail in 20 currencies",
-            "translation": "Bargeld per Post in 20 Währungen"
-        },
-        {
-            "id": "Monero and Bitcoin",
-            "message": "Monero and Bitcoin",
-            "translation": "Monero und Bitcoin"
-        },
-        {
-            "id": "SEPA bank transfer",
-            "message": "SEPA bank transfer",
-            "translation": "SEPA-Banküberweisung"
-        },
-        {
-            "id": "Open shops menu",
-            "message": "Open shops menu",
-            "translation": "Liste unserer Shops öffnen"
-        },
-        {
-            "id": "Close shops menu",
-            "message": "Close shops menu",
-            "translation": "Liste unserer Shops schließen"
-        },
-        {
-            "id": "All Services and Projects",
-            "message": "All Services and Projects",
-            "translation": "Alle Angebote und Projekte"
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Warum?"
-        },
-        {
-            "id": "Local Store",
-            "message": "Local Store",
-            "translation": "Ladengeschäft"
-        },
-        {
-            "id": "Digital Goods",
-            "message": "Digital Goods",
-            "translation": "Digitale Güter"
-        },
-        {
-            "id": "Online Shop",
-            "message": "Online Shop",
-            "translation": "Onlineshop"
-        },
-        {
-            "id": "Order Service",
-            "message": "Order Service",
-            "translation": "Bestellservice"
-        },
-        {
-            "id": "Online Printing",
-            "message": "Online Printing",
-            "translation": "Onlinedruck"
-        },
-        {
             "id": "Legal",
             "message": "Legal",
             "translation": "Rechtliches"
@@ -664,7 +594,57 @@
         {
             "id": "Cancellation Policy",
             "message": "Cancellation Policy",
-            "translation": "Widerrufs\u0026shy;belehrung"
+            "translation": "Widerrufsbelehrung"
+        },
+        {
+            "id": "Cash by mail in 20 currencies",
+            "message": "Cash by mail in 20 currencies",
+            "translation": "Bargeld per Post in 20 Währungen"
+        },
+        {
+            "id": "Monero and Bitcoin",
+            "message": "Monero and Bitcoin",
+            "translation": "Monero und Bitcoin"
+        },
+        {
+            "id": "SEPA bank transfer",
+            "message": "SEPA bank transfer",
+            "translation": "SEPA-Banküberweisung"
+        },
+        {
+            "id": "All Services and Projects",
+            "message": "All Services and Projects",
+            "translation": "Alle Angebote und Projekte"
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Warum?"
+        },
+        {
+            "id": "Local Store",
+            "message": "Local Store",
+            "translation": "Ladengeschäft"
+        },
+        {
+            "id": "Digital Goods",
+            "message": "Digital Goods",
+            "translation": "Digitale Güter"
+        },
+        {
+            "id": "Online shop",
+            "message": "Online shop",
+            "translation": "Onlineshop"
+        },
+        {
+            "id": "Order Service",
+            "message": "Order Service",
+            "translation": "Bestellservice"
+        },
+        {
+            "id": "Online printing",
+            "message": "Online printing",
+            "translation": "Onlinedruckerei"
         },
         {
             "id": "Contact \u0026 News",

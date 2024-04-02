@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -25,8 +26,6 @@ import (
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/digitalgoods/db"
 	"github.com/dys2p/digitalgoods/html"
-	"github.com/dys2p/digitalgoods/html/sites"
-	"github.com/dys2p/digitalgoods/html/static"
 	"github.com/dys2p/digitalgoods/userdb"
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/countries/detect"
@@ -38,6 +37,7 @@ import (
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
+	"github.com/dys2p/eco/ssg"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -183,6 +183,20 @@ func (s *Shop) ListenAndServe() {
 	var stop = make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
+	siteFiles, err := fs.Sub(html.Files, "digitalgoods.proxysto.re")
+	if err != nil {
+		log.Fatalf("error opening site dir: %v", err)
+	}
+	staticFiles, err := fs.Sub(html.Files, "digitalgoods.proxysto.re/static") // for staff router
+	if err != nil {
+		log.Fatalf("error opening static dir: %v", err)
+	}
+
+	staticSites, err := ssg.MakeWebsite(siteFiles, html.Layout, s.Langs)
+	if err != nil {
+		log.Fatalf("error making static sites: %v", err)
+	}
+
 	// customer http server
 
 	var custRtr = httprouter.New()
@@ -193,27 +207,16 @@ func (s *Shop) ListenAndServe() {
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key", httputil.HandlerFunc(s.custPurchasePost))
 		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchaseGet))
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchasePost))
-
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/terms.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/privacy.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/imprint.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/contact.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/payment.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/cancellation-policy.html", httputil.HandlerFunc(s.siteGet))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/cancellation-form.html", httputil.HandlerFunc(s.siteGet))
 	}
-
-	// non-localized stuff
 	for _, method := range s.PaymentMethods {
 		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", method.ID()), method)
 	}
-	custRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
 	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
 		BTCPay: s.Btcpay,
 		Rates:  s.RatesHistory,
 	})
-	custRtr.NotFound = http.HandlerFunc(s.Langs.RedirectHandler())
+	custRtr.NotFound = staticSites.Handler(nil, s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()
@@ -237,7 +240,7 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/text", returnErr(s.staffUploadTextPost))
 
 	var staffRtr = httprouter.New()
-	staffRtr.ServeFiles("/static/*filepath", http.FS(static.Files))
+	staffRtr.ServeFiles("/static/*filepath", http.FS(staticFiles))
 	staffRtr.HandlerFunc(http.MethodGet, "/login", s.showErr(s.staffLoginGet))
 	staffRtr.HandlerFunc(http.MethodPost, "/login", s.showErr(s.staffLoginPost))
 	staffRtr.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -284,15 +287,13 @@ func (s *Shop) ListenAndServe() {
 // frontend error handler, logs err and displays a message
 func (s *Shop) frontendErr(err error, message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l, _, _ := s.Langs.FromPath(r.URL.Path)
-
 		w.WriteHeader(http.StatusInternalServerError)
 		html.Error.Execute(w, struct {
-			lang.Lang
+			ssg.TemplateData
 			Message string
 		}{
-			Lang:    l,
-			Message: message,
+			TemplateData: s.MakeTemplateData(r),
+			Message:      message,
 		})
 
 		if err != nil {
@@ -305,14 +306,13 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 // frontend notfound handler, logs err and displays a message
 func (s *Shop) frontendNotFound(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		l, _, _ := s.Langs.FromPath(r.URL.Path)
 		w.WriteHeader(http.StatusNotFound)
 		html.Error.Execute(w, struct {
-			lang.Lang
+			ssg.TemplateData
 			Message string
 		}{
-			Lang:    l,
-			Message: message,
+			TemplateData: s.MakeTemplateData(r),
+			Message:      message,
 		})
 	})
 }
@@ -330,14 +330,13 @@ func returnErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFun
 // middleware for backend HTML GET only
 func (s *Shop) showErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		l, _, _ := s.Langs.FromPath(r.URL.Path)
 		if err := f(w, r); err != nil {
 			html.Error.Execute(w, struct {
-				lang.Lang
+				ssg.TemplateData
 				Message string
 			}{
-				Lang:    l,
-				Message: err.Error(),
+				TemplateData: s.MakeTemplateData(r),
+				Message:      err.Error(),
 			})
 		}
 	}
@@ -366,13 +365,14 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 	}
 
 	err = html.CustOrder.Execute(w, &html.CustOrderData{
+		TemplateData: s.MakeTemplateData(r),
+
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              catalog,
 		Stock:                stock,
 
 		Area: area,
-		Lang: l,
 	})
 	if err != nil {
 		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
@@ -400,6 +400,8 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	// read user input
 
 	co := &html.CustOrderData{
+		TemplateData: s.MakeTemplateData(r),
+
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              catalog,
@@ -409,7 +411,6 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		OtherCountry: make(map[string]string),
 		Area:         r.PostFormValue("area"),
 		EUCountry:    r.PostFormValue("eu-country"),
-		Lang:         l,
 	}
 
 	variants := catalog.Variants()
@@ -514,12 +515,13 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 	}
 
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{
+		TemplateData: s.MakeTemplateData(r),
+
 		GroupedOrder:   catalog.GroupOrder(purchase.Ordered),
 		Purchase:       purchase,
 		PaymentMethod:  paymentMethod,
 		URL:            httputil.Origin(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 		PreferOnion:    strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
-		Lang:           l,
 		ActiveTab:      paymentMethod.ID(),
 		PaymentMethods: s.PaymentMethods,
 	})
@@ -579,48 +581,22 @@ func (s *Shop) byCookie(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Shop) siteGet(w http.ResponseWriter, r *http.Request) http.Handler {
-	l, _, _ := s.Langs.FromPath(r.URL.Path)
-	name := strings.TrimSuffix(path.Base(r.URL.Path), ".html")
-
-	file, err := sites.Files.Open(filepath.Join(l.Prefix, name+".md"))
-	if err != nil {
-		return s.frontendErr(err, l.Tr("Error loading site content. Please try again later."))
-	}
-
-	content, err := io.ReadAll(file)
-	if err != nil {
-		return s.frontendErr(err, l.Tr("Error loading site content. Please try again later."))
-	}
-
-	if err := html.Site.Execute(w, struct {
-		lang.Lang
-		Content string
-	}{
-		Lang:    l,
-		Content: string(content),
-	}); err != nil {
-		return s.frontendErr(err, l.Tr("Error displaying site content. Please try again later."))
-	}
-	return nil
-}
-
 func (s *Shop) staffIndexGet(w http.ResponseWriter, r *http.Request) error {
 	underdelivered, err := s.Database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
 	}
 	return html.StaffIndex.Execute(w, struct {
-		lang.Lang
+		ssg.TemplateData
 		Underdelivered []string
 	}{
-		Lang:           staffLang,
+		TemplateData:   s.MakeTemplateData(r),
 		Underdelivered: underdelivered,
 	})
 }
 
 func (s *Shop) staffLoginGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffLogin.Execute(w, staffLang)
+	return html.StaffLogin.Execute(w, s.MakeTemplateData(r))
 }
 
 func (s *Shop) staffLoginPost(w http.ResponseWriter, r *http.Request) error {
@@ -641,7 +617,7 @@ func (s *Shop) staffLogoutGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffViewGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffView.Execute(w, staffLang)
+	return html.StaffView.Execute(w, s.MakeTemplateData(r))
 }
 
 func (s *Shop) staffViewPost(w http.ResponseWriter, r *http.Request) error {
@@ -663,17 +639,17 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	currencyOptions, _ := s.RatesHistory.Get(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
 
 	return html.StaffMarkPaid.Execute(w, struct {
-		lang.Lang
+		ssg.TemplateData
 		*digitalgoods.Purchase
 		GroupedOrder    []digitalgoods.OrderedArticle
 		CurrencyOptions []rates.Option
 		EUCountries     []countries.CountryWithName
 	}{
-		staffLang,
-		purchase,
-		catalog.GroupOrder(purchase.Ordered),
-		currencyOptions,
-		countries.TranslateAndSort(staffLang, countries.EuropeanUnion),
+		TemplateData:    s.MakeTemplateData(r),
+		Purchase:        purchase,
+		GroupedOrder:    catalog.GroupOrder(purchase.Ordered),
+		CurrencyOptions: currencyOptions,
+		EUCountries:     countries.TranslateAndSort(staffLang, countries.EuropeanUnion),
 	})
 }
 
@@ -703,7 +679,7 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type staffSelect struct {
-	lang.Lang
+	ssg.TemplateData
 	Stock          digitalgoods.Stock
 	Variants       []digitalgoods.Variant
 	Underdelivered map[string]int // key: articleID-countryID
@@ -741,10 +717,10 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.StaffSelect.Execute(w, &staffSelect{
-		staffLang,
-		stock,
-		variants,
-		underdelivered,
+		TemplateData:   s.MakeTemplateData(r),
+		Stock:          stock,
+		Variants:       variants,
+		Underdelivered: underdelivered,
 	})
 }
 
@@ -766,15 +742,15 @@ func (s *Shop) staffUploadImageGet(w http.ResponseWriter, r *http.Request) error
 	}
 
 	return html.StaffUploadImage.Execute(w, struct {
-		lang.Lang
+		ssg.TemplateData
 		digitalgoods.Variant
 		Country string
 		Stock   int
 	}{
-		staffLang,
-		variant,
-		countryID,
-		stock.Get(variant, countryID),
+		TemplateData: s.MakeTemplateData(r),
+		Variant:      variant,
+		Country:      countryID,
+		Stock:        stock.Get(variant, countryID),
 	})
 }
 
@@ -818,15 +794,15 @@ func (s *Shop) staffUploadTextGet(w http.ResponseWriter, r *http.Request) error 
 	}
 
 	return html.StaffUploadText.Execute(w, struct {
-		lang.Lang
+		ssg.TemplateData
 		digitalgoods.Variant
 		Country string
 		Stock   int
 	}{
-		staffLang,
-		variant,
-		countryID,
-		stock.Get(variant, countryID),
+		TemplateData: s.MakeTemplateData(r),
+		Variant:      variant,
+		Country:      countryID,
+		Stock:        stock.Get(variant, countryID),
 	})
 }
 
@@ -916,4 +892,13 @@ func (s *Shop) NotifyPaymentReceived(p *digitalgoods.Purchase) error {
 		}
 	}
 	return nil
+}
+
+func (s *Shop) MakeTemplateData(r *http.Request) ssg.TemplateData {
+	l, path, _ := s.Langs.FromPath(r.URL.Path)
+	return ssg.TemplateData{
+		Lang:      l,
+		Languages: ssg.SelectLanguage(s.Langs, l),
+		Path:      path,
+	}
 }
