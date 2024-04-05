@@ -898,7 +898,7 @@ func (s *Shop) MakeTemplateData(r *http.Request) ssg.TemplateData {
 	l, path, _ := s.Langs.FromPath(r.URL.Path)
 	return ssg.TemplateData{
 		Lang:      l,
-		Languages: ssg.SelectLanguage(s.Langs, l),
+		Languages: ssg.LangOptions(s.Langs, l),
 		Path:      path,
 	}
 }
