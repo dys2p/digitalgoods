@@ -677,6 +677,11 @@
             "translation": "Fehler oder Hinweise? Schreib uns!"
         },
         {
+            "id": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
+            "message": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
+            "translation": "Hier kannst du Gutscheine für Privatsphäre-freundliche Dienste kaufen und anonym mit Monero, Bitcoin oder Bargeld bezahlen. SEPA-Banküberweisung ist auch verfügbar."
+        },
+        {
             "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
             "message": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
             "translation": "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."
