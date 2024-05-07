@@ -101,9 +101,8 @@ func main() {
 		return
 	}
 	ratesHistory := &rates.History{
-		Currencies:  []string{"AUD", "BGN", "CAD", "CHF", "CNY", "CZK", "DKK", "GBP", "ILS", "ISK", "JPY", "NOK", "NZD", "PLN", "RON", "RSD", "SEK", "TWD", "USD"},
+		Database:    ratesDB,
 		GetBuyRates: GetBuyRates,
-		Repository:  ratesDB,
 	}
 	go ratesHistory.RunDaemon()
 
@@ -636,7 +635,7 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	currencyOptions, _ := s.RatesHistory.Get(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
+	currencyOptions, _ := s.RatesHistory.Options(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
 
 	return html.StaffMarkPaid.Execute(w, struct {
 		ssg.TemplateData
