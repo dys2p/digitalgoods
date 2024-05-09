@@ -898,6 +898,7 @@ func (s *Shop) MakeTemplateData(r *http.Request) ssg.TemplateData {
 	return ssg.TemplateData{
 		Lang:      l,
 		Languages: ssg.LangOptions(s.Langs, l),
+		Onion:     strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		Path:      path,
 	}
 }
