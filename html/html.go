@@ -89,7 +89,6 @@ type CustPurchaseData struct {
 	PaymentMethods []payment.Method
 	URL            string
 	PaysrvErr      error
-	PreferOnion    bool
 	ActiveTab      string
 	TabBTCPay      string
 	TabCash        string

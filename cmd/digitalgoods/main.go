@@ -520,7 +520,6 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		Purchase:       purchase,
 		PaymentMethod:  paymentMethod,
 		URL:            httputil.Origin(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
-		PreferOnion:    strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		ActiveTab:      paymentMethod.ID(),
 		PaymentMethods: s.PaymentMethods,
 	})
