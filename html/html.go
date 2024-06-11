@@ -4,6 +4,8 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/dys2p/digitalgoods"
@@ -47,22 +49,30 @@ func parse(fn ...string) *template.Template {
 	})
 	t = template.Must(t.Parse(health.TemplateString))
 	t = template.Must(t.ParseFS(Files, fn...))
+	t = template.Must(t.ParseGlob(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "*.html")))
 	return t
 }
 
 var (
-	Error            = parse("digitalgoods.proxysto.re/*.html", "layout.html", "error.html")
-	CustOrder        = parse("digitalgoods.proxysto.re/*.html", "layout.html", "customer/order.html")
-	CustPurchase     = parse("digitalgoods.proxysto.re/*.html", "layout.html", "customer/purchase.html")
-	Layout           = parse("layout.html")
-	StaffIndex       = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/index.html")
-	StaffView        = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/view.html")
-	StaffMarkPaid    = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/mark-paid.html")
-	StaffLogin       = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff/login.html")
-	StaffSelect      = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/select.html")
-	StaffUploadImage = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/upload-image.html")
-	StaffUploadText  = parse("digitalgoods.proxysto.re/*.html", "layout.html", "staff.html", "staff/upload-text.html")
+	CustError    = parse("digitalgoods.proxysto.re/*.html", "customer.html", "customer/error.html")
+	CustOrder    = parse("digitalgoods.proxysto.re/*.html", "customer.html", "customer/order.html")
+	CustPurchase = parse("digitalgoods.proxysto.re/*.html", "customer.html", "customer/purchase.html")
+	CustSite     = parse("digitalgoods.proxysto.re/*.html", "customer.html")
+
+	StaffError       = parse("staff.html", "staff/error.html")
+	StaffIndex       = parse("staff.html", "staff/index.html")
+	StaffView        = parse("staff.html", "staff/view.html")
+	StaffMarkPaid    = parse("staff.html", "staff/mark-paid.html")
+	StaffLogin       = parse("staff.html", "staff/login.html")
+	StaffSelect      = parse("staff.html", "staff/select.html")
+	StaffUploadImage = parse("staff.html", "staff/upload-image.html")
+	StaffUploadText  = parse("staff.html", "staff/upload-text.html")
 )
+
+type CustErrorData struct {
+	ssg.TemplateData
+	Message string
+}
 
 type CustOrderData struct {
 	ssg.TemplateData

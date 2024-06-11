@@ -191,7 +191,7 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error opening static dir: %v", err)
 	}
 
-	staticSites, err := ssg.MakeWebsite(siteFiles, html.Layout, s.Langs)
+	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs)
 	if err != nil {
 		log.Fatalf("error making static sites: %v", err)
 	}
@@ -287,10 +287,7 @@ func (s *Shop) ListenAndServe() {
 func (s *Shop) frontendErr(err error, message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		html.Error.Execute(w, struct {
-			ssg.TemplateData
-			Message string
-		}{
+		html.CustError.Execute(w, html.CustErrorData{
 			TemplateData: s.MakeTemplateData(r),
 			Message:      message,
 		})
@@ -306,10 +303,7 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 func (s *Shop) frontendNotFound(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
-		html.Error.Execute(w, struct {
-			ssg.TemplateData
-			Message string
-		}{
+		html.CustError.Execute(w, html.CustErrorData{
 			TemplateData: s.MakeTemplateData(r),
 			Message:      message,
 		})
@@ -330,13 +324,7 @@ func returnErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFun
 func (s *Shop) showErr(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
-			html.Error.Execute(w, struct {
-				ssg.TemplateData
-				Message string
-			}{
-				TemplateData: s.MakeTemplateData(r),
-				Message:      err.Error(),
-			})
+			html.StaffError.Execute(w, err.Error())
 		}
 	}
 }
@@ -585,16 +573,14 @@ func (s *Shop) staffIndexGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return html.StaffIndex.Execute(w, struct {
-		ssg.TemplateData
 		Underdelivered []string
 	}{
-		TemplateData:   s.MakeTemplateData(r),
 		Underdelivered: underdelivered,
 	})
 }
 
 func (s *Shop) staffLoginGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffLogin.Execute(w, s.MakeTemplateData(r))
+	return html.StaffLogin.Execute(w, nil)
 }
 
 func (s *Shop) staffLoginPost(w http.ResponseWriter, r *http.Request) error {
@@ -615,7 +601,7 @@ func (s *Shop) staffLogoutGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffViewGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffView.Execute(w, s.MakeTemplateData(r))
+	return html.StaffView.Execute(w, nil)
 }
 
 func (s *Shop) staffViewPost(w http.ResponseWriter, r *http.Request) error {
@@ -637,13 +623,11 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	currencyOptions, _ := s.RatesHistory.Options(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
 
 	return html.StaffMarkPaid.Execute(w, struct {
-		ssg.TemplateData
 		*digitalgoods.Purchase
 		GroupedOrder    []digitalgoods.OrderedArticle
 		CurrencyOptions []rates.Option
 		EUCountries     []countries.CountryWithName
 	}{
-		TemplateData:    s.MakeTemplateData(r),
 		Purchase:        purchase,
 		GroupedOrder:    catalog.GroupOrder(purchase.Ordered),
 		CurrencyOptions: currencyOptions,
@@ -677,7 +661,6 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 type staffSelect struct {
-	ssg.TemplateData
 	Stock          digitalgoods.Stock
 	Variants       []digitalgoods.Variant
 	Underdelivered map[string]int // key: articleID-countryID
@@ -715,7 +698,6 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.StaffSelect.Execute(w, &staffSelect{
-		TemplateData:   s.MakeTemplateData(r),
 		Stock:          stock,
 		Variants:       variants,
 		Underdelivered: underdelivered,
@@ -740,15 +722,13 @@ func (s *Shop) staffUploadImageGet(w http.ResponseWriter, r *http.Request) error
 	}
 
 	return html.StaffUploadImage.Execute(w, struct {
-		ssg.TemplateData
 		digitalgoods.Variant
 		Country string
 		Stock   int
 	}{
-		TemplateData: s.MakeTemplateData(r),
-		Variant:      variant,
-		Country:      countryID,
-		Stock:        stock.Get(variant, countryID),
+		Variant: variant,
+		Country: countryID,
+		Stock:   stock.Get(variant, countryID),
 	})
 }
 
@@ -792,15 +772,13 @@ func (s *Shop) staffUploadTextGet(w http.ResponseWriter, r *http.Request) error 
 	}
 
 	return html.StaffUploadText.Execute(w, struct {
-		ssg.TemplateData
 		digitalgoods.Variant
 		Country string
 		Stock   int
 	}{
-		TemplateData: s.MakeTemplateData(r),
-		Variant:      variant,
-		Country:      countryID,
-		Stock:        stock.Get(variant, countryID),
+		Variant: variant,
+		Country: countryID,
+		Stock:   stock.Get(variant, countryID),
 	})
 }
 

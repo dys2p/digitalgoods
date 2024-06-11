@@ -6,8 +6,8 @@ github.com/alexedwards/scs/v2 v2.4.0 h1:XfnMamKnvp1muJVNr1WzikQTclopsBXWZtzz0NBj
 github.com/alexedwards/scs/v2 v2.4.0/go.mod h1:ToaROZxyKukJKT/xLcVQAChi5k6+Pn1Gvmdl7h3RRj8=
 github.com/dys2p/btcpay v0.6.0 h1:a5wsspF3JPZlj38lLs0yNGesrWG+W7nRoCqFJn+iNPY=
 github.com/dys2p/btcpay v0.6.0/go.mod h1:PhoRfQYTu1hAThbCh0dutuUonLf0WPb72huHr19ujgU=
-github.com/dys2p/eco v0.0.0-20240506171624-44301f2921ab h1:C7ZCf3DMXp6aTbuNiBCuJgvSYatDHipGJC5jC8hBrhI=
-github.com/dys2p/eco v0.0.0-20240506171624-44301f2921ab/go.mod h1:qnMdk1HU5tfljiMCmmeVNWzvDoSYnlsvhptww6x9N4g=
+github.com/dys2p/eco v0.0.0-20240531101333-7db4ea04c930 h1:QosQ4VvdXr+jnzrjZX49a7XEOpVkugXRqCb2jBGVjvI=
+github.com/dys2p/eco v0.0.0-20240531101333-7db4ea04c930/go.mod h1:qnMdk1HU5tfljiMCmmeVNWzvDoSYnlsvhptww6x9N4g=
 github.com/dys2p/paypal v0.2.2 h1:EjtjRrtCAXcSZP/LYY7O2f5I99q8GglQg5fWhELtboA=
 github.com/dys2p/paypal v0.2.2/go.mod h1:hUXIstQ2+PjsoEC8jDDaaSwzMPn6dBCZv7uWBw7MG3Q=
 github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21/go.mod h1:iL2twTeMvZnrg54ZoPDNfJaJaqy0xIQFuBdrLsmspwQ=

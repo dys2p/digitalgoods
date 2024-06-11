@@ -1,8 +1,34 @@
-{{define "menu"}}
-<div class="me-2">
-	<a class="btn btn-secondary btn-sm" href="/">Home</a>
-	<a class="btn btn-secondary btn-sm" href="/upload">Upload</a>
-	<a class="btn btn-secondary btn-sm" href="/view">View purchase and mark paid</a>
-	<a class="btn btn-secondary btn-sm" href="/logout">Logout</a>
-</div>
+{{define "html" -}}
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta name="referrer" content="no-referrer">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<link rel="stylesheet" href="/static/bootstrap.min.css">
+			<link rel="stylesheet" href="/static/style.css">
+			<link rel="stylesheet" href="/static/digitalgoods.css">
+			<link rel="icon" type="image/png" href="/static/favicon-96.png" sizes="96x96">
+			<title>Digital Goods Backend</title>
+			{{block "head" .}}{{end}}
+		</head>
+		<body>
+			<header>
+				<nav class="navbar navbar-expand-sm navbar-light bg-light">
+					<div class="container">
+						<a class="navbar-brand" href="/">{{block "brand" .}}Digital Goods Backend{{end}}</a>
+						<div class="me-2">
+							<a class="btn btn-secondary btn-sm" href="/">Home</a>
+							<a class="btn btn-secondary btn-sm" href="/upload">Upload</a>
+							<a class="btn btn-secondary btn-sm" href="/view">View purchase and mark paid</a>
+							<a class="btn btn-secondary btn-sm" href="/logout">Logout</a>
+						</div>
+					</div>
+				</nav>
+			</header>
+			<main class="container pt-3 pb-4">
+				{{template "content" .}}
+			</main>
+		</body>
+	</html>
 {{end}}
