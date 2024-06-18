@@ -478,6 +478,13 @@
             "fuzzy": true
         },
         {
+            "id": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
+            "message": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
+            "translation": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
             "message": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
             "translation": "Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.",
@@ -919,9 +926,16 @@
             "fuzzy": true
         },
         {
-            "id": "Mon+Thu 10am-6pm",
-            "message": "Mon+Thu 10am-6pm",
-            "translation": "Mon+Thu 10am-6pm",
+            "id": "New opening hours!",
+            "message": "New opening hours!",
+            "translation": "New opening hours!",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Mon+Thu 2pm-6pm",
+            "message": "Mon+Thu 2pm-6pm",
+            "translation": "Mon+Thu 2pm-6pm",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -933,23 +947,9 @@
             "fuzzy": true
         },
         {
-            "id": "and by arrangement",
-            "message": "and by arrangement",
-            "translation": "and by arrangement",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Got an idea or found an error? Drop us a note!",
             "message": "Got an idea or found an error? Drop us a note!",
             "translation": "Got an idea or found an error? Drop us a note!",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
-            "message": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
-            "translation": "Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
