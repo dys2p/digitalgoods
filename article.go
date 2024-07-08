@@ -18,6 +18,7 @@ func IsISOCountryCode(s string) bool {
 type Variant struct {
 	ID         string
 	Name       string
+	ImageLink  string
 	Price      int // euro cents
 	OnDemand   bool
 	HasCountry bool // ISO country

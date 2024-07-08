@@ -5,9 +5,39 @@ import (
 	"html/template"
 
 	"github.com/dys2p/eco/lang"
+	"github.com/dys2p/eco/productfeed"
 )
 
 type Catalog []Category
+
+// assumes that catalog contains every article exactly once
+func (catalog Catalog) Products() []productfeed.Product {
+	var products []productfeed.Product
+	for _, category := range catalog {
+		for _, article := range category.Articles {
+			for _, variant := range article.Variants {
+				var imageLink = variant.ImageLink
+				if imageLink == "" {
+					imageLink = article.ImageLink // fallback
+				}
+
+				products = append(products, productfeed.Product{
+					Availability: "in stock",
+					Brand:        article.Brand,
+					Condition:    "new",
+					Description:  productfeed.HTMLtoText(article.Description["en"]), // TODO match request language?
+					Id:           variant.ID,
+					ImageLink:    imageLink,
+					ItemGroupId:  article.ID,
+					Link:         "https://digitalgoods.proxysto.re/#" + article.ID,
+					Price:        fmt.Sprintf("%.2f EUR", float64(variant.Price)/100.0),
+					Title:        variant.Name,
+				})
+			}
+		}
+	}
+	return products
+}
 
 func (catalog Catalog) Variant(id string) (Variant, error) {
 	for _, category := range catalog {
@@ -43,8 +73,10 @@ func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 }
 
 type Article struct {
+	Brand       string
 	Name        string // not translated
-	ID          string // for <details>
+	ImageLink   string
+	ID          string // for <details> and #anchor
 	Alert       map[string]string
 	Description map[string]string
 	Variants    []Variant

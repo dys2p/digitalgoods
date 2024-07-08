@@ -37,6 +37,7 @@ import (
 	"github.com/dys2p/eco/payment"
 	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
+	"github.com/dys2p/eco/productfeed"
 	"github.com/dys2p/eco/ssg"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
@@ -49,10 +50,13 @@ type Shop struct {
 	Emailer          email.Emailer
 	Langs            lang.Languages
 	PaymentMethods   []payment.Method
+	ProductFeed      productfeed.Feed
 	RatesHistory     *rates.History
 	StaffSessions    *scs.SessionManager
 	StaffUsers       userdb.Authenticator
 }
+
+var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
 
 var staffLang, _, _ = lang.MakeLanguages(nil, "de", "en").FromPath("de")
 
@@ -153,6 +157,13 @@ func main() {
 		StaffUsers:       staffUsers,
 	}
 
+	s.ProductFeed = productfeed.Feed{
+		ID:       "https://digitalgoods.proxysto.re",
+		Title:    "Digital Goods by ProxyStore",
+		Updated:  CatalogUpdated,
+		Products: catalog.Products(),
+	}
+
 	// payment methods (need shop variable)
 	s.PaymentMethods = []payment.Method{
 		payment.BTCPay{
@@ -211,6 +222,10 @@ func (s *Shop) ListenAndServe() {
 		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", method.ID()), method)
 	}
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
+	custRtr.HandlerFunc(http.MethodGet, "/productfeed.xml", func(w http.ResponseWriter, r *http.Request) {
+		bs, _ := s.ProductFeed.Bytes()
+		w.Write(bs)
+	})
 	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
 		BTCPay: s.Btcpay,
 		Rates:  s.RatesHistory,
