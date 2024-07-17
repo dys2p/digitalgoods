@@ -170,6 +170,14 @@ func main() {
 			Purchases:    s,
 			RedirectPath: "/by-cookie",
 			Store:        btcpayStore,
+			CreateInvoiceError: func(err error, msg string) http.Handler {
+				return s.frontendErr(err, msg)
+			},
+			WebhookError: func(err error) http.Handler {
+				log.Printf("webhook error: %v", err)
+				ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
+				return nil
+			},
 		},
 		payment.Cash{
 			AddressHTML: addressHTML,
