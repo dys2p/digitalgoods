@@ -27,57 +27,59 @@
 				<h3>{{.TranslateName $.Lang}}</h3>
 			</div>
 			{{range .Articles}}
-				<div class="pt-2">
-					<details id="{{.ID}}" {{if $.Cart.Has .}}open{{end}}>
-						<summary>
-							<strong class="text-success">{{.Name}}</strong>
-						</summary>
-						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
-						{{if .Alert}}
-							<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
-						{{end}}
-						{{range .Variants}}
-							<!-- breakpoint: sm -->
-							{{$variant := .}}
-							{{range $.Stock.FeaturedCountryIDs $variant}}
-								<div class="d-sm-flex border-top align-items-center justify-content-between">
-									<div class="py-1 pe-sm-3">{{$variant.NameHTML}}{{if $.Stock.OnDemandOnly $variant .}} (on demand){{end}}</div>
-									<div class="pb-1 pb-sm-0 d-flex justify-content-end">
-										<div>{{if ne . "all"}}{{.}}{{end}}</div>
-										<div>
-											<div class="input-group flex-nowrap py-1">
-												<span class="input-group-text">{{FmtEuro $variant.Price}}</span>
-												{{$max := $.Stock.Max $variant .}}
-												<input class="form-control flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" {{if eq $max 0}}disabled{{end}} value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
-												<span class="input-group-text">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
+				{{if not .Hide}}
+					<div class="pt-2">
+						<details id="{{.ID}}" {{if $.Cart.Has .}}open{{end}}>
+							<summary>
+								<strong class="text-success">{{.Name}}</strong>
+							</summary>
+							<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+							{{if .Alert}}
+								<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+							{{end}}
+							{{range .Variants}}
+								<!-- breakpoint: sm -->
+								{{$variant := .}}
+								{{range $.Stock.FeaturedCountryIDs $variant}}
+									<div class="d-sm-flex border-top align-items-center justify-content-between">
+										<div class="py-1 pe-sm-3">{{$variant.NameHTML}}{{if $.Stock.OnDemandOnly $variant .}} (on demand){{end}}</div>
+										<div class="pb-1 pb-sm-0 d-flex justify-content-end">
+											<div>{{if ne . "all"}}{{.}}{{end}}</div>
+											<div>
+												<div class="input-group flex-nowrap py-1">
+													<span class="input-group-text">{{FmtEuro $variant.Price}}</span>
+													{{$max := $.Stock.Max $variant .}}
+													<input class="form-control flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" {{if eq $max 0}}disabled{{end}} value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
+													<span class="input-group-text">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							{{end}}
-							{{with $.Stock.OtherCountryIDs $variant}}
-								{{$selectedCountryID := "de"}}
-								{{with index $.OtherCountry $variant.ID}}
-									{{$selectedCountryID = .}}
 								{{end}}
-								<div class="row border-top mx-0 align-items-center">
-									<div class="col-md-6 py-2">{{$variant.NameHTML}} {{if $variant.OnDemandOnly}}(on demand){{end}}: {{FmtEuro $variant.Price}}</div>
-									<div class="col-md-2">
-										<select name="{{$variant.ID}}-other-country" class="form-select">
-											<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
-											{{range .}}
-												<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
-											{{end}}
-										</select>
+								{{with $.Stock.OtherCountryIDs $variant}}
+									{{$selectedCountryID := "de"}}
+									{{with index $.OtherCountry $variant.ID}}
+										{{$selectedCountryID = .}}
+									{{end}}
+									<div class="row border-top mx-0 align-items-center">
+										<div class="col-md-6 py-2">{{$variant.NameHTML}} {{if $variant.OnDemandOnly}}(on demand){{end}}: {{FmtEuro $variant.Price}}</div>
+										<div class="col-md-2">
+											<select name="{{$variant.ID}}-other-country" class="form-select">
+												<option>{{$.Tr "Select other country"}}</option><!-- autoselected if $selectedCountryID is empty -->
+												{{range .}}
+													<option {{if eq $selectedCountryID .}}selected{{end}} value="{{.}}">{{.}}</option>
+												{{end}}
+											</select>
+										</div>
+										<div class="col-md-4 pb-2 pb-md-0 text-end">
+											<input name="{{$variant.ID}}-other-quantity" type="number" min="0" max="100" value="{{$.Cart.Get $variant.ID "other"}}" class="form-control" style="width: calc(1.75rem + 2px + 6ch);">
+										</div>
 									</div>
-									<div class="col-md-4 pb-2 pb-md-0 text-end">
-										<input name="{{$variant.ID}}-other-quantity" type="number" min="0" max="100" value="{{$.Cart.Get $variant.ID "other"}}" class="form-control" style="width: calc(1.75rem + 2px + 6ch);">
-									</div>
-								</div>
+								{{end}}
 							{{end}}
-						{{end}}
-					</details>
-				</div>
+						</details>
+					</div>
+				{{end}}
 			{{end}}
 		{{end}}
 

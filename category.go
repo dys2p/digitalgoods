@@ -15,6 +15,10 @@ func (catalog Catalog) Products() []productfeed.Product {
 	var products []productfeed.Product
 	for _, category := range catalog {
 		for _, article := range category.Articles {
+			if article.Hide {
+				continue
+			}
+
 			for _, variant := range article.Variants {
 				var imageLink = variant.ImageLink
 				if imageLink == "" {
@@ -75,6 +79,7 @@ func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 type Article struct {
 	Brand       string
 	Name        string // not translated
+	Hide        bool
 	ImageLink   string
 	ID          string // for <details> and #anchor
 	Alert       map[string]string
