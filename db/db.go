@@ -350,7 +350,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
 				return err
 			}
-			log.Printf("delivering %s: %s", digitalgoods.Mask(purchase.ID), digitalgoods.Mask(itemID))
+			log.Printf("[%s] delivering %s: %s", purchase.ID, u.VariantID, digitalgoods.Mask(itemID))
 			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
 				VariantID:    u.VariantID,
 				CountryID:    u.CountryID,
