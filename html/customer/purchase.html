@@ -22,7 +22,10 @@
 	{{end}}
 	<!-- same as in order.html -->
 	{{if .Purchase.Unpaid}}
-		<li>{{.Tr "Save the URL of your order. You need it to access your goods if you closed the browser tab."}} <code>{{.URL}}</code></li>
+		<li>
+			{{.Tr "Bookmark this page or save its address in another way. You will need it to access your goods."}}
+			{{.Tr "Click to copy"}}: <code role="button" onclick="copyToClipboard(this)">{{.URL}}</code>
+		</li>
 		<li>{{.Tr "Pay your order. (Unpaid orders are deleted after 30 days.)"}}</li>
 		<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
 	{{end}}

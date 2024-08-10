@@ -362,9 +362,9 @@
             "translation": "Wähle die gewünschte Anzahl aus und klicke „Kaufen“."
         },
         {
-            "id": "Save the URL of your order. You will need it to access your goods.",
-            "message": "Save the URL of your order. You will need it to access your goods.",
-            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen."
+            "id": "Bookmark your order. You will need it to access your goods.",
+            "message": "Bookmark your order. You will need it to access your goods.",
+            "translation": "Speichere deine Bestellung als Lesezeichen. Du brauchst sie, um auf die Codes zuzugreifen."
         },
         {
             "id": "Pay your order.",
@@ -482,9 +482,14 @@
             "translation": "Prüfe deine Bestellung."
         },
         {
-            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "translation": "Speichere die Webadresse deiner Bestellung. Du brauchst sie, um auf deine Güter zuzugreifen, falls du das Browserfenster geschlossen hast."
+            "id": "Bookmark this page or save its address in another way. You will need it to access your goods.",
+            "message": "Bookmark this page or save its address in another way. You will need it to access your goods.",
+            "translation": "Setze diese Seite als Lesezeichen oder speichere ihre Adresse anderweitig. Du brauchst sie, um auf die Codes zuzugreifen."
+        },
+        {
+            "id": "Click to copy",
+            "message": "Click to copy",
+            "translation": "Anklicken zum Kopieren"
         },
         {
             "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
@@ -662,9 +667,9 @@
             "translation": "Kontakt"
         },
         {
-            "id": "New opening hours!",
-            "message": "New opening hours!",
-            "translation": "Neue Öffnungszeiten!"
+            "id": "Opening hours",
+            "message": "Opening hours",
+            "translation": "Öffnungszeiten"
         },
         {
             "id": "Mon+Thu 2pm-6pm",

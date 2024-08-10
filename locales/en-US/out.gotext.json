@@ -506,9 +506,9 @@
             "fuzzy": true
         },
         {
-            "id": "Save the URL of your order. You will need it to access your goods.",
-            "message": "Save the URL of your order. You will need it to access your goods.",
-            "translation": "Save the URL of your order. You will need it to access your goods.",
+            "id": "Bookmark your order. You will need it to access your goods.",
+            "message": "Bookmark your order. You will need it to access your goods.",
+            "translation": "Bookmark your order. You will need it to access your goods.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -674,9 +674,16 @@
             "fuzzy": true
         },
         {
-            "id": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "message": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
-            "translation": "Save the URL of your order. You need it to access your goods if you closed the browser tab.",
+            "id": "Bookmark this page or save its address in another way. You will need it to access your goods.",
+            "message": "Bookmark this page or save its address in another way. You will need it to access your goods.",
+            "translation": "Bookmark this page or save its address in another way. You will need it to access your goods.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Click to copy",
+            "message": "Click to copy",
+            "translation": "Click to copy",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -926,9 +933,9 @@
             "fuzzy": true
         },
         {
-            "id": "New opening hours!",
-            "message": "New opening hours!",
-            "translation": "New opening hours!",
+            "id": "Opening hours",
+            "message": "Opening hours",
+            "translation": "Opening hours",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
