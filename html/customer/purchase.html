@@ -49,20 +49,17 @@
 	<div class="ms-3">
 		<p>{{.Tr "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards."}}</p>
 		<form method="post">
-			<div class="row">
-				<div class="col-4 mb-3">
-					<select class="form-select" name="notify-proto">
-						<option>Select method</option>
-						<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>Email</option>
-						<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
-					</select>
-				</div>
-				<div class="col-6 mb-3">
-					<input class="form-control" id="notify-addr" name="notify-addr" value="{{.Purchase.NotifyAddr}}" placeholder="{{.Tr "Address"}}">
-				</div>
-				<div class="col-2 mb-3">
-					<button type="submit" class=" btn btn-primary">{{.Tr "Save"}}</button>
-				</div>
+			<div class="input-group mb-3">
+				<select class="form-select" name="notify-proto">
+					<option>{{$.Tr "Select"}}</option>
+					<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>{{$.Tr "Email"}}</option>
+					<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
+				</select>
+				<input class="form-control" style="flex-grow: 3" id="notify-addr" name="notify-addr" value="{{.Purchase.NotifyAddr}}" placeholder="{{.Tr "Address"}}">
+				<button class="btn btn-primary" type="submit">
+					<i class="fa-solid fa-check"></i>
+					<span class="d-none d-md-inline">{{.Tr "Save"}}</span>
+				</button>
 			</div>
 		</form>
 	</div>

@@ -517,6 +517,16 @@
             "translation": "Lass dich benachrichtigen, wenn deine Zahlung eingegangen ist und die Voucher-Codes angezeigt werden. Die Benachrichtigung wird weder die Bestellnummer noch den Link enthalten. Deine Kontaktdaten werden danach gelöscht."
         },
         {
+            "id": "Select",
+            "message": "Select",
+            "translation": "Wähle aus"
+        },
+        {
+            "id": "Email",
+            "message": "Email",
+            "translation": "E-Mail"
+        },
+        {
             "id": "Address",
             "message": "Address",
             "translation": "Addresse"

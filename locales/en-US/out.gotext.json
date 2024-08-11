@@ -723,6 +723,20 @@
             "fuzzy": true
         },
         {
+            "id": "Select",
+            "message": "Select",
+            "translation": "Select",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Email",
+            "message": "Email",
+            "translation": "Email",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Address",
             "message": "Address",
             "translation": "Address",
