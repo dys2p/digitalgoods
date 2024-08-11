@@ -67,11 +67,6 @@
             "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."
         },
         {
-            "id": "Payment method not found.",
-            "message": "Payment method not found.",
-            "translation": "Diese Zahlungsmethode wurde leider nicht gefunden."
-        },
-        {
             "id": "Error saving notify information. Please try again later.",
             "message": "Error saving notify information. Please try again later.",
             "translation": "Fehler beim Speichern der Benachrichtigungseinstellungen. Bitte versuche es später noch einmal."

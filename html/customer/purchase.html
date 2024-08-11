@@ -1,152 +1,163 @@
 {{define "content"}}
-<h1>{{.Tr "Order"}} {{.Purchase.ID}}</h1>
-<div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Tr "Status"}}</strong>: {{.Purchase.Status.TranslateName .Lang}}: {{.Purchase.Status.TranslateDescription .Lang}}</div>
-{{if .Purchase.DeleteDate}}
-	<p>{{.Tr "Current deletion date"}}: {{.Purchase.DeleteDate}}</p>
-{{end}}
-{{with .PaysrvErr}}
-	<p class="alert alert-danger">Unser Payserver lieferte eine Fehlermeldung: {{.}}</p>
-{{end}}
-{{if .Purchase.Waiting}}
-	<script>
-		scheduleReload();
-	</script>
-	<noscript>
-		<p>{{.Tr "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time."}}</p>
-	</noscript>
-{{end}}
-<h2>{{.Tr "What's next?"}}</h2>
-<ol>
-	{{if .Purchase.Unpaid}}
-		<li>{{.Tr "Check your order."}}</li>
-	{{end}}
-	<!-- same as in order.html -->
-	{{if .Purchase.Unpaid}}
-		<li>
-			{{.Tr "Bookmark this page or save its address in another way. You will need it to access your goods."}}
-			{{.Tr "Click to copy"}}: <code role="button" onclick="copyToClipboard(this)">{{.URL}}</code>
-		</li>
-		<li>{{.Tr "Pay your order. (Unpaid orders are deleted after 30 days.)"}}</li>
-		<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
-	{{end}}
-	<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
-	<!-- end -->
-</ol>
-{{if .Purchase.Unpaid}}
-	<h2 id="payment" class="mb-3">{{.Tr "Payment"}}</h2>
-	<div>
-		<ul class="nav nav-tabs my-3">
-			{{range .PaymentMethods}}
-				<li class="nav-item">
-					<a class="nav-link {{if eq $.ActiveTab .ID}}active{{end}}" href="{{$.URL}}/{{.ID}}#payment">{{.Name $.Lang}}</a>
-				</li>
-			{{end}}
-		</ul>
-		<p>{{.PaymentMethod.PayHTML .Purchase.ID .Purchase.PaymentKey $.Lang}}</p>
-	</div>
+	<h1>{{.Tr "Order"}} {{.Purchase.ID}}</h1>
 
-	<h2 id="notify" class="mb-3">{{.Tr "Optional: Get notified when your payment arrives"}}</h2>
-	<div class="ms-3">
-		<p>{{.Tr "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards."}}</p>
-		<form method="post">
-			<div class="input-group mb-3">
-				<select class="form-select" name="notify-proto">
-					<option>{{$.Tr "Select"}}</option>
-					<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>{{$.Tr "Email"}}</option>
-					<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
-				</select>
-				<input class="form-control" style="flex-grow: 3" id="notify-addr" name="notify-addr" value="{{.Purchase.NotifyAddr}}" placeholder="{{.Tr "Address"}}">
-				<button class="btn btn-primary" type="submit">
-					<i class="fa-solid fa-check"></i>
-					<span class="d-none d-md-inline">{{.Tr "Save"}}</span>
-				</button>
-			</div>
-		</form>
-	</div>
-{{end}}
-<h2 class="mb-3">{{.Tr "Your Order"}}</h2>
-<table class="table">
-	<thead>
-		<tr>
-			<th>{{.Tr "Product"}}</th>
-			<th>{{.Tr "Quantity"}}</th>
-			<th>{{.Tr "Item Price"}}</th>
-			<th>{{.Tr "Sum"}}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{range .GroupedOrder}}
-			<tr>
-				<td colspan="4">
-					<details class="mb-3">
-						<summary><strong>{{.NameHTML}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
-						<p class="my-2">{{.TranslateDescription $.Lang}}</p>
-					</details>
-					{{if .Alert}}
-						<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+	<div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Tr "Status"}}</strong>: {{.Purchase.Status.TranslateDescription .Lang}}</div>
+
+	{{if .Purchase.DeleteDate}}
+		<p>{{.Tr "Current deletion date"}}: {{.Purchase.DeleteDate}}</p>
+	{{end}}
+
+	{{if .Purchase.Waiting}}
+		<script>
+			scheduleReload();
+		</script>
+		<noscript>
+			<p>{{.Tr "JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time."}}</p>
+		</noscript>
+	{{end}}
+
+	<h2>{{.Tr "What's next?"}}</h2>
+	<ol>
+		{{if .Purchase.Unpaid}}
+			<li>{{.Tr "Check your order."}}</li>
+		{{end}}
+		<!-- same as in order.html -->
+		{{if .Purchase.Unpaid}}
+			<li>
+				{{.Tr "Bookmark this page or save its address in another way. You will need it to access your goods."}}
+				{{.Tr "Click to copy"}}: <code role="button" onclick="copyToClipboard(this)">{{.URL}}</code>
+			</li>
+			<li>{{.Tr "Pay your order. (Unpaid orders are deleted after 30 days.)"}}</li>
+			<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
+		{{end}}
+		<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
+	</ol>
+
+	{{if .Purchase.Unpaid}}
+		<h2 id="payment" class="mb-3">{{.Tr "Payment"}}</h2>
+		<div class="accordion mb-3 ms-md-3">
+			{{range .PaymentMethods}}
+				<div class="accordion-item">
+					{{if eq $.ActivePaymentMethod .ID}}
+						<h2 class="accordion-header">
+							<a class="accordion-button" href="{{$.URL}}#payment">{{.Name $.Lang}}</a><!-- close accordion -->
+						</h2>
+						<div class="accordion-body pb-0">
+							{{.PayHTML $.Purchase.ID $.Purchase.PaymentKey $.Lang}}
+						</div>
+					{{else}}
+						<h2 class="accordion-header">
+							<a class="accordion-button collapsed" href="{{$.URL}}/{{.ID}}#payment">{{.Name $.Lang}}</a>
+						</h2>
 					{{end}}
-				</td>
+				</div>
+			{{end}}
+		</div>
+
+		<h2 id="notify" class="mb-3">{{.Tr "Optional: Get notified when your payment arrives"}}</h2>
+		<div class="ms-md-3">
+			<p>{{.Tr "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards."}}</p>
+			<form method="post">
+				<div class="input-group mb-3">
+					<select class="form-select" name="notify-proto">
+						<option>{{$.Tr "Select"}}</option>
+						<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>{{$.Tr "Email"}}</option>
+						<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
+					</select>
+					<input class="form-control" style="flex-grow: 3" id="notify-addr" name="notify-addr" value="{{.Purchase.NotifyAddr}}" placeholder="{{.Tr "Address"}}">
+					<button class="btn btn-primary" type="submit">
+						<i class="fa-solid fa-check"></i>
+						<span class="d-none d-md-inline">{{.Tr "Save"}}</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	{{end}}
+
+	<h2 class="mb-3">{{.Tr "Your Order"}}</h2>
+	<table class="table ms-md-3">
+		<thead>
+			<tr>
+				<th>{{.Tr "Product"}}</th>
+				<th>{{.Tr "Quantity"}}</th>
+				<th>{{.Tr "Item Price"}}</th>
+				<th>{{.Tr "Sum"}}</th>
 			</tr>
-			{{range .Variants}}
-				{{$variant := .}}
-				{{range .Rows}}
-					<tr>
-						<td>{{$variant.NameHTML}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
-						<td>{{.Quantity}}</td>
-						<td>{{FmtEuro .ItemPrice}}</td>
-						<td>{{FmtEuro .Sum}}</td>
-					</tr>
+		</thead>
+		<tbody>
+			{{range .GroupedOrder}}
+				<tr>
+					<td colspan="4">
+						<details class="mb-3">
+							<summary><strong>{{.NameHTML}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
+							<p class="my-2">{{.TranslateDescription $.Lang}}</p>
+						</details>
+						{{if .Alert}}
+							<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+						{{end}}
+					</td>
+				</tr>
+				{{range .Variants}}
+					{{$variant := .}}
+					{{range .Rows}}
+						<tr>
+							<td>{{$variant.NameHTML}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+							<td>{{.Quantity}}</td>
+							<td>{{FmtEuro .ItemPrice}}</td>
+							<td>{{FmtEuro .Sum}}</td>
+						</tr>
+					{{end}}
 				{{end}}
 			{{end}}
-		{{end}}
-		<tr>
-			<td colspan="3">{{.Tr "Overall Sum"}}</td>
-			<td>{{FmtEuro .Purchase.Ordered.Sum}}</td>
-		</tr>
-	</tbody>
-</table>
-<h2 class="mb-3">{{.Tr "Your Goods"}}</h2>
-<table class="table">
-	<thead>
-		<tr>
-			<th>{{.Tr "Product"}}</th>
-			<th>{{.Tr "Delivery Date"}}</th>
-			<th>{{.Tr "Code"}}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{range .Purchase.Delivered}}
-		<tr>
-			<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
-			<td>{{.DeliveryDate}}</td>
-			<td>
-				{{if .Image}}
-					<!-- use image as code -->
-					<img src="{{.ImageSrc}}" />
-				{{else}}
-					<!-- use ID as code -->
-					{{if IsURL .ID}}
-						<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
-					{{else}}
-						<a role="button" onclick="copyToClipboard(this)">
-							{{.ID}}
-							<i class="fa-solid fa-copy ms-1"></i>
-						</a>
-					{{end}}
-				{{end}}
-			</td>
-		</tr>
-		{{end}}
-		{{if .Purchase.Underdelivered}}
-		<tr>
-			<td colspan="3">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</td>
-		</tr>
-		{{end}}
-		{{if .Purchase.Unpaid}}
-		<tr>
-			<td colspan="3">{{.Tr "You will receive your codes as soon as you payment has arrived."}}</td>
-		</tr>
-		{{end}}
-	</tbody>
-</table>
+			<tr>
+				<td colspan="3">{{.Tr "Overall Sum"}}</td>
+				<td>{{FmtEuro .Purchase.Ordered.Sum}}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2 class="mb-3">{{.Tr "Your Goods"}}</h2>
+	<table class="table ms-md-3">
+		<thead>
+			<tr>
+				<th>{{.Tr "Product"}}</th>
+				<th>{{.Tr "Delivery Date"}}</th>
+				<th>{{.Tr "Code"}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .Purchase.Delivered}}
+				<tr>
+					<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+					<td>{{.DeliveryDate}}</td>
+					<td>
+						{{if .Image}}
+							<!-- use image as code -->
+							<img src="{{.ImageSrc}}" />
+						{{else}}
+							<!-- use ID as code -->
+							{{if IsURL .ID}}
+								<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
+							{{else}}
+								<a role="button" onclick="copyToClipboard(this)">
+									{{.ID}}
+									<i class="fa-solid fa-copy ms-1"></i>
+								</a>
+							{{end}}
+						{{end}}
+					</td>
+				</tr>
+			{{end}}
+			{{if .Purchase.Underdelivered}}
+				<tr>
+					<td colspan="3">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</td>
+				</tr>
+			{{end}}
+			{{if .Purchase.Unpaid}}
+				<tr>
+					<td colspan="3">{{.Tr "You will receive your codes as soon as you payment has arrived."}}</td>
+				</tr>
+			{{end}}
+		</tbody>
+	</table>
 {{end}}

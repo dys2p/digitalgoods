@@ -519,20 +519,14 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted."))
 	}
 
-	paymentMethod, err := payment.Get(s.PaymentMethods, params.ByName("payment"))
-	if err != nil {
-		return s.frontendNotFound(l.Tr("Payment method not found."))
-	}
-
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{
 		TemplateData: s.MakeTemplateData(r),
 
-		GroupedOrder:   catalog.GroupOrder(purchase.Ordered),
-		Purchase:       purchase,
-		PaymentMethod:  paymentMethod,
-		URL:            httputil.Origin(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
-		ActiveTab:      paymentMethod.ID(),
-		PaymentMethods: s.PaymentMethods,
+		ActivePaymentMethod: params.ByName("payment"),
+		GroupedOrder:        catalog.GroupOrder(purchase.Ordered),
+		PaymentMethods:      s.PaymentMethods,
+		Purchase:            purchase,
+		URL:                 httputil.Origin(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
 		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))

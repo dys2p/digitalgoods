@@ -8,7 +8,7 @@ require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
 	github.com/dys2p/btcpay v0.6.0
-	github.com/dys2p/eco v0.0.0-20240717100954-55f8b6a6b1fe
+	github.com/dys2p/eco v0.0.0-20240811111113-6ab2a7b421ee
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a

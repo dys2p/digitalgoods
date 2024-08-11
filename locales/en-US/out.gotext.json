@@ -93,13 +93,6 @@
             "fuzzy": true
         },
         {
-            "id": "Payment method not found.",
-            "message": "Payment method not found.",
-            "translation": "Payment method not found.",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Error saving notify information. Please try again later.",
             "message": "Error saving notify information. Please try again later.",
             "translation": "Error saving notify information. Please try again later.",

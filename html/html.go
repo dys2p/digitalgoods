@@ -93,14 +93,10 @@ type CustOrderData struct {
 
 type CustPurchaseData struct {
 	ssg.TemplateData
-	GroupedOrder   []digitalgoods.OrderedArticle
-	Purchase       *digitalgoods.Purchase
-	PaymentMethod  payment.Method
-	PaymentMethods []payment.Method
-	URL            string
-	PaysrvErr      error
-	ActiveTab      string
-	TabBTCPay      string
-	TabCash        string
-	TabSepa        string
+
+	ActivePaymentMethod string
+	GroupedOrder        []digitalgoods.OrderedArticle
+	PaymentMethods      []payment.Method
+	Purchase            *digitalgoods.Purchase
+	URL                 string
 }
