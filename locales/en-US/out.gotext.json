@@ -681,9 +681,23 @@
             "fuzzy": true
         },
         {
-            "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
-            "message": "Pay your order. (Unpaid orders are deleted after 30 days.)",
-            "translation": "Pay your order. (Unpaid orders are deleted after 30 days.)",
+            "id": "Copied to clipboard",
+            "message": "Copied to clipboard",
+            "translation": "Copied to clipboard",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Error copying to clipboard",
+            "message": "Error copying to clipboard",
+            "translation": "Error copying to clipboard",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Pay your order. Unpaid orders are deleted after 30 days.",
+            "message": "Pay your order. Unpaid orders are deleted after 30 days.",
+            "translation": "Pay your order. Unpaid orders are deleted after 30 days.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

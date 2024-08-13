@@ -67,11 +67,6 @@
             "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."
         },
         {
-            "id": "Payment method not found.",
-            "message": "Payment method not found.",
-            "translation": "Diese Zahlungsmethode wurde leider nicht gefunden."
-        },
-        {
             "id": "Error saving notify information. Please try again later.",
             "message": "Error saving notify information. Please try again later.",
             "translation": "Fehler beim Speichern der Benachrichtigungseinstellungen. Bitte versuche es später noch einmal."
@@ -492,9 +487,19 @@
             "translation": "Anklicken zum Kopieren"
         },
         {
-            "id": "Pay your order. (Unpaid orders are deleted after 30 days.)",
-            "message": "Pay your order. (Unpaid orders are deleted after 30 days.)",
-            "translation": "Bezahle deine Bestellung. (Unbezahlte Bestellungen werden nach 30 Tagen gelöscht.)"
+            "id": "Copied to clipboard",
+            "message": "Copied to clipboard",
+            "translation": "In die Zwischenablage kopiert"
+        },
+        {
+            "id": "Error copying to clipboard",
+            "message": "Error copying to clipboard",
+            "translation": "Fehler beim Kopieren in die Zwischenablage"
+        },
+        {
+            "id": "Pay your order. Unpaid orders are deleted after 30 days.",
+            "message": "Pay your order. Unpaid orders are deleted after 30 days.",
+            "translation": "Bezahle deine Bestellung. Unbezahlte Bestellungen werden nach 30 Tagen gelöscht."
         },
         {
             "id": "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.",
