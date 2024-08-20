@@ -96,10 +96,7 @@
 			{{range .GroupedOrder}}
 				<tr>
 					<td colspan="4">
-						<details class="mb-3">
-							<summary><strong>{{.NameHTML}}</strong> <span class="btn btn-outline-primary btn-sm ms-2">Read more</span></summary>
-							<p class="my-2">{{.TranslateDescription $.Lang}}</p>
-						</details>
+						<p class="mb-0"><strong>{{.NameHTML}}</strong>: {{.TranslateDescription $.Lang}}</p>
 						{{if .Alert}}
 							<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
 						{{end}}
