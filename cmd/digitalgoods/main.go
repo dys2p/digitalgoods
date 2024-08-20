@@ -553,6 +553,13 @@ func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Han
 		notifyProto = ""
 	}
 
+	// if proto is empty, guess it
+	if notifyProto == "" {
+		if strings.Contains(notifyAddr, "@") {
+			notifyProto = "email"
+		}
+	}
+
 	switch notifyProto {
 	case "email":
 		notifyAddr = strings.TrimSpace(notifyAddr)

@@ -68,7 +68,7 @@
 			<form method="post">
 				<div class="input-group mb-3">
 					<select class="form-select" name="notify-proto">
-						<option>{{$.Tr "Select"}}</option>
+						<option value="">{{$.Tr "Select"}}</option>
 						<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>{{$.Tr "Email"}}</option>
 						<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
 					</select>
