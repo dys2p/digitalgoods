@@ -218,6 +218,7 @@ func (s *Shop) ListenAndServe() {
 	// customer http server
 
 	var custRtr = httprouter.New()
+	custRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()})) // can be omitted when ssg.Handler sets the modification time
 	for _, l := range s.Langs {
 		custRtr.Handler(http.MethodGet, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderGet))
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderPost))
@@ -262,7 +263,7 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/text", returnErr(s.staffUploadTextPost))
 
 	var staffRtr = httprouter.New()
-	staffRtr.ServeFiles("/static/*filepath", http.FS(staticFiles))
+	staffRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()}))
 	staffRtr.HandlerFunc(http.MethodGet, "/login", s.showErr(s.staffLoginGet))
 	staffRtr.HandlerFunc(http.MethodPost, "/login", s.showErr(s.staffLoginPost))
 	staffRtr.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -526,7 +527,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		GroupedOrder:        catalog.GroupOrder(purchase.Ordered),
 		PaymentMethods:      s.PaymentMethods,
 		Purchase:            purchase,
-		URL:                 httputil.Origin(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
+		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
 		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
