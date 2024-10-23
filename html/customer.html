@@ -8,14 +8,13 @@
 
 {{define "main"}}
 	<header>
-		<nav class="navbar navbar-expand-sm navbar-light bg-light">
+		<nav class="navbar navbar-expand-md navbar-light bg-light">
 			<div class="container">
 				<a class="navbar-brand" href="/">Digital Goods</a>
 				{{block "menu" .}}{{end}}
-				<div>
-					{{template "health"}}
-					{{template "languages" .}}
-				</div>
+				<div class="order-md-2">{{template "languages" .}}</div>
+				<div class="d-md-none" style="flex-basis: 100%; height: 0;"></div><!-- break -->
+				<div class="order-md-1">{{template "health"}}</div>
 			</div>
 		</nav>
 	</header>
