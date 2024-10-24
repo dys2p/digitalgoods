@@ -18,9 +18,6 @@
 
 	<h2>{{.Tr "What's next?"}}</h2>
 	<ol>
-		{{if .Purchase.Unpaid}}
-			<li>{{.Tr "Check your order."}}</li>
-		{{end}}
 		<!-- same as in order.html -->
 		{{if .Purchase.Unpaid}}
 			<li>

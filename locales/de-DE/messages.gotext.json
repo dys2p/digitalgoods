@@ -472,11 +472,6 @@
             "translation": "Wie geht es weiter?"
         },
         {
-            "id": "Check your order.",
-            "message": "Check your order.",
-            "translation": "Prüfe deine Bestellung."
-        },
-        {
             "id": "Bookmark this page or save its address in another way. You will need it to access your goods.",
             "message": "Bookmark this page or save its address in another way. You will need it to access your goods.",
             "translation": "Setze diese Seite als Lesezeichen oder speichere ihre Adresse anderweitig. Du brauchst sie, um auf die Codes zuzugreifen."
@@ -745,6 +740,11 @@
             "id": "%.2f",
             "message": "%.2f",
             "translation": "%.2f"
+        },
+        {
+            "id": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
+            "message": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
+            "translation": "Falls du Münzen sendest, klebe sie bitte gut fest. Sonst werden sie beim Transport herausgedrückt."
         },
         {
             "id": "We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.",

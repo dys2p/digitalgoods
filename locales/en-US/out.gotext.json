@@ -660,13 +660,6 @@
             "fuzzy": true
         },
         {
-            "id": "Check your order.",
-            "message": "Check your order.",
-            "translation": "Check your order.",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Bookmark this page or save its address in another way. You will need it to access your goods.",
             "message": "Bookmark this page or save its address in another way. You will need it to access your goods.",
             "translation": "Bookmark this page or save its address in another way. You will need it to access your goods.",
@@ -1041,6 +1034,13 @@
             "id": "%.2f",
             "message": "%.2f",
             "translation": "%.2f",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
+            "message": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
+            "translation": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
