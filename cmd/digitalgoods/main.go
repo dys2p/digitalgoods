@@ -5,7 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"log"
 	"net/http"
@@ -258,10 +257,7 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/mark-paid/:id", s.showErr(s.staffMarkPaidPost))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload", s.showErr(s.staffSelectGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:articleid/:country", s.showErr(s.staffUploadGet))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/image", s.showErr(s.staffUploadImageGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/image", returnErr(s.staffUploadImagePost))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:articleid/:country/text", s.showErr(s.staffUploadTextGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country/text", returnErr(s.staffUploadTextPost))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country", returnErr(s.staffUploadPost))
 
 	var staffRtr = httprouter.New()
 	staffRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()}))
@@ -750,12 +746,6 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
-	// redirect to image upload
-	http.Redirect(w, r, fmt.Sprintf("/upload/%s/%s/image", httprouter.ParamsFromContext(r.Context()).ByName("articleid"), httprouter.ParamsFromContext(r.Context()).ByName("country")), http.StatusSeeOther)
-	return nil
-}
-
-func (s *Shop) staffUploadImageGet(w http.ResponseWriter, r *http.Request) error {
 	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
 	if err != nil {
 		return err
@@ -766,7 +756,7 @@ func (s *Shop) staffUploadImageGet(w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	return html.StaffUploadImage.Execute(w, struct {
+	return html.StaffUpload.Execute(w, struct {
 		digitalgoods.Variant
 		Country string
 		Stock   int
@@ -777,63 +767,13 @@ func (s *Shop) staffUploadImageGet(w http.ResponseWriter, r *http.Request) error
 	})
 }
 
-func (s *Shop) staffUploadImagePost(w http.ResponseWriter, r *http.Request) error {
-
-	file, header, err := r.FormFile("file") // name="file" from dropzonejs
-	if err != nil {
-		return err
-	}
-
-	if header.Size > 100*1024 {
-		return errors.New("file too large")
-	}
-
-	data, err := io.ReadAll(file)
-	if err != nil {
-		return err
-	}
-
-	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
-	var countryID = httprouter.ParamsFromContext(r.Context()).ByName("country")
-
-	if err := s.Database.AddToStock(articleID, countryID, header.Filename, data); err != nil {
-		return err
-	}
-
-	log.Printf("added image to stock: %s %s %s", articleID, countryID, digitalgoods.Mask(header.Filename))
-
-	return s.Database.FulfilUnderdelivered()
-}
-
-func (s *Shop) staffUploadTextGet(w http.ResponseWriter, r *http.Request) error {
-	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
-	if err != nil {
-		return err
-	}
-	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
-	stock, err := s.Database.GetStock()
-	if err != nil {
-		return err
-	}
-
-	return html.StaffUploadText.Execute(w, struct {
-		digitalgoods.Variant
-		Country string
-		Stock   int
-	}{
-		Variant: variant,
-		Country: countryID,
-		Stock:   stock.Get(variant, countryID),
-	})
-}
-
-func (s *Shop) staffUploadTextPost(w http.ResponseWriter, r *http.Request) error {
+func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 
 	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
 	var countryID = httprouter.ParamsFromContext(r.Context()).ByName("country")
 
 	for _, code := range strings.Fields(r.PostFormValue("codes")) {
-		if err := s.Database.AddToStock(articleID, countryID, code, nil); err == nil {
+		if err := s.Database.AddToStock(articleID, countryID, code); err == nil {
 			log.Printf("added code to stock: %s %s %s", articleID, countryID, digitalgoods.Mask(code))
 		} else {
 			log.Println(err)

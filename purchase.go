@@ -1,10 +1,7 @@
 package digitalgoods
 
 import (
-	"encoding/base64"
 	"fmt"
-	"html/template"
-	"net/http"
 
 	"github.com/dys2p/eco/lang"
 )
@@ -148,10 +145,5 @@ type DeliveredItem struct {
 	VariantID    string `json:"article-id"` // legacy json id
 	CountryID    string `json:"country-id"`
 	ID           string `json:"id"` // can be the code, but not necessarily
-	Image        []byte `json:"image"`
 	DeliveryDate string `json:"delivery-date"`
-}
-
-func (item *DeliveredItem) ImageSrc() template.URL {
-	return template.URL(fmt.Sprintf("data:%s;base64,%s", http.DetectContentType(item.Image), base64.StdEncoding.EncodeToString(item.Image)))
 }

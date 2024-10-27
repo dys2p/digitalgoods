@@ -133,19 +133,14 @@
 					<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
 					<td>{{.DeliveryDate}}</td>
 					<td>
-						{{if .Image}}
-							<!-- use image as code -->
-							<img src="{{.ImageSrc}}" />
+						<!-- use ID as code -->
+						{{if IsURL .ID}}
+							<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
 						{{else}}
-							<!-- use ID as code -->
-							{{if IsURL .ID}}
-								<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
-							{{else}}
-								<a role="button" onclick="copyToClipboard(this)">
-									{{.ID}}
-									<i class="fa-solid fa-copy ms-1"></i>
-								</a>
-							{{end}}
+							<a role="button" onclick="copyToClipboard(this)">
+								{{.ID}}
+								<i class="fa-solid fa-copy ms-1"></i>
+							</a>
 						{{end}}
 					</td>
 				</tr>

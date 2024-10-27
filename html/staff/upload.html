@@ -1,19 +1,9 @@
 {{define "content"}}
 	<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
-	<!-- tabs -->
-	<ul class="nav nav-tabs">
-		<li class="nav-item">
-			<a class="nav-link" href="/upload/{{.ID}}/{{.Country}}/image">Image</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link active" href="/upload/{{.ID}}/{{.Country}}/text">Text</a>
-		</li>
-	</ul>
 	{{if .HasCountry}}
 		<div class="alert alert-warning mt-3">Land: {{.Country}}</div>
 	{{end}}
-	<!-- text -->
-	<form method="post" action="/upload/{{.ID}}/{{.Country}}/text">
+	<form method="post" action="/upload/{{.ID}}/{{.Country}}">
 		<textarea class="form-control my-4" name="codes" rows="10"></textarea>
 		<div class="text-end">
 			<a class="btn btn-secondary" href="/">Back</a>

@@ -72,7 +72,6 @@ func OpenDB() (*DB, error) {
 			variant text not null,
 			country text not null,
 			itemid  text not null primary key,
-			image   blob,
 			addtime int  not null -- yyyy-mm-dd, sell oldest first
 		);
 		create table if not exists vat_log (
@@ -116,8 +115,8 @@ func OpenDB() (*DB, error) {
 
 	// stock
 	db.addToStock = mustPrepare(`
-		insert into stock (variant, country, itemid, image, addtime)
-		values (?, ?, ?, ?, ?)
+		insert into stock (variant, country, itemid, addtime)
+		values (?, ?, ?, ?)
 	`)
 	db.deleteFromStock = mustPrepare(`
 		delete
@@ -125,10 +124,12 @@ func OpenDB() (*DB, error) {
 		where itemid = ?
 	`) // itemid is primary key
 	db.getFromStock = mustPrepare(`
-		select itemid, image
+		select itemid
 		from stock
-		where variant = ? and country = ?
-		order by addtime asc limit ?
+		where variant = ?
+			and country = ?
+		order by addtime asc
+		limit ?
 	`)
 	db.getStock = mustPrepare(`
 		select country, count(1)
@@ -163,8 +164,8 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	return errors.New("database ran out of IDs")
 }
 
-func (db *DB) AddToStock(variantID, countryID, itemID string, image []byte) error {
-	_, err := db.addToStock.Exec(variantID, countryID, itemID, image, time.Now().Format(digitalgoods.DateFmt))
+func (db *DB) AddToStock(variantID, countryID, itemID string) error {
+	_, err := db.addToStock.Exec(variantID, countryID, itemID, time.Now().Format(digitalgoods.DateFmt))
 	return err
 }
 
@@ -367,8 +368,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 		for rows.Next() {
 			var itemID string
-			var image []byte
-			if err := rows.Scan(&itemID, &image); err != nil {
+			if err := rows.Scan(&itemID); err != nil {
 				return err
 			}
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
@@ -379,7 +379,6 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 				VariantID:    u.VariantID,
 				CountryID:    u.CountryID,
 				ID:           itemID,
-				Image:        image,
 				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
 			gotQuantity++

@@ -66,8 +66,7 @@ var (
 	StaffLogin            = parse("staff.html", "staff/login.html")
 	StaffPurchaseNotFound = parse("staff.html", "staff/purchase-not-found.html")
 	StaffSelect           = parse("staff.html", "staff/select.html")
-	StaffUploadImage      = parse("staff.html", "staff/upload-image.html")
-	StaffUploadText       = parse("staff.html", "staff/upload-text.html")
+	StaffUpload           = parse("staff.html", "staff/upload.html")
 )
 
 type CustErrorData struct {
