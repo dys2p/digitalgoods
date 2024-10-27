@@ -83,12 +83,11 @@ type CustOrderData struct {
 	Catalog              digitalgoods.Catalog
 	Stock                digitalgoods.Stock
 
-	Cart         *digitalgoods.Cart
-	OtherCountry map[string]string // user input: variant ID -> country ID
-	Area         string
-	EUCountry    string
-	CountryErr   bool
-	OrderErr     bool
+	Cart       *digitalgoods.Cart
+	Area       string
+	EUCountry  string
+	CountryErr bool
+	OrderErr   bool
 }
 
 type CustPurchaseData struct {

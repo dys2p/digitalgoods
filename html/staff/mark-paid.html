@@ -23,7 +23,7 @@
 					{{range .Variants}}
 						{{range .Rows}}
 							<tr>
-								<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{.}}){{end}}{{end}}</td>
+								<td>{{.VariantID}}</td>
 								<td>{{.Quantity}}</td>
 								<td>{{FmtEuro .ItemPrice}}</td>
 								<td>{{FmtEuro .Sum}}</td>

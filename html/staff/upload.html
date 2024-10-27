@@ -1,9 +1,6 @@
 {{define "content"}}
 	<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
-	{{if .HasCountry}}
-		<div class="alert alert-warning mt-3">Land: {{.Country}}</div>
-	{{end}}
-	<form method="post" action="/upload/{{.ID}}/{{.Country}}">
+	<form method="post" action="/upload/{{.ID}}">
 		<textarea class="form-control my-4" name="codes" rows="10"></textarea>
 		<div class="text-end">
 			<a class="btn btn-secondary" href="/">Back</a>

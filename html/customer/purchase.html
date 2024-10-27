@@ -103,7 +103,7 @@
 					{{$variant := .}}
 					{{range .Rows}}
 						<tr>
-							<td>{{$variant.NameHTML}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+							<td>{{$variant.NameHTML}}</td>
 							<td>{{.Quantity}}</td>
 							<td>{{FmtEuro .ItemPrice}}</td>
 							<td>{{FmtEuro .Sum}}</td>
@@ -130,7 +130,7 @@
 		<tbody>
 			{{range .Purchase.Delivered}}
 				<tr>
-					<td>{{.VariantID}} {{with .CountryID}}{{if ne . "all"}}({{$.Tr .}}){{end}}{{end}}</td>
+					<td>{{.VariantID}}</td>
 					<td>{{.DeliveryDate}}</td>
 					<td>
 						<!-- use ID as code -->

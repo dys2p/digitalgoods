@@ -70,7 +70,6 @@ func OpenDB() (*DB, error) {
 		);
 		create table if not exists stock (
 			variant text not null,
-			country text not null,
 			itemid  text not null primary key,
 			addtime int  not null -- yyyy-mm-dd, sell oldest first
 		);
@@ -78,7 +77,6 @@ func OpenDB() (*DB, error) {
 			purchase       text not null, -- six-digit id
 			deliverydate   text not null, -- yyyy-mm-dd
 			variant        text not null,
-			variantcountry text not null,
 			amount         int  not null,
 			itemprice      int  not null, -- euro cents
 			countrycode    text not null
@@ -115,8 +113,8 @@ func OpenDB() (*DB, error) {
 
 	// stock
 	db.addToStock = mustPrepare(`
-		insert into stock (variant, country, itemid, addtime)
-		values (?, ?, ?, ?)
+		insert into stock (variant, itemid, addtime)
+		values (?, ?, ?)
 	`)
 	db.deleteFromStock = mustPrepare(`
 		delete
@@ -127,24 +125,22 @@ func OpenDB() (*DB, error) {
 		select itemid
 		from stock
 		where variant = ?
-			and country = ?
 		order by addtime asc
 		limit ?
 	`)
 	db.getStock = mustPrepare(`
-		select country, count(1)
+		select count(1)
 		from stock
 		where variant = ?
-		group by country
 	`)
 	db.getStockAll = mustPrepare(`
-		select variant, country, count(1)
+		select variant, count(1)
 		from stock
-		group by variant, country
+		group by variant
 	`)
 
 	// VAT
-	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, variant, variantcountry, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?, ?)")
+	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -164,8 +160,8 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	return errors.New("database ran out of IDs")
 }
 
-func (db *DB) AddToStock(variantID, countryID, itemID string) error {
-	_, err := db.addToStock.Exec(variantID, countryID, itemID, time.Now().Format(digitalgoods.DateFmt))
+func (db *DB) AddToStock(variantID, itemID string) error {
+	_, err := db.addToStock.Exec(variantID, itemID, time.Now().Format(digitalgoods.DateFmt))
 	return err
 }
 
@@ -179,15 +175,11 @@ func (db *DB) GetStock() (digitalgoods.Stock, error) {
 	var stock = make(digitalgoods.Stock)
 	for rows.Next() {
 		var variant string
-		var country string
 		var count int
-		if err := rows.Scan(&variant, &country, &count); err != nil {
+		if err := rows.Scan(&variant, &count); err != nil {
 			return nil, err
 		}
-		if _, ok := stock[variant]; !ok {
-			stock[variant] = make(map[string]int)
-		}
-		stock[variant][country] = stock[variant][country] + count
+		stock[variant] = stock[variant] + count
 	}
 	return stock, nil
 }
@@ -358,7 +350,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 
 		// get from stock
 
-		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.CountryID, u.Quantity)
+		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.Quantity)
 		if err != nil {
 			return err
 		}
@@ -377,7 +369,6 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 			log.Printf("[%s] delivering %s: %s", purchase.ID, u.VariantID, digitalgoods.Mask(itemID))
 			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
 				VariantID:    u.VariantID,
-				CountryID:    u.CountryID,
 				ID:           itemID,
 				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
@@ -387,7 +378,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		// log VAT
 
 		if gotQuantity > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, u.CountryID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}

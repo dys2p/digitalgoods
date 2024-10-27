@@ -256,8 +256,8 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/mark-paid/:id", s.showErr(s.staffMarkPaidGet))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/mark-paid/:id", s.showErr(s.staffMarkPaidPost))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload", s.showErr(s.staffSelectGet))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:articleid/:country", s.showErr(s.staffUploadGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:articleid/:country", returnErr(s.staffUploadPost))
+	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:variant", s.showErr(s.staffUploadGet))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:variant", returnErr(s.staffUploadPost))
 
 	var staffRtr = httprouter.New()
 	staffRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()}))
@@ -415,10 +415,9 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		Catalog:              catalog,
 		Stock:                stock,
 
-		Cart:         &digitalgoods.Cart{},
-		OtherCountry: make(map[string]string),
-		Area:         r.PostFormValue("area"),
-		EUCountry:    r.PostFormValue("eu-country"),
+		Cart:      &digitalgoods.Cart{},
+		Area:      r.PostFormValue("area"),
+		EUCountry: r.PostFormValue("eu-country"),
 	}
 
 	variants := catalog.Variants()
@@ -427,45 +426,18 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	// same logic as in order template
 	for _, variant := range variants {
-		// featured countries
-		for _, countryID := range stock.FeaturedCountryIDs(variant) {
-			val := r.PostFormValue(variant.ID + "-" + countryID)
-			if val == "" {
-				continue
-			}
-			quantity, _ := strconv.Atoi(val)
-			if max := stock.Max(variant, countryID); quantity > max {
-				quantity = max // client must check their order before payment
-			}
-			if quantity > 0 {
-				co.Cart.Add(variant.ID, countryID, quantity)
-				order = append(order, digitalgoods.OrderRow{
-					Quantity:  quantity,
-					VariantID: variant.ID,
-					CountryID: countryID,
-					ItemPrice: variant.Price,
-				})
-			}
+		quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
+		if quantity > 0 {
+			quantity = max(quantity, stock.Max(variant))
 		}
-		// other country
-		if quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID + "-other-quantity")); quantity > 0 {
-			countryID := r.PostFormValue(variant.ID + "-other-country")
-			if countryID == "" || !digitalgoods.IsISOCountryCode(countryID) {
-				continue
-			}
-			if max := stock.Max(variant, countryID); quantity > max {
-				quantity = max // client must check their order before payment
-			}
-			if quantity > 0 {
-				co.Cart.Add(variant.ID, "other", quantity)
-				co.OtherCountry[variant.ID] = countryID
-				order = append(order, digitalgoods.OrderRow{
-					Quantity:  quantity,
-					VariantID: variant.ID,
-					CountryID: countryID,
-					ItemPrice: variant.Price,
-				})
-			}
+
+		if quantity > 0 {
+			co.Cart.Add(variant.ID, quantity)
+			order = append(order, digitalgoods.OrderRow{
+				Quantity:  quantity,
+				VariantID: variant.ID,
+				ItemPrice: variant.Price,
+			})
 		}
 	}
 
@@ -704,11 +676,7 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 type staffSelect struct {
 	Stock          digitalgoods.Stock
 	Variants       []digitalgoods.Variant
-	Underdelivered map[string]int // key: articleID-countryID
-}
-
-func (s *staffSelect) ISOCountryCodes() []string {
-	return digitalgoods.ISOCountryCodes[:]
+	Underdelivered map[string]int // key: variant id
 }
 
 func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
@@ -729,7 +697,7 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 		for _, uf := range unfulfilled {
-			underdelivered[uf.VariantID+"-"+uf.CountryID] += uf.Quantity
+			underdelivered[uf.VariantID] += uf.Quantity
 		}
 	}
 
@@ -746,11 +714,10 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
-	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("articleid"))
+	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("variant"))
 	if err != nil {
 		return err
 	}
-	countryID := httprouter.ParamsFromContext(r.Context()).ByName("country")
 	stock, err := s.Database.GetStock()
 	if err != nil {
 		return err
@@ -758,23 +725,20 @@ func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
 
 	return html.StaffUpload.Execute(w, struct {
 		digitalgoods.Variant
-		Country string
-		Stock   int
+		Stock int
 	}{
 		Variant: variant,
-		Country: countryID,
-		Stock:   stock.Get(variant, countryID),
+		Stock:   stock[variant.ID],
 	})
 }
 
 func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 
-	var articleID = httprouter.ParamsFromContext(r.Context()).ByName("articleid")
-	var countryID = httprouter.ParamsFromContext(r.Context()).ByName("country")
+	var variantID = httprouter.ParamsFromContext(r.Context()).ByName("variant")
 
 	for _, code := range strings.Fields(r.PostFormValue("codes")) {
-		if err := s.Database.AddToStock(articleID, countryID, code); err == nil {
-			log.Printf("added code to stock: %s %s %s", articleID, countryID, digitalgoods.Mask(code))
+		if err := s.Database.AddToStock(variantID, code); err == nil {
+			log.Printf("added code to stock: %s %s", variantID, digitalgoods.Mask(code))
 		} else {
 			log.Println(err)
 			return err
