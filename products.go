@@ -8,6 +8,53 @@ import (
 	"github.com/dys2p/eco/productfeed"
 )
 
+type Variant struct {
+	ID        string
+	Name      string
+	ImageLink string
+	Price     int // euro cents
+	OnDemand  bool
+}
+
+func (variant Variant) NameHTML() template.HTML {
+	return template.HTML(variant.Name)
+}
+
+type Article struct {
+	Brand       string
+	Name        string // not translated
+	Hide        bool
+	ImageLink   string
+	ID          string // for <details> and #anchor
+	Alert       map[string]string
+	Description map[string]string
+	Variants    []Variant
+}
+
+func (article Article) NameHTML() template.HTML {
+	return template.HTML(article.Name)
+}
+
+// only supports langs which exist as Alert key, TODO: language.Matcher
+func (article Article) TranslateAlert(l lang.Lang) template.HTML {
+	return template.HTML(article.Alert[l.Prefix])
+}
+
+// only supports langs which exist as Description key, TODO: language.Matcher
+func (article Article) TranslateDescription(l lang.Lang) template.HTML {
+	return template.HTML(article.Description[l.Prefix])
+}
+
+type Category struct {
+	Name     map[string]string
+	Articles []Article
+}
+
+// only supports langs which exist as Name key, TODO: language.Matcher
+func (cat *Category) TranslateName(l lang.Lang) template.HTML {
+	return template.HTML(cat.Name[l.Prefix])
+}
+
 type Catalog []Category
 
 // assumes that catalog contains every article exactly once
@@ -64,41 +111,6 @@ func (catalog Catalog) Variants() []Variant {
 		}
 	}
 	return variants
-}
-
-type Category struct {
-	Name     map[string]string
-	Articles []Article
-}
-
-// only supports langs which exist as Name key, TODO: language.Matcher
-func (cat *Category) TranslateName(l lang.Lang) template.HTML {
-	return template.HTML(cat.Name[l.Prefix])
-}
-
-type Article struct {
-	Brand       string
-	Name        string // not translated
-	Hide        bool
-	ImageLink   string
-	ID          string // for <details> and #anchor
-	Alert       map[string]string
-	Description map[string]string
-	Variants    []Variant
-}
-
-func (article Article) NameHTML() template.HTML {
-	return template.HTML(article.Name)
-}
-
-// only supports langs which exist as Alert key, TODO: language.Matcher
-func (article Article) TranslateAlert(l lang.Lang) template.HTML {
-	return template.HTML(article.Alert[l.Prefix])
-}
-
-// only supports langs which exist as Description key, TODO: language.Matcher
-func (article Article) TranslateDescription(l lang.Lang) template.HTML {
-	return template.HTML(article.Description[l.Prefix])
 }
 
 // groups order by article
