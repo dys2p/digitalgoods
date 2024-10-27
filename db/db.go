@@ -20,6 +20,7 @@ type DB struct {
 	// purchases
 	insertPurchase               *sql.Stmt
 	cleanupPurchases             *sql.Stmt
+	getIDByPattern               *sql.Stmt
 	getPurchaseByID              *sql.Stmt
 	getPurchaseByIDAndAccessKey  *sql.Stmt
 	getPurchaseByIDAndPaymentKey *sql.Stmt
@@ -103,6 +104,7 @@ func OpenDB() (*DB, error) {
 	// purchase
 	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
+	db.getIDByPattern = mustPrepare("select id from purchase where id like ? limit 10")
 	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
 	db.getPurchaseByIDAndAccessKey = mustPrepare(" select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and access_key = ? limit 1")
 	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
@@ -208,6 +210,28 @@ func (db *DB) Cleanup() error {
 		log.Printf("deleted %d finalized purchases", ra)
 	}
 	return nil
+}
+
+func (db *DB) GetIDsByPattern(pattern string) ([]string, error) {
+	rows, err := db.getIDByPattern.Query(pattern)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ids []string
+	for rows.Next() {
+		var id string
+		err := rows.Scan(&id)
+		if err == sql.ErrNoRows {
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+	return ids, nil
 }
 
 // FulfilUnderdelivered calls SetSettled for all underdelivered purchases. It can be called at any time.

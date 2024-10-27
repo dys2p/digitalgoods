@@ -1,0 +1,11 @@
+{{define "content"}}
+	<h1>Purchase not found</h1>
+	{{with .}}
+		<p>Did you mean?</p>
+		<ul>
+			{{range.}}
+				<li><a href="/mark-paid/{{.}}">{{.}}</a></li>
+			{{end}}
+		</ul>
+	{{end}}
+{{end}}

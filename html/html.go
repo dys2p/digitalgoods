@@ -59,14 +59,15 @@ var (
 	CustPurchase = parse("digitalgoods.proxysto.re/*.html", "customer.html", "customer/purchase.html")
 	CustSite     = parse("digitalgoods.proxysto.re/*.html", "customer.html")
 
-	StaffError       = parse("staff.html", "staff/error.html")
-	StaffIndex       = parse("staff.html", "staff/index.html")
-	StaffView        = parse("staff.html", "staff/view.html")
-	StaffMarkPaid    = parse("staff.html", "staff/mark-paid.html")
-	StaffLogin       = parse("staff.html", "staff/login.html")
-	StaffSelect      = parse("staff.html", "staff/select.html")
-	StaffUploadImage = parse("staff.html", "staff/upload-image.html")
-	StaffUploadText  = parse("staff.html", "staff/upload-text.html")
+	StaffError            = parse("staff.html", "staff/error.html")
+	StaffIndex            = parse("staff.html", "staff/index.html")
+	StaffView             = parse("staff.html", "staff/view.html")
+	StaffMarkPaid         = parse("staff.html", "staff/mark-paid.html")
+	StaffLogin            = parse("staff.html", "staff/login.html")
+	StaffPurchaseNotFound = parse("staff.html", "staff/purchase-not-found.html")
+	StaffSelect           = parse("staff.html", "staff/select.html")
+	StaffUploadImage      = parse("staff.html", "staff/upload-image.html")
+	StaffUploadText       = parse("staff.html", "staff/upload-text.html")
 )
 
 type CustErrorData struct {

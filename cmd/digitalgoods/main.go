@@ -13,6 +13,7 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -631,12 +632,31 @@ func (s *Shop) staffViewGet(w http.ResponseWriter, r *http.Request) error {
 
 func (s *Shop) staffViewPost(w http.ResponseWriter, r *http.Request) error {
 	id := strings.ToUpper(strings.TrimSpace(r.PostFormValue("id")))
-	purchase, err := s.Database.GetPurchaseByID(id)
-	if err != nil {
-		return err
+	if purchase, err := s.Database.GetPurchaseByID(id); err == nil {
+		http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
+		return nil
 	}
-	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
-	return nil
+
+	var didYouMean []string
+	if 3 <= len(id) && len(id) <= 5 {
+		ids, err := s.Database.GetIDsByPattern("%" + id + "%")
+		if err != nil {
+			return err
+		}
+		didYouMean = append(didYouMean, ids...)
+	}
+	if len(id) == 6 {
+		for i := range len(id) {
+			ids, err := s.Database.GetIDsByPattern(id[:i] + "_" + id[i+1:])
+			if err != nil {
+				return err
+			}
+			didYouMean = append(didYouMean, ids...)
+		}
+	}
+	slices.Sort(didYouMean)
+	didYouMean = slices.Compact(didYouMean)
+	return html.StaffPurchaseNotFound.Execute(w, didYouMean)
 }
 
 func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
