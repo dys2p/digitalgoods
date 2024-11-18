@@ -428,7 +428,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	for _, variant := range variants {
 		quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
 		if quantity > 0 {
-			quantity = max(quantity, stock.Max(variant))
+			quantity = min(quantity, stock.Max(variant))
 		}
 
 		if quantity > 0 {
