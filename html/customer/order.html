@@ -39,16 +39,15 @@
 							{{end}}
 							{{range .Variants}}
 								<!-- breakpoint: sm -->
-								{{$variant := .}}
 								<div class="d-sm-flex border-top align-items-center justify-content-between">
-									<div class="py-1 pe-sm-3">{{$variant.NameHTML}}{{if $.Stock.OnDemandOnly $variant .}} (on demand){{end}}</div>
+									<div class="py-1 pe-sm-3">{{.NameHTML}}{{if $.Stock.OnDemandOnly .}} (on demand){{end}}</div>
 									<div class="pb-1 pb-sm-0 d-flex justify-content-end">
 										<div>
 											<div class="input-group flex-nowrap py-1">
-												<span class="input-group-text">{{FmtEuro $variant.Price}}</span>
-												{{$max := $.Stock.Max $variant .}}
-												<input class="form-control flex-grow-0" name="{{$variant.ID}}-{{.}}" type="number" min="0" max="{{$max}}" {{if eq $max 0}}disabled{{end}} value="{{$.Cart.Get $variant.ID .}}" style="width: calc(1.75rem + 2px + 6ch)">
-												<span class="input-group-text">{{$.Stock.Get $variant .}} {{$.Tr "on stock"}}</span>
+												<span class="input-group-text">{{FmtEuro .Price}}</span>
+												{{$max := $.Stock.Max .}}
+												<input class="form-control flex-grow-0" name="{{.ID}}" type="number" min="0" max="{{$max}}" {{if eq $max 0}}disabled{{end}} value="{{$.Cart.Get .ID}}" style="width: calc(1.75rem + 2px + 6ch)">
+												<span class="input-group-text">{{index $.Stock .ID}} {{$.Tr "on stock"}}</span>
 											</div>
 										</div>
 									</div>

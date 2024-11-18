@@ -17,14 +17,13 @@
 			<th>Upload</th>
 		</tr>
 		{{range .Variants}}
-			{{$variant := .}}
 			<tr>
-				<td>{{$variant.NameHTML}}</td>
-				<td>{{$variant.ID}}</td>
-				<td>{{FmtEuro $variant.Price}}</td>
-				<td>{{$.Stock.Get $variant .}}</td>
-				<td>{{index $.Underdelivered $variant.ID}}</td>
-				<td><a href="/upload/{{$variant.ID}}/{{.}}">{{.}}</a></td>
+				<td>{{.NameHTML}}</td>
+				<td>{{.ID}}</td>
+				<td>{{FmtEuro .Price}}</td>
+				<td>{{index $.Stock .ID}}</td>
+				<td>{{index $.Underdelivered .ID}}</td>
+				<td><a href="/upload/{{.ID}}">Upload</a></td>
 			</tr>
 		{{end}}
 	</table>
