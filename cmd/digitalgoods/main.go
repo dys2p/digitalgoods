@@ -215,6 +215,12 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error making static sites: %v", err)
 	}
 
+	healthSrv := &health.Server{
+		BTCPay: s.Btcpay,
+		Rates:  s.RatesHistory,
+	}
+	go healthSrv.Run()
+
 	// customer http server
 
 	var custRtr = httprouter.New()
@@ -235,10 +241,7 @@ func (s *Shop) ListenAndServe() {
 		bs, _ := s.ProductFeed.Bytes()
 		w.Write(bs)
 	})
-	custRtr.Handler(http.MethodGet, "/payment-health", health.Server{
-		BTCPay: s.Btcpay,
-		Rates:  s.RatesHistory,
-	})
+	custRtr.Handler(http.MethodGet, "/payment-health", healthSrv)
 	custRtr.NotFound = staticSites.Handler(nil, s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
@@ -375,7 +378,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 	err = html.CustOrder.Execute(w, &html.CustOrderData{
 		TemplateData: s.MakeTemplateData(r),
 
-		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries),
+		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, countries.Country("")),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              catalog,
 		Stock:                stock,
@@ -407,17 +410,19 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	// read user input
 
+	selectedEUCountry, _ := countries.Get(countries.EuropeanUnion, r.PostFormValue("eu-country"))
+
 	co := &html.CustOrderData{
 		TemplateData: s.MakeTemplateData(r),
 
-		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries),
+		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, selectedEUCountry),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              catalog,
 		Stock:                stock,
 
 		Cart:      &digitalgoods.Cart{},
 		Area:      r.PostFormValue("area"),
-		EUCountry: r.PostFormValue("eu-country"),
+		EUCountry: string(selectedEUCountry),
 	}
 
 	variants := catalog.Variants()
@@ -639,12 +644,12 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 		*digitalgoods.Purchase
 		GroupedOrder    []digitalgoods.OrderedArticle
 		CurrencyOptions []rates.Option
-		EUCountries     []countries.CountryWithName
+		EUCountries     []countries.CountryOption
 	}{
 		Purchase:        purchase,
 		GroupedOrder:    catalog.GroupOrder(purchase.Ordered),
 		CurrencyOptions: currencyOptions,
-		EUCountries:     countries.TranslateAndSort(staffLang, countries.EuropeanUnion),
+		EUCountries:     countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
 	})
 }
 

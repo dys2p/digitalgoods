@@ -76,7 +76,7 @@
 					<select class="form-select d-inline w-auto {{if .CountryErr}}is-invalid{{end}}" id="eu-country" name="eu-country" onchange="document.getElementById('eu').checked = true;">
 						<option class="text-secondary">{{.Tr "please select"}}</option>
 						{{range $.AvailableEUCountries}}
-							<option {{if eq $.EUCountry .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
+							<option {{if .Selected}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
 						{{end}}
 					</select>
 				</div>

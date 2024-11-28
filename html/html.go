@@ -78,7 +78,7 @@ type CustOrderData struct {
 	ssg.TemplateData
 
 	Articles             func() ([]*digitalgoods.Article, error)
-	AvailableEUCountries []countries.CountryWithName
+	AvailableEUCountries []countries.CountryOption
 	AvailableNonEU       bool
 	Catalog              digitalgoods.Catalog
 	Stock                digitalgoods.Stock
