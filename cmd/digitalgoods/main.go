@@ -796,27 +796,27 @@ func (s *Shop) SetPurchaseProcessing(id, paymentKey string) error {
 	return s.Database.SetProcessing(purchase)
 }
 
-func (s *Shop) NotifyPaymentReceived(p *digitalgoods.Purchase) error {
+func (s *Shop) NotifyPaymentReceived(purchase *digitalgoods.Purchase) error {
 	const subject = "digitalgoods.proxysto.re payment received"
 	const msg = "We have received your payment. Please download your vouchers within the next 30 days."
 
-	switch p.NotifyProto {
+	switch purchase.NotifyProto {
 	case "email":
-		err := s.Emailer.Send(p.NotifyAddr, subject, []byte(msg))
+		err := s.Emailer.Send(purchase.NotifyAddr, subject, []byte(msg))
 		if err != nil {
 			return fmt.Errorf("sending email notification: %w", err)
 		}
 	case "ntfysh":
-		err := ntfysh.Publish(p.NotifyAddr, subject, msg)
+		err := ntfysh.Publish(purchase.NotifyAddr, subject, msg)
 		if err != nil {
 			return fmt.Errorf("sending ntfysh notification: %w", err)
 		}
 	}
 
-	if p.Status == digitalgoods.StatusFinalized {
-		p.NotifyProto = ""
-		p.NotifyAddr = ""
-		err := s.Database.SetNotify(p)
+	if purchase.Status == digitalgoods.StatusFinalized {
+		purchase.NotifyProto = ""
+		purchase.NotifyAddr = ""
+		err := s.Database.SetNotify(purchase)
 		if err != nil {
 			return fmt.Errorf("removing notify data from database: %w", err)
 		}
