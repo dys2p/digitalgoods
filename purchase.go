@@ -76,12 +76,8 @@ func (p *Purchase) GetUnfulfilled() (Order, error) {
 	copy(unfulfilled, p.Ordered)
 	// decrement
 	for _, d := range p.Delivered {
-		if d.CountryID == "" {
-			// backwards compatibility: rather fail than risk double fulfilment
-			return nil, nil
-		}
-		if err := unfulfilled.Decrement(d.VariantID, d.CountryID); err != nil {
-			return nil, err
+		if err := unfulfilled.Decrement(d.VariantID); err != nil {
+			return nil, fmt.Errorf("decrementing order %s: %w", p.ID, err)
 		}
 	}
 	return unfulfilled, nil
@@ -110,14 +106,14 @@ func (order Order) Empty() bool {
 	return true
 }
 
-func (order *Order) Decrement(variantID, countryID string) error {
+func (order *Order) Decrement(variantID string) error {
 	for i := range *order {
-		if (*order)[i].VariantID == variantID && (*order)[i].CountryID == countryID {
+		if (*order)[i].VariantID == variantID {
 			(*order)[i].Quantity--
 			return nil
 		}
 	}
-	return fmt.Errorf("variant %s with country %s not found in order", variantID, countryID)
+	return fmt.Errorf("variant %s not found in order", variantID)
 }
 
 func (order Order) Sum() int {
