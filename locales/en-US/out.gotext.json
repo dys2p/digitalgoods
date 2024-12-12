@@ -569,13 +569,6 @@
             "fuzzy": true
         },
         {
-            "id": "Select other country",
-            "message": "Select other country",
-            "translation": "Select other country",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
             "message": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
             "translation": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
@@ -964,6 +957,13 @@
             "id": "Tue+Wed+Fri+Sat 10am-2pm",
             "message": "Tue+Wed+Fri+Sat 10am-2pm",
             "translation": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "See here for short-term changes",
+            "message": "See here for short-term changes",
+            "translation": "See here for short-term changes",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

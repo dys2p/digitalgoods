@@ -407,11 +407,6 @@
             "translation": "vorrätig"
         },
         {
-            "id": "Select other country",
-            "message": "Select other country",
-            "translation": "Anderes Land auswählen"
-        },
-        {
             "id": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
             "message": "Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)",
             "translation": "In welchem Land bist du ansässig? (Das müssen wir aus steuerlichen Gründen fragen. Es hat keinen Einfluss auf den Preis oder die Leistung.)"
@@ -690,6 +685,11 @@
             "id": "Tue+Wed+Fri+Sat 10am-2pm",
             "message": "Tue+Wed+Fri+Sat 10am-2pm",
             "translation": "Di+Mi+Fr+Sa 10-14 Uhr"
+        },
+        {
+            "id": "See here for short-term changes",
+            "message": "See here for short-term changes",
+            "translation": "Sieh hier für kurzfristige Änderungen"
         },
         {
             "id": "Got an idea or found an error? Drop us a note!",
