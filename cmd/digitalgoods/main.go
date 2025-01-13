@@ -432,8 +432,8 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	// same logic as in order template
 	for _, variant := range variants {
 		quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
-		if quantity > 0 {
-			quantity = min(quantity, stock.Max(variant))
+		if quantity > 100000 { // just to prevent overflow issues
+			quantity = 100000
 		}
 
 		if quantity > 0 {
