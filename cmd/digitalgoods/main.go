@@ -22,7 +22,6 @@ import (
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/alexedwards/scs/v2/memstore"
-	"github.com/dys2p/btcpay"
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/digitalgoods/db"
 	"github.com/dys2p/digitalgoods/html"
@@ -39,6 +38,7 @@ import (
 	"github.com/dys2p/eco/payment/rates"
 	"github.com/dys2p/eco/productfeed"
 	"github.com/dys2p/eco/ssg"
+	"github.com/dys2p/go-btcpay"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -777,7 +777,7 @@ func (s *Shop) PurchaseSumCents(id, paymentKey string) (int, error) {
 	return purchase.Ordered.Sum(), nil
 }
 
-func (s *Shop) SetPurchasePaid(id, paymentKey string) error {
+func (s *Shop) SetPurchasePaid(id, paymentKey, methodName string) error {
 	purchase, err := s.Database.GetPurchaseByIDAndPaymentKey(id, paymentKey)
 	if err != nil {
 		return err

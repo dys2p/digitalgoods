@@ -7,8 +7,8 @@ toolchain go1.22.1
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
-	github.com/dys2p/btcpay v0.6.0
-	github.com/dys2p/eco v0.0.0-20241128202437-4b933d57b03a
+	github.com/dys2p/eco v0.0.0-20250120095410-62f273b41fb3
+	github.com/dys2p/go-btcpay v0.7.3
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a
