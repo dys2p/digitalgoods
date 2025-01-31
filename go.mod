@@ -7,15 +7,15 @@ toolchain go1.22.1
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
-	github.com/dys2p/eco v0.0.0-20250120095410-62f273b41fb3
-	github.com/dys2p/go-btcpay v0.7.3
+	github.com/dys2p/eco v0.0.0-20250131095250-f9c9b387f0a5
+	github.com/dys2p/go-btcpay v0.7.4
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a
-	golang.org/x/crypto v0.27.0
+	golang.org/x/crypto v0.32.0
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
-	golang.org/x/term v0.24.0
-	golang.org/x/text v0.18.0
+	golang.org/x/term v0.28.0
+	golang.org/x/text v0.21.0
 )
 
 require (
@@ -29,6 +29,6 @@ require (
 	gitlab.com/golang-commonmark/linkify v0.0.0-20191026162114-a0c2df6c8f82 // indirect
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20191124015652-932350d1cb84 // indirect
 	gitlab.com/golang-commonmark/puny v0.0.0-20191124015043-9f83538fa04f // indirect
-	golang.org/x/net v0.29.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 )
