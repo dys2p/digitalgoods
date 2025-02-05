@@ -11,7 +11,7 @@ const DateFmt = "2006-01-02"
 const (
 	StatusNew               Status = "new"            // unpaid
 	StatusPaymentProcessing Status = "processing"     // e.g. btcpay: "InvoiceProcessing Webhook: Triggers when an invoice is fully paid, but doesn't have the required amount of confirmations on the blockchain yet according to your store's settings."
-	StatusUnderdelivered    Status = "underdelivered" // payment settled, but we had not had enough items on stock
+	StatusUnderdelivered    Status = "underdelivered" // payment settled, but we had not had enough items in stock
 	StatusFinalized         Status = "finalized"      // payment settled, codes delivered
 )
 

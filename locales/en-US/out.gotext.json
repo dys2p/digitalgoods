@@ -331,9 +331,9 @@
             "fuzzy": true
         },
         {
-            "id": "SEPA Bank Transfer",
-            "message": "SEPA Bank Transfer",
-            "translation": "SEPA Bank Transfer",
+            "id": "Bank Transfer to our SEPA Account",
+            "message": "Bank Transfer to our SEPA Account",
+            "translation": "Bank Transfer to our SEPA Account",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -562,9 +562,9 @@
             "fuzzy": true
         },
         {
-            "id": "on stock",
-            "message": "on stock",
-            "translation": "on stock",
+            "id": "in stock",
+            "message": "in stock",
+            "translation": "in stock",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -1059,9 +1059,9 @@
             "fuzzy": true
         },
         {
-            "id": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
-            "message": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
-            "translation": "Make a SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new incoming payments every day. We will see your name and bank account number on our account statement. If you are making an international wire transfer, please select the „OUR“ fee option.",
+            "id": "Make a bank transfer to our German SEPA (Single Euro Payments Area) bank account. We check for new incoming payments manually every day. We will see your name and account number on our bank statement. If your bank account is outside the Single Euro Payments Area, please pay any fees yourself by selecting the „OUR“ fee option.",
+            "message": "Make a bank transfer to our German SEPA (Single Euro Payments Area) bank account. We check for new incoming payments manually every day. We will see your name and account number on our bank statement. If your bank account is outside the Single Euro Payments Area, please pay any fees yourself by selecting the „OUR“ fee option.",
+            "translation": "Make a bank transfer to our German SEPA (Single Euro Payments Area) bank account. We check for new incoming payments manually every day. We will see your name and account number on our bank statement. If your bank account is outside the Single Euro Payments Area, please pay any fees yourself by selecting the „OUR“ fee option.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

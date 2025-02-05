@@ -46,7 +46,7 @@
 											<div class="input-group flex-nowrap py-1">
 												<span class="input-group-text">{{FmtEuro .Price}}</span>
 												<input class="form-control flex-grow-0" name="{{.ID}}" type="number" min="0" value="{{$.Cart.Get .ID}}" style="width: calc(1.75rem + 2px + 6ch)">
-												<span class="input-group-text">{{index $.Stock .ID}} {{$.Tr "on stock"}}</span>
+												<span class="input-group-text">{{index $.Stock .ID}} {{$.Tr "in stock"}}</span>
 											</div>
 										</div>
 									</div>
