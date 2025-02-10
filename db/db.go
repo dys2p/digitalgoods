@@ -37,8 +37,9 @@ type DB struct {
 	getStock        *sql.Stmt
 	getStockAll     *sql.Stmt
 
-	// VAT
-	logVAT *sql.Stmt
+	// sales tax log
+	getSales   *sql.Stmt
+	insertSale *sql.Stmt
 }
 
 func IsNotFound(err error) bool {
@@ -139,8 +140,17 @@ func OpenDB() (*DB, error) {
 		group by variant
 	`)
 
-	// VAT
-	db.logVAT = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
+	// sales tax log
+	db.getSales = mustPrepare(`
+		select
+			purchase,
+			countrycode,
+			deliverydate,
+			variant,
+			amount * itemprice as gross
+		from vat_log
+		where deliverydate >= ?`)
+	db.insertSale = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -375,10 +385,10 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 			gotQuantity++
 		}
 
-		// log VAT
+		// sales tax log
 
 		if gotQuantity > 0 {
-			if _, err := tx.Stmt(db.logVAT).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.insertSale).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}
@@ -406,4 +416,22 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 	}
 
 	return tx.Commit()
+}
+
+func (db *DB) GetSales(minDate string) ([]digitalgoods.Sale, error) {
+	rows, err := db.getSales.Query(minDate)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var sales []digitalgoods.Sale
+	for rows.Next() {
+		var sale digitalgoods.Sale
+		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.Name, &sale.Gross); err != nil {
+			return nil, err
+		}
+		sales = append(sales, sale)
+	}
+	return sales, nil
 }

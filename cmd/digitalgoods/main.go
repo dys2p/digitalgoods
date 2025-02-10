@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/csv"
 	"errors"
 	"flag"
 	"fmt"
@@ -54,6 +55,7 @@ type Shop struct {
 	RatesHistory     *rates.History
 	StaffSessions    *scs.SessionManager
 	StaffUsers       userdb.Authenticator
+	VATRate          func(digitalgoods.Sale) string
 }
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
@@ -155,6 +157,7 @@ func main() {
 		CustomerSessions: custSessions,
 		StaffSessions:    staffSessions,
 		StaffUsers:       staffUsers,
+		VATRate:          vatRate,
 	}
 
 	s.ProductFeed = productfeed.Feed{
@@ -254,6 +257,7 @@ func (s *Shop) ListenAndServe() {
 	var staffAuthRouter = httprouter.New()
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/", s.showErr(s.staffIndexGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/logout", s.showErr(s.staffLogoutGet))
+	staffAuthRouter.HandlerFunc(http.MethodGet, "/export/:from", s.showErr(s.staffExportGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/view", s.showErr(s.staffViewGet))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/view", s.showErr(s.staffViewPost))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/mark-paid/:id", s.showErr(s.staffMarkPaidGet))
@@ -596,6 +600,28 @@ func (s *Shop) staffLoginPost(w http.ResponseWriter, r *http.Request) error {
 func (s *Shop) staffLogoutGet(w http.ResponseWriter, r *http.Request) error {
 	s.StaffSessions.Destroy(r.Context())
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return nil
+}
+
+func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
+	minDate := httprouter.ParamsFromContext(r.Context()).ByName("from")
+	sales, err := s.Database.GetSales(minDate)
+	if err != nil {
+		return err
+	}
+
+	// set VAT rates
+	for i := range sales {
+		sales[i].VATRate = s.VATRate(sales[i])
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	out := csv.NewWriter(w)
+	out.Write([]string{"pay_date", "id", "country", "gross", "vat_rate", "name"})
+	for _, sale := range sales {
+		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.Gross), sale.VATRate, sale.Name})
+	}
+	out.Flush()
 	return nil
 }
 
