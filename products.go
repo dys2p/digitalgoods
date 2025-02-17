@@ -20,29 +20,45 @@ func (variant Variant) NameHTML() template.HTML {
 	return template.HTML(variant.Name)
 }
 
+type Description struct {
+	Alert string
+	About string
+	Howto string
+	Legal string
+}
+
 type Article struct {
-	Brand       string
-	Name        string // not translated
-	Hide        bool
-	ImageLink   string
-	ID          string // for <details> and #anchor
-	Alert       map[string]string
-	Description map[string]string
-	Variants    []Variant
+	Brand     string
+	Name      string // not translated
+	Hide      bool
+	ImageLink string
+	ID        string // for <details> and #anchor
+	Desc      map[string]Description
+	Variants  []Variant
 }
 
 func (article Article) NameHTML() template.HTML {
 	return template.HTML(article.Name)
 }
 
-// only supports langs which exist as Alert key, TODO: language.Matcher
+// only supports langs which exist as key, TODO: language.Matcher
 func (article Article) TranslateAlert(l lang.Lang) template.HTML {
-	return template.HTML(article.Alert[l.Prefix])
+	return template.HTML(article.Desc[l.Prefix].Alert)
 }
 
-// only supports langs which exist as Description key, TODO: language.Matcher
-func (article Article) TranslateDescription(l lang.Lang) template.HTML {
-	return template.HTML(article.Description[l.Prefix])
+// only supports langs which exist as key, TODO: language.Matcher
+func (article Article) TranslateAbout(l lang.Lang) template.HTML {
+	return template.HTML(article.Desc[l.Prefix].About)
+}
+
+// only supports langs which exist as key, TODO: language.Matcher
+func (article Article) TranslateHowto(l lang.Lang) template.HTML {
+	return template.HTML(article.Desc[l.Prefix].Howto)
+}
+
+// only supports langs which exist as key, TODO: language.Matcher
+func (article Article) TranslateLegal(l lang.Lang) template.HTML {
+	return template.HTML(article.Desc[l.Prefix].Legal)
 }
 
 type Category struct {
@@ -76,7 +92,7 @@ func (catalog Catalog) Products() []productfeed.Product {
 					Availability: "in stock",
 					Brand:        article.Brand,
 					Condition:    "new",
-					Description:  productfeed.HTMLtoText(article.Description["en"]), // TODO match request language?
+					Description:  productfeed.HTMLtoText(article.Desc["en"].About), // TODO match request language?
 					Id:           variant.ID,
 					ImageLink:    imageLink,
 					ItemGroupId:  article.ID,

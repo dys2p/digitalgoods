@@ -93,10 +93,10 @@
 			{{range .GroupedOrder}}
 				<tr>
 					<td colspan="4">
-						<p class="mb-0"><strong>{{.NameHTML}}</strong>: {{.TranslateDescription $.Lang}}</p>
-						{{if .Alert}}
-							<div class="alert alert-danger">{{.TranslateAlert $.Lang}}</div>
+						{{with .TranslateAlert $.Lang}}
+							<div class="alert alert-danger">{{.}}</div>
 						{{end}}
+						<p class="mb-0"><strong>{{.NameHTML}}</strong>: {{.TranslateHowto $.Lang}}</p>
 					</td>
 				</tr>
 				{{range .Variants}}
