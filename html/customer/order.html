@@ -45,7 +45,9 @@
 										<div>
 											<div class="input-group flex-nowrap py-1">
 												<span class="input-group-text">{{FmtEuro .Price}}</span>
+												<button class="btn border" type="button" onclick="this.nextElementSibling.value = Math.max(parseInt(this.nextElementSibling.value) - 1, 0);">–</button>
 												<input class="form-control flex-grow-0" name="{{.ID}}" type="number" min="0" value="{{$.Cart.Get .ID}}" style="width: calc(1.75rem + 2px + 6ch)">
+												<button class="btn border" type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1;">+</button>
 												<span class="input-group-text">{{index $.Stock .ID}} {{$.Tr "in stock"}}</span>
 											</div>
 										</div>
