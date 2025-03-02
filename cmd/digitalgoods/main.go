@@ -704,12 +704,6 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-type staffSelect struct {
-	Stock          digitalgoods.Stock
-	Variants       []digitalgoods.Variant
-	Underdelivered map[string]int // key: variant id
-}
-
 func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	variants := catalog.Variants()
 
@@ -737,7 +731,11 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return html.StaffSelect.Execute(w, &staffSelect{
+	return html.StaffSelect.Execute(w, struct {
+		Stock          digitalgoods.Stock
+		Variants       []digitalgoods.Variant
+		Underdelivered map[string]int // key: variant id
+	}{
 		Stock:          stock,
 		Variants:       variants,
 		Underdelivered: underdelivered,
