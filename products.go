@@ -8,12 +8,13 @@ import (
 	"github.com/dys2p/eco/productfeed"
 )
 
+type Stock map[string]int // variant => quantity
+
 type Variant struct {
 	ID        string
 	Name      string
 	ImageLink string
 	Price     int // euro cents
-	OnDemand  bool
 }
 
 func (variant Variant) NameHTML() template.HTML {
