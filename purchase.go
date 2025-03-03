@@ -65,7 +65,7 @@ type Purchase struct {
 	NotifyAddr  string
 	Ordered     Order
 	Delivered   Delivery
-	CreateDate  string // yyyy-mm-dd
+	CreateDate  string // yyyy-mm-dd, for foreign currency rates
 	DeleteDate  string // yyyy-mm-dd
 	CountryCode string // EU country
 }

@@ -84,7 +84,7 @@ type CustOrderData struct {
 	Stock                digitalgoods.Stock
 
 	Cart       *digitalgoods.Cart
-	Area       string
+	Area       string // tri-state: "eu", "non-eu" or empty
 	EUCountry  string
 	CountryErr bool
 	OrderErr   bool
