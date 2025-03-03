@@ -43,7 +43,7 @@ func (s Status) TranslateName(l lang.Lang) string {
 	case StatusFinalized:
 		return l.Tr("Finalized")
 	default:
-		return ""
+		return string(s)
 	}
 }
 
