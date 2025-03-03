@@ -42,10 +42,6 @@ type DB struct {
 	insertSale *sql.Stmt
 }
 
-func IsNotFound(err error) bool {
-	return err == sql.ErrNoRows
-}
-
 func OpenDB() (*DB, error) {
 
 	var sqlDB, err = sql.Open("sqlite3", filepath.Join(os.Getenv("STATE_DIRECTORY"), "digitalgoods.sqlite3?_busy_timeout=10000&_journal=WAL&_sync=NORMAL&cache=shared"))
