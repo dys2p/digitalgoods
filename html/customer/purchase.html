@@ -137,7 +137,7 @@
 						{{if IsURL .ID}}
 							<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
 						{{else}}
-							<a role="button" onclick="copyToClipboard(this)">
+							<a role="button" onclick="copyToClipboard(this)" translate="no">
 								{{.ID}}
 								<i class="fa-solid fa-copy ms-1"></i>
 							</a>
