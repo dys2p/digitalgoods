@@ -120,29 +120,38 @@ func (catalog Catalog) Variant(id string) (Variant, error) {
 	return Variant{}, fmt.Errorf("variant not found: %s", id)
 }
 
-// groups order by article
-func (catalog Catalog) GroupOrder(order Order) []OrderedArticle {
+type PurchaseArticle struct {
+	Article
+	Variants []PurchaseVariant // shadows Article.Variants
+}
+
+type PurchaseVariant struct {
+	Variant
+	Rows []OrderRow // TODO just one OrderRow?
+}
+
+func MakePurchaseArticles(catalog Catalog, order Order) []PurchaseArticle {
 	var rowsByVariantID = make(map[string][]OrderRow)
 	for _, row := range order {
 		rowsByVariantID[row.VariantID] = append(rowsByVariantID[row.VariantID], row)
 	}
 
-	var orderedArticles []OrderedArticle
+	var articles []PurchaseArticle
 	for _, category := range catalog {
 		for _, article := range category.Articles {
-			var orderedVariants []OrderedVariant
+			var variants []PurchaseVariant
 			for _, variant := range article.Variants {
 				if rows := rowsByVariantID[variant.ID]; len(rows) > 0 {
-					orderedVariants = append(orderedVariants, OrderedVariant{
+					variants = append(variants, PurchaseVariant{
 						Variant: variant,
 						Rows:    rows,
 					})
 				}
 			}
-			if len(orderedVariants) > 0 {
-				orderedArticles = append(orderedArticles, OrderedArticle{
+			if len(variants) > 0 {
+				articles = append(articles, PurchaseArticle{
 					Article:  article,
-					Variants: orderedVariants,
+					Variants: variants,
 				})
 			}
 		}
@@ -150,15 +159,5 @@ func (catalog Catalog) GroupOrder(order Order) []OrderedArticle {
 
 	// don't check the unlikely case that no article is found because this is just the "ordered" section and not the "delivered goods" section
 
-	return orderedArticles
-}
-
-type OrderedArticle struct {
-	Article
-	Variants []OrderedVariant
-}
-
-type OrderedVariant struct {
-	Variant
-	Rows []OrderRow // TODO just one OrderRow?
+	return articles
 }

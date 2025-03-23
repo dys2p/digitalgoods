@@ -504,9 +504,9 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		TemplateData: s.MakeTemplateData(r),
 
 		ActivePaymentMethod: params.ByName("payment"),
-		GroupedOrder:        catalog.GroupOrder(purchase.Ordered),
 		PaymentMethods:      s.PaymentMethods,
 		Purchase:            purchase,
+		PurchaseArticles:    digitalgoods.MakePurchaseArticles(catalog, purchase.Ordered),
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
@@ -670,14 +670,14 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 
 	return html.StaffMarkPaid.Execute(w, struct {
 		*digitalgoods.Purchase
-		GroupedOrder    []digitalgoods.OrderedArticle
-		CurrencyOptions []rates.Option
-		EUCountries     []countries.CountryOption
+		CurrencyOptions  []rates.Option
+		EUCountries      []countries.CountryOption
+		PurchaseArticles []digitalgoods.PurchaseArticle
 	}{
-		Purchase:        purchase,
-		GroupedOrder:    catalog.GroupOrder(purchase.Ordered),
-		CurrencyOptions: currencyOptions,
-		EUCountries:     countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
+		Purchase:         purchase,
+		CurrencyOptions:  currencyOptions,
+		EUCountries:      countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
+		PurchaseArticles: digitalgoods.MakePurchaseArticles(catalog, purchase.Ordered),
 	})
 }
 
@@ -707,7 +707,6 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
-
 	underdeliveredPurchaseIDs, err := s.Database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err

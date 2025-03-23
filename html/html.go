@@ -93,8 +93,8 @@ type CustPurchaseData struct {
 	ssg.TemplateData
 
 	ActivePaymentMethod string
-	GroupedOrder        []digitalgoods.OrderedArticle
 	PaymentMethods      []payment.Method
 	Purchase            *digitalgoods.Purchase
+	PurchaseArticles    []digitalgoods.PurchaseArticle
 	URL                 string
 }
