@@ -77,7 +77,6 @@ type CustErrorData struct {
 type CustOrderData struct {
 	ssg.TemplateData
 
-	Articles             func() ([]*digitalgoods.Article, error)
 	AvailableEUCountries []countries.CountryOption
 	AvailableNonEU       bool
 	Catalog              digitalgoods.Catalog

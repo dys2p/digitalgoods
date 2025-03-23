@@ -120,16 +120,6 @@ func (catalog Catalog) Variant(id string) (Variant, error) {
 	return Variant{}, fmt.Errorf("variant not found: %s", id)
 }
 
-func (catalog Catalog) Variants() []Variant {
-	var variants []Variant
-	for _, category := range catalog {
-		for _, article := range category.Articles {
-			variants = append(variants, article.Variants...)
-		}
-	}
-	return variants
-}
-
 // groups order by article
 func (catalog Catalog) GroupOrder(order Order) []OrderedArticle {
 	var rowsByVariantID = make(map[string][]OrderRow)

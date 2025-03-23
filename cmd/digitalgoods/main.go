@@ -429,24 +429,26 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		EUCountry: string(selectedEUCountry),
 	}
 
-	variants := catalog.Variants()
-
 	order := digitalgoods.Order{} // in case of no errors, TODO: create order from cart
 
 	// same logic as in order template
-	for _, variant := range variants {
-		quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
-		if quantity > 100000 { // just to prevent overflow issues
-			quantity = 100000
-		}
+	for _, category := range catalog {
+		for _, article := range category.Articles {
+			for _, variant := range article.Variants {
+				quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
+				if quantity > 100000 { // just to prevent overflow issues
+					quantity = 100000
+				}
 
-		if quantity > 0 {
-			co.Cart.Add(variant.ID, quantity)
-			order = append(order, digitalgoods.OrderRow{
-				Quantity:  quantity,
-				VariantID: variant.ID,
-				ItemPrice: variant.Price,
-			})
+				if quantity > 0 {
+					co.Cart.Add(variant.ID, quantity)
+					order = append(order, digitalgoods.OrderRow{
+						Quantity:  quantity,
+						VariantID: variant.ID,
+						ItemPrice: variant.Price,
+					})
+				}
+			}
 		}
 	}
 
@@ -705,7 +707,6 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
-	variants := catalog.Variants()
 
 	underdeliveredPurchaseIDs, err := s.Database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
@@ -732,12 +733,12 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.StaffSelect.Execute(w, struct {
+		Catalog        digitalgoods.Catalog
 		Stock          digitalgoods.Stock
-		Variants       []digitalgoods.Variant
 		Underdelivered map[string]int // key: variant id
 	}{
+		Catalog:        catalog,
 		Stock:          stock,
-		Variants:       variants,
 		Underdelivered: underdelivered,
 	})
 }

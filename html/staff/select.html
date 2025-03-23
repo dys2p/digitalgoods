@@ -16,15 +16,19 @@
 			<th>Underdelivered</th>
 			<th>Upload</th>
 		</tr>
-		{{range .Variants}}
-			<tr>
-				<td>{{.NameHTML}}</td>
-				<td>{{.ID}}</td>
-				<td>{{FmtEuro .Price}}</td>
-				<td>{{index $.Stock .ID}}</td>
-				<td>{{index $.Underdelivered .ID}}</td>
-				<td><a href="/upload/{{.ID}}">Upload</a></td>
-			</tr>
+		{{range .Catalog}}
+			{{range .Articles}}
+				{{range .Variants}}
+					<tr>
+						<td>{{.NameHTML}}</td>
+						<td>{{.ID}}</td>
+						<td>{{FmtEuro .Price}}</td>
+						<td>{{index $.Stock .ID}}</td>
+						<td>{{index $.Underdelivered .ID}}</td>
+						<td><a href="/upload/{{.ID}}">Upload</a></td>
+					</tr>
+				{{end}}
+			{{end}}
 		{{end}}
 	</table>
 {{end}}
