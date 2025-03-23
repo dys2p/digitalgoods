@@ -416,22 +416,9 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	selectedEUCountry, _ := countries.Get(countries.EuropeanUnion, r.PostFormValue("eu-country"))
 
-	co := &html.CustOrderData{
-		TemplateData: s.MakeTemplateData(r),
-
-		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, selectedEUCountry),
-		AvailableNonEU:       availableNonEU,
-		Catalog:              catalog,
-		Stock:                stock,
-
-		Cart:      &digitalgoods.Cart{},
-		Area:      r.PostFormValue("area"),
-		EUCountry: string(selectedEUCountry),
-	}
-
-	order := digitalgoods.Order{} // in case of no errors, TODO: create order from cart
-
-	// same logic as in order template
+	// like in order template
+	var cart digitalgoods.Cart   // for page reload in case of error
+	var order digitalgoods.Order // in case of no errors
 	for _, category := range catalog {
 		for _, article := range category.Articles {
 			for _, variant := range article.Variants {
@@ -441,7 +428,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 				}
 
 				if quantity > 0 {
-					co.Cart.Add(variant.ID, quantity)
+					cart.Add(variant.ID, quantity)
 					order = append(order, digitalgoods.OrderRow{
 						Quantity:  quantity,
 						VariantID: variant.ID,
@@ -453,6 +440,19 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	}
 
 	// validate user input
+
+	co := &html.CustOrderData{
+		TemplateData: s.MakeTemplateData(r),
+
+		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, selectedEUCountry),
+		AvailableNonEU:       availableNonEU,
+		Catalog:              catalog,
+		Stock:                stock,
+
+		Cart:      &cart,
+		Area:      r.PostFormValue("area"),
+		EUCountry: string(selectedEUCountry),
+	}
 
 	if len(order) == 0 {
 		co.OrderErr = true
