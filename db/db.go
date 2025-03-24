@@ -283,22 +283,6 @@ func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Pu
 	if err := json.Unmarshal([]byte(delivered), &purchase.Delivered); err != nil {
 		return nil, fmt.Errorf("unmarshaling delivered: %w", err)
 	}
-	// backwards compatibility
-	for i := range purchase.Delivered {
-		if purchase.Delivered[i].CountryID == "" {
-			switch purchase.Delivered[i].VariantID {
-			case "tutanota12":
-				fallthrough
-			case "tutanota24":
-				fallthrough
-			case "tutanota48":
-				// backwards compatibility, can be removed in one month
-				purchase.Delivered[i].CountryID = "DE"
-			default:
-				purchase.Delivered[i].CountryID = "all"
-			}
-		}
-	}
 	return purchase, nil
 }
 
