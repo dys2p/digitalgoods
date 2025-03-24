@@ -134,11 +134,11 @@
 					<td>{{.DeliveryDate}}</td>
 					<td>
 						<!-- use ID as code -->
-						{{if IsURL .ID}}
-							<a rel="noreferrer" target="_blank" href="{{.ID}}">{{.ID}}</a>
+						{{if IsURL .Payload}}
+							<a rel="noreferrer" target="_blank" href="{{.Payload}}">{{.Payload}}</a>
 						{{else}}
 							<a role="button" onclick="copyToClipboard(this)" translate="no">
-								{{.ID}}
+								{{.Payload}}
 								<i class="fa-solid fa-copy ms-1"></i>
 							</a>
 						{{end}}

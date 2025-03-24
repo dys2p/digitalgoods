@@ -67,7 +67,7 @@ func OpenDB() (*DB, error) {
 		);
 		create table if not exists stock (
 			variant text not null,
-			itemid  text not null primary key,
+			payload text not null primary key,
 			addtime int  not null -- yyyy-mm-dd, sell oldest first
 		);
 		create table if not exists vat_log (
@@ -110,16 +110,16 @@ func OpenDB() (*DB, error) {
 
 	// stock
 	db.addToStock = mustPrepare(`
-		insert into stock (variant, itemid, addtime)
+		insert into stock (variant, payload, addtime)
 		values (?, ?, ?)
 	`)
 	db.deleteFromStock = mustPrepare(`
 		delete
 		from stock
-		where itemid = ?
-	`) // itemid is primary key
+		where payload = ?
+	`) // payload is primary key
 	db.getFromStock = mustPrepare(`
-		select itemid
+		select payload
 		from stock
 		where variant = ?
 		order by addtime asc
@@ -166,8 +166,8 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	return errors.New("database ran out of IDs")
 }
 
-func (db *DB) AddToStock(variantID, itemID string) error {
-	_, err := db.addToStock.Exec(variantID, itemID, time.Now().Format(digitalgoods.DateFmt))
+func (db *DB) AddToStock(variantID, payload string) error {
+	_, err := db.addToStock.Exec(variantID, payload, time.Now().Format(digitalgoods.DateFmt))
 	return err
 }
 
@@ -365,17 +365,17 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		var gotQuantity = 0
 
 		for rows.Next() {
-			var itemID string
-			if err := rows.Scan(&itemID); err != nil {
+			var payload string
+			if err := rows.Scan(&payload); err != nil {
 				return err
 			}
-			if _, err := tx.Stmt(db.deleteFromStock).Exec(itemID); err != nil {
+			if _, err := tx.Stmt(db.deleteFromStock).Exec(payload); err != nil {
 				return err
 			}
-			log.Printf("[%s] delivering %s: %s", purchase.ID, u.VariantID, digitalgoods.Mask(itemID))
+			log.Printf("[%s] delivering %s: %s", purchase.ID, u.VariantID, digitalgoods.Mask(payload))
 			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
 				VariantID:    u.VariantID,
-				ID:           itemID,
+				Payload:      payload,
 				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
 			gotQuantity++

@@ -140,6 +140,6 @@ type Delivery []DeliveredItem
 type DeliveredItem struct {
 	VariantID    string `json:"article-id"` // legacy json id
 	CountryID    string `json:"country-id"`
-	ID           string `json:"id"` // can be the code, but not necessarily
+	Payload      string `json:"id"`
 	DeliveryDate string `json:"delivery-date"`
 }
