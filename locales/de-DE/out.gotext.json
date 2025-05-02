@@ -477,16 +477,6 @@
             "translation": "Anklicken zum Kopieren"
         },
         {
-            "id": "Copied to clipboard",
-            "message": "Copied to clipboard",
-            "translation": "In die Zwischenablage kopiert"
-        },
-        {
-            "id": "Error copying to clipboard",
-            "message": "Error copying to clipboard",
-            "translation": "Fehler beim Kopieren in die Zwischenablage"
-        },
-        {
             "id": "Pay your order. Unpaid orders are deleted after 30 days.",
             "message": "Pay your order. Unpaid orders are deleted after 30 days.",
             "translation": "Bezahle deine Bestellung. Unbezahlte Bestellungen werden nach 30 Tagen gelöscht."

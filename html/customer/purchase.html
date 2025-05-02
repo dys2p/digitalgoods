@@ -24,14 +24,12 @@
 		{{if .Purchase.Unpaid}}
 			<li>
 				{{.Tr "Bookmark this page or save its address in another way. You will need it to access your goods."}}
-				<div class="d-nojs-none">
-					{{.Tr "Click to copy"}}:
-					<code role="button" onclick="copyToClipboard(this, document.getElementById('copy-success'), document.getElementById('copy-failed'))">
+				<div>
+					<span class="d-nojs-none">{{.Tr "Click to copy"}}:</span>
+					<code role="button" onclick="copyToClipboard(this)">
 						{{.URL}}
 						<i class="fa-solid fa-copy"></i>
 					</code>
-					<div class="badge bg-success d-none" id="copy-success"><i class="fa-solid fa-check"></i> {{.Tr "Copied to clipboard"}}</div>
-					<div class="badge bg-danger d-none" id="copy-failed"><i class="fa-solid fa-xmark"></i> {{.Tr "Error copying to clipboard"}}</div>
 				</div>
 			</li>
 			<li>{{.Tr "Pay your order. Unpaid orders are deleted after 30 days."}}</li>
