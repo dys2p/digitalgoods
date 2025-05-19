@@ -497,7 +497,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 	params := httprouter.ParamsFromContext(r.Context())
 	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
 	if err != nil {
-		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted."))
+		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted, or the URL is incorrect."))
 	}
 
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{

@@ -86,6 +86,13 @@
             "fuzzy": true
         },
         {
+            "id": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "message": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "translation": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "There is no such purchase, or it has been deleted.",
             "message": "There is no such purchase, or it has been deleted.",
             "translation": "There is no such purchase, or it has been deleted.",

@@ -62,6 +62,11 @@
             "translation": "Fehler beim Einfügen der Bestellung in die Datenbank. Bitte versuche es später noch einmal."
         },
         {
+            "id": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "message": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht, oder die Webadresse ist falsch."
+        },
+        {
             "id": "There is no such purchase, or it has been deleted.",
             "message": "There is no such purchase, or it has been deleted.",
             "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."

@@ -62,6 +62,11 @@
             "translation": "Fehler beim Einfügen der Bestellung in die Datenbank. Bitte versuche es später noch einmal."
         },
         {
+            "id": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "message": "There is no such purchase, or it has been deleted, or the URL is incorrect.",
+            "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht, oder die Webadresse ist falsch."
+        },
+        {
             "id": "There is no such purchase, or it has been deleted.",
             "message": "There is no such purchase, or it has been deleted.",
             "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."
@@ -475,16 +480,6 @@
             "id": "Click to copy",
             "message": "Click to copy",
             "translation": "Anklicken zum Kopieren"
-        },
-        {
-            "id": "Copied to clipboard",
-            "message": "Copied to clipboard",
-            "translation": "In die Zwischenablage kopiert"
-        },
-        {
-            "id": "Error copying to clipboard",
-            "message": "Error copying to clipboard",
-            "translation": "Fehler beim Kopieren in die Zwischenablage"
         },
         {
             "id": "Pay your order. Unpaid orders are deleted after 30 days.",
