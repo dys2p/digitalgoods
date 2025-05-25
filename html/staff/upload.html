@@ -1,7 +1,7 @@
 {{define "content"}}
 	<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
 	<form method="post" action="/upload/{{.ID}}">
-		<textarea class="form-control my-4" name="codes" rows="10"></textarea>
+		<textarea class="form-control my-4" style="font-family: monospace" spellcheck="false" name="codes" rows="10"></textarea>
 		<div class="text-end">
 			<a class="btn btn-secondary" href="/">Back</a>
 			<button class="btn btn-success" type="submit">Upload</a>
