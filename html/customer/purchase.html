@@ -5,6 +5,10 @@
 
 	<div class="alert {{AlertContextualClass .Purchase.Status}}"><strong>{{.Tr "Status"}}</strong>: {{.Purchase.Status.TranslateDescription .Lang}}</div>
 
+	{{with .Purchase.Message}}
+		<div class="alert alert-warning"><strong>{{$.Tr "Message from store"}}</strong>: {{.}}</div>
+	{{end}}
+
 	{{if .Purchase.DeleteDate}}
 		<p>{{.Tr "Current deletion date"}}: {{.Purchase.DeleteDate}}</p>
 	{{end}}

@@ -258,10 +258,13 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/", s.showErr(s.staffIndexGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/logout", s.showErr(s.staffLogoutGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/export/:from", s.showErr(s.staffExportGet))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/view", s.showErr(s.staffViewGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/view", s.showErr(s.staffViewPost))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/mark-paid/:id", s.showErr(s.staffMarkPaidGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/mark-paid/:id", s.showErr(s.staffMarkPaidPost))
+
+	staffAuthRouter.HandlerFunc(http.MethodGet, "/purchase", s.showErr(s.staffPurchaseSearchGet))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase", s.showErr(s.staffPurchaseSearchPost))
+	staffAuthRouter.HandlerFunc(http.MethodGet, "/purchase/:id", s.showErr(s.staffPurchaseGet))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/mark-paid", s.showErr(s.staffPurchaseMarkPaidPost))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/message", s.showErr(s.staffPurchaseMessagePost))
+
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload", s.showErr(s.staffSelectGet))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:variant", s.showErr(s.staffUploadGet))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:variant", returnErr(s.staffUploadPost))
@@ -627,14 +630,14 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Shop) staffViewGet(w http.ResponseWriter, r *http.Request) error {
-	return html.StaffView.Execute(w, nil)
+func (s *Shop) staffPurchaseSearchGet(w http.ResponseWriter, r *http.Request) error {
+	return html.StaffPurchaseSearch.Execute(w, nil)
 }
 
-func (s *Shop) staffViewPost(w http.ResponseWriter, r *http.Request) error {
+func (s *Shop) staffPurchaseSearchPost(w http.ResponseWriter, r *http.Request) error {
 	id := strings.ToUpper(strings.TrimSpace(r.PostFormValue("id")))
 	if purchase, err := s.Database.GetPurchaseByID(id); err == nil {
-		http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("/purchase/%s", purchase.ID), http.StatusSeeOther)
 		return nil
 	}
 
@@ -660,7 +663,7 @@ func (s *Shop) staffViewPost(w http.ResponseWriter, r *http.Request) error {
 	return html.StaffPurchaseNotFound.Execute(w, didYouMean)
 }
 
-func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
+func (s *Shop) staffPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 	id := strings.ToUpper(strings.TrimSpace(httprouter.ParamsFromContext(r.Context()).ByName("id")))
 	purchase, err := s.Database.GetPurchaseByID(id)
 	if err != nil {
@@ -668,7 +671,7 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	}
 	currencyOptions, _ := s.RatesHistory.Options(purchase.CreateDate, float64(purchase.Ordered.Sum())/100.0)
 
-	return html.StaffMarkPaid.Execute(w, struct {
+	return html.StaffPurchase.Execute(w, struct {
 		*digitalgoods.Purchase
 		CurrencyOptions  []rates.Option
 		EUCountries      []countries.CountryOption
@@ -681,7 +684,7 @@ func (s *Shop) staffMarkPaidGet(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
+func (s *Shop) staffPurchaseMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	if r.PostFormValue("confirm") == "" {
 		return errors.New("You did not confirm.")
 	}
@@ -702,7 +705,24 @@ func (s *Shop) staffMarkPaidPost(w http.ResponseWriter, r *http.Request) error {
 	if err := s.NotifyPaymentReceived(purchase); err != nil {
 		return err
 	}
-	http.Redirect(w, r, fmt.Sprintf("/mark-paid/%s", purchase.ID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/purchase/%s", purchase.ID), http.StatusSeeOther)
+	return nil
+}
+
+func (s *Shop) staffPurchaseMessagePost(w http.ResponseWriter, r *http.Request) error {
+	id := r.PostFormValue("id")
+	purchase, err := s.Database.GetPurchaseByID(id)
+	if err != nil {
+		return err
+	}
+	var message = r.PostFormValue("message")
+	if len(message) > 1000 {
+		message = message[:1000]
+	}
+	if err := s.Database.SetMessage(purchase, message, time.Now().AddDate(0, 0, 31).Format("2006-01-02")); err != nil {
+		return err
+	}
+	http.Redirect(w, r, fmt.Sprintf("/purchase/%s", purchase.ID), http.StatusSeeOther)
 	return nil
 }
 

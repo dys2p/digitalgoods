@@ -61,6 +61,7 @@ type Purchase struct {
 	AccessKey   string
 	PaymentKey  string
 	Status      Status
+	Message     string // from store to customer, in case of problems
 	NotifyProto string
 	NotifyAddr  string
 	Ordered     Order

@@ -61,10 +61,10 @@ var (
 
 	StaffError            = parse("staff.html", "staff/error.html")
 	StaffIndex            = parse("staff.html", "staff/index.html")
-	StaffView             = parse("staff.html", "staff/view.html")
-	StaffMarkPaid         = parse("staff.html", "staff/mark-paid.html")
 	StaffLogin            = parse("staff.html", "staff/login.html")
+	StaffPurchase         = parse("staff.html", "staff/purchase.html")
 	StaffPurchaseNotFound = parse("staff.html", "staff/purchase-not-found.html")
+	StaffPurchaseSearch   = parse("staff.html", "staff/purchase-search.html")
 	StaffSelect           = parse("staff.html", "staff/select.html")
 	StaffUpload           = parse("staff.html", "staff/upload.html")
 )

@@ -1,0 +1,94 @@
+{{define "content"}}
+	<h1>{{.ID}}</h1>
+
+	<p class="mb-1">Price: {{FmtEuro .Ordered.Sum}}</p>
+	<p class="mb-1">Status: {{.Status}}</p>
+	<p class="mb-1">Delete Date: {{.DeleteDate}}</p>
+	<p>Country: {{.CountryCode}}</p>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Item Price</th>
+				<th>Sum</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .PurchaseArticles}}
+				{{range .Variants}}
+					{{range .Rows}}
+						<tr>
+							<td>{{.VariantID}}</td>
+							<td>{{.Quantity}}</td>
+							<td>{{FmtEuro .ItemPrice}}</td>
+							<td>{{FmtEuro .Sum}}</td>
+						</tr>
+					{{end}}
+				{{end}}
+			{{end}}
+			<tr>
+				<td colspan="3">Overall sum</td>
+				<td><strong>{{FmtEuro .Purchase.Ordered.Sum}}</strong></td>
+			</tr>
+		</tbody>
+	</table>
+
+	{{if .Unpaid}}
+		<form action="/purchase/{{.ID}}/mark-paid" method="post">
+			<input type="hidden" name="id" value="{{.ID}}">
+			<div class="mb-3 form-check">
+				<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
+				<label for="confirm" class="form-check-label">Yes, I am sure. We have received <strong>{{FmtEuro .Ordered.Sum}}</strong>.</label>
+			</div>
+			<div class="input-group mb-3">
+				<label class="input-group-text">Adjust country?</label>
+				<select class="form-select" name="country">
+					<optgroup label="Not in the European Union">
+						<option {{if eq .CountryCode "non-EU"}}selected{{end}} value="non-EU">non-EU</option>
+					</optgroup>
+					<optgroup label="European Union">
+						{{range $.EUCountries}}
+							<option {{if eq $.CountryCode .Country}}selected{{end}} value="{{.Country}}">{{.Name}}</option>
+						{{end}}
+					</optgroup>
+				</select>
+			</div>
+			<div class="text-end">
+				<button type="submit" class="btn btn-success">Mark as paid and deliver the goods</button>
+			</div>
+		</form>
+	{{end}}
+
+	<form action="/purchase/{{.ID}}/message" method="post">
+		<input type="hidden" name="id" value="{{.ID}}">
+		<div class="mb-3">
+			<label for="message" class="form-label">Message</label>
+			<textarea class="form-control" id="message" name="message" rows="3" maxlength="1000">{{.Message}}</textarea>
+		</div>
+		<div class="text-end">
+			<button type="submit" class="btn btn-success">Save Message only</button>
+		</div>
+	</form>
+
+	{{if .Unpaid}}
+		<h2>Foreign currencies (rates from {{.Purchase.CreateDate}})</h2>
+		<table class="table ms-3 w-auto">
+			<thead>
+				<tr>
+					<th>Amount</th>
+					<th>Currency</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .CurrencyOptions}}
+					<tr>
+						<td>{{printf "%.2f" .Price}}</td>
+						<td>{{.Currency}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+		</table>
+	{{end}}
+{{end}}
