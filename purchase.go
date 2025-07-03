@@ -126,10 +126,9 @@ func (order Order) Sum() int {
 }
 
 type OrderRow struct {
-	Quantity  int    `json:"amount"`     // legacy json id
-	VariantID string `json:"article-id"` // legacy json id
-	CountryID string `json:"country-id"`
-	ItemPrice int    `json:"item-price"` // euro cents, price at order time
+	Quantity  int    `json:"amount"`
+	VariantID string `json:"article-id"`
+	ItemPrice int    `json:"item-price"`
 }
 
 func (o OrderRow) Sum() int {
@@ -139,8 +138,7 @@ func (o OrderRow) Sum() int {
 type Delivery []DeliveredItem
 
 type DeliveredItem struct {
-	VariantID    string `json:"article-id"` // legacy json id
-	CountryID    string `json:"country-id"`
+	VariantID    string `json:"article-id"`
 	Payload      string `json:"id"`
 	DeliveryDate string `json:"delivery-date"`
 }
