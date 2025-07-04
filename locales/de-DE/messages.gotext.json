@@ -457,6 +457,11 @@
             "translation": "Status"
         },
         {
+            "id": "Message from store",
+            "message": "Message from store",
+            "translation": "Nachricht vom Shop"
+        },
+        {
             "id": "Current deletion date",
             "message": "Current deletion date",
             "translation": "Derzeitiges Löschdatum"
@@ -532,24 +537,9 @@
             "translation": "Deine Bestellung"
         },
         {
-            "id": "Product",
-            "message": "Product",
-            "translation": "Produkt"
-        },
-        {
-            "id": "Quantity",
-            "message": "Quantity",
-            "translation": "Anzahl"
-        },
-        {
-            "id": "Item Price",
-            "message": "Item Price",
-            "translation": "Einzelpreis"
-        },
-        {
-            "id": "Sum",
-            "message": "Sum",
-            "translation": "Summe"
+            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "translation": "Die fehlenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir bitten die Umstände zu entschuldigen."
         },
         {
             "id": "Overall Sum",
@@ -557,29 +547,9 @@
             "translation": "Gesamtsumme"
         },
         {
-            "id": "Your Goods",
-            "message": "Your Goods",
-            "translation": "Deine Ware"
-        },
-        {
-            "id": "Delivery Date",
-            "message": "Delivery Date",
-            "translation": "Lieferdatum"
-        },
-        {
-            "id": "Code",
-            "message": "Code",
-            "translation": "Code"
-        },
-        {
-            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
-            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
-            "translation": "Die fehlenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir bitten die Umstände zu entschuldigen."
-        },
-        {
-            "id": "You will receive your codes as soon as you payment has arrived.",
-            "message": "You will receive your codes as soon as you payment has arrived.",
-            "translation": "Sobald deine Zahlung bei uns eingegangen ist, erhälst du die Codes."
+            "id": "Show prices and delivery dates",
+            "message": "Show prices and delivery dates",
+            "translation": "Preise und Lieferdatum anzeigen"
         },
         {
             "id": "Legal",

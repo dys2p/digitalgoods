@@ -18,14 +18,12 @@
 		<tbody>
 			{{range .PurchaseArticles}}
 				{{range .Variants}}
-					{{range .Rows}}
-						<tr>
-							<td>{{.VariantID}}</td>
-							<td>{{.Quantity}}</td>
-							<td>{{FmtEuro .ItemPrice}}</td>
-							<td>{{FmtEuro .Sum}}</td>
-						</tr>
-					{{end}}
+					<tr>
+						<td>{{.Variant.NameHTML}}</td>
+						<td>{{.Quantity}}</td>
+						<td>{{FmtEuro .GrossPrice}}</td>
+						<td>{{FmtEuro .GrossSum}}</td>
+					</tr>
 				{{end}}
 			{{end}}
 			<tr>

@@ -639,6 +639,13 @@
             "fuzzy": true
         },
         {
+            "id": "Message from store",
+            "message": "Message from store",
+            "translation": "Message from store",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Current deletion date",
             "message": "Current deletion date",
             "translation": "Current deletion date",
@@ -744,30 +751,9 @@
             "fuzzy": true
         },
         {
-            "id": "Product",
-            "message": "Product",
-            "translation": "Product",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Quantity",
-            "message": "Quantity",
-            "translation": "Quantity",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Item Price",
-            "message": "Item Price",
-            "translation": "Item Price",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Sum",
-            "message": "Sum",
-            "translation": "Sum",
+            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
+            "translation": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -779,37 +765,9 @@
             "fuzzy": true
         },
         {
-            "id": "Your Goods",
-            "message": "Your Goods",
-            "translation": "Your Goods",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Delivery Date",
-            "message": "Delivery Date",
-            "translation": "Delivery Date",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Code",
-            "message": "Code",
-            "translation": "Code",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
-            "message": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
-            "translation": "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "You will receive your codes as soon as you payment has arrived.",
-            "message": "You will receive your codes as soon as you payment has arrived.",
-            "translation": "You will receive your codes as soon as you payment has arrived.",
+            "id": "Show prices and delivery dates",
+            "message": "Show prices and delivery dates",
+            "translation": "Show prices and delivery dates",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

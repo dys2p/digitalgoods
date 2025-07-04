@@ -3,6 +3,7 @@ package digitalgoods
 import (
 	"fmt"
 	"html/template"
+	"iter"
 
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/productfeed"
@@ -74,6 +75,18 @@ func (cat *Category) TranslateName(l lang.Lang) template.HTML {
 
 type Catalog []Category
 
+func (catalog Catalog) Articles() iter.Seq[Article] {
+	return func(yield func(Article) bool) {
+		for _, category := range catalog {
+			for _, article := range category.Articles {
+				if !yield(article) {
+					return
+				}
+			}
+		}
+	}
+}
+
 // assumes that catalog contains every article exactly once
 func (catalog Catalog) Products() []productfeed.Product {
 	var products []productfeed.Product
@@ -125,39 +138,76 @@ type PurchaseArticle struct {
 	Variants []PurchaseVariant // shadows Article.Variants
 }
 
-type PurchaseVariant struct {
-	Variant
-	Rows []OrderRow // TODO just one OrderRow?
+func (pa PurchaseArticle) AnythingDelivered() bool {
+	for _, v := range pa.Variants {
+		if len(v.Delivered) > 0 {
+			return true
+		}
+	}
+	return false
 }
 
-func MakePurchaseArticles(catalog Catalog, order Order) []PurchaseArticle {
-	var rowsByVariantID = make(map[string][]OrderRow)
-	for _, row := range order {
-		rowsByVariantID[row.VariantID] = append(rowsByVariantID[row.VariantID], row)
-	}
+type PurchaseVariant struct {
+	Variant
+	Quantity   int
+	GrossPrice int // in case Variant.Price has changed
+	Delivered  []DeliveredItem
+}
 
-	var articles []PurchaseArticle
-	for _, category := range catalog {
-		for _, article := range category.Articles {
-			var variants []PurchaseVariant
-			for _, variant := range article.Variants {
-				if rows := rowsByVariantID[variant.ID]; len(rows) > 0 {
-					variants = append(variants, PurchaseVariant{
-						Variant: variant,
-						Rows:    rows,
-					})
+// MakePurchaseArticles runs in O(n^2). Only use it for small catalogs.
+func MakePurchaseArticles(catalog Catalog, purchase *Purchase) []PurchaseArticle {
+	// collect purchase.Ordered
+	var purchaseArticles []PurchaseArticle
+	for article := range catalog.Articles() {
+		var purchaseVariants []PurchaseVariant
+		for _, variant := range article.Variants {
+			var purchaseVariant PurchaseVariant
+			for _, row := range purchase.Ordered {
+				if row.VariantID == variant.ID {
+					purchaseVariant.Variant = variant
+					purchaseVariant.GrossPrice = row.ItemPrice
+					purchaseVariant.Quantity += row.Quantity
 				}
 			}
-			if len(variants) > 0 {
-				articles = append(articles, PurchaseArticle{
-					Article:  article,
-					Variants: variants,
-				})
+			if purchaseVariant.Quantity > 0 {
+				purchaseVariants = append(purchaseVariants, purchaseVariant)
 			}
+		}
+		if len(purchaseVariants) > 0 {
+			purchaseArticles = append(purchaseArticles, PurchaseArticle{
+				Article:  article,
+				Variants: purchaseVariants,
+			})
 		}
 	}
 
-	// don't check the unlikely case that no article is found because this is just the "ordered" section and not the "delivered goods" section
+	// add purchase.Delivered
+nextItem:
+	for _, item := range purchase.Delivered {
+		// linear search in articles
+		for i := range purchaseArticles {
+			for j := range purchaseArticles[i].Variants {
+				if purchaseArticles[i].Variants[j].ID == item.VariantID {
+					purchaseArticles[i].Variants[j].Delivered = append(purchaseArticles[i].Variants[j].Delivered, item)
+					continue nextItem
+				}
+			}
+		}
+		// variant not found
+		purchaseArticles = append(purchaseArticles, PurchaseArticle{
+			Variants: []PurchaseVariant{{
+				Variant: Variant{
+					ID:   item.VariantID,
+					Name: item.VariantID,
+				},
+				Delivered: []DeliveredItem{item},
+			}},
+		})
+	}
 
-	return articles
+	return purchaseArticles
+}
+
+func (pv PurchaseVariant) GrossSum() int {
+	return pv.Quantity * pv.GrossPrice
 }

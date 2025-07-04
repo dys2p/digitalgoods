@@ -509,7 +509,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		ActivePaymentMethod: params.ByName("payment"),
 		PaymentMethods:      s.PaymentMethods,
 		Purchase:            purchase,
-		PurchaseArticles:    digitalgoods.MakePurchaseArticles(catalog, purchase.Ordered),
+		PurchaseArticles:    digitalgoods.MakePurchaseArticles(catalog, purchase),
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
@@ -680,7 +680,7 @@ func (s *Shop) staffPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 		Purchase:         purchase,
 		CurrencyOptions:  currencyOptions,
 		EUCountries:      countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
-		PurchaseArticles: digitalgoods.MakePurchaseArticles(catalog, purchase.Ordered),
+		PurchaseArticles: digitalgoods.MakePurchaseArticles(catalog, purchase),
 	})
 }
 

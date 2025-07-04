@@ -84,81 +84,69 @@
 	{{end}}
 
 	<h2 class="mb-3">{{.Tr "Your Order"}}</h2>
-	<table class="table ms-md-3">
-		<thead>
-			<tr>
-				<th>{{.Tr "Product"}}</th>
-				<th>{{.Tr "Quantity"}}</th>
-				<th>{{.Tr "Item Price"}}</th>
-				<th>{{.Tr "Sum"}}</th>
-			</tr>
-		</thead>
-		<tbody>
-			{{range .PurchaseArticles}}
-				<tr>
-					<td colspan="4">
-						{{with .TranslateAlert $.Lang}}
-							<div class="alert alert-danger">{{.}}</div>
-						{{end}}
-						<p class="mb-0"><strong>{{.NameHTML}}</strong>: {{.TranslateHowto $.Lang}}</p>
-					</td>
-				</tr>
-				{{range .Variants}}
-					{{$variant := .}}
-					{{range .Rows}}
-						<tr>
-							<td>{{$variant.NameHTML}}</td>
-							<td>{{.Quantity}}</td>
-							<td>{{FmtEuro .ItemPrice}}</td>
-							<td>{{FmtEuro .Sum}}</td>
-						</tr>
-					{{end}}
+
+	{{if .Purchase.Underdelivered}}
+		<div class="alert alert-warning">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</div>
+	{{end}}
+
+	{{range .PurchaseArticles}}
+		<div class="mb-3 border-bottom">
+			<!-- no h3 .NameHTML here because we assume that the variant name already contains the article name -->
+			{{with .TranslateAlert $.Lang}}
+				<div class="alert alert-danger">{{.}}</div>
+			{{end}}
+			{{range .Variants}}
+				<div class="d-flex flex-wrap align-items-center">
+					<div class="flex-fill mb-2 me-2">
+						{{.Quantity}}&nbsp;&times;&nbsp;<strong>{{.NameHTML}}</strong>
+					</div>
+					<div class="flex-fill mb-2 text-end" data-relevance="detail">
+						{{.Quantity}}&nbsp;&times;&nbsp;{{FmtEuro .GrossPrice}}&ensp;=&ensp;<strong>{{FmtEuro .GrossSum}}</strong>
+					</div>
+				</div>
+				{{range .Delivered}}
+					<div class="d-flex flex-wrap align-items-center">
+						<div class="flex-fill mb-2 me-2 ms-2">
+							<!-- use ID as code -->
+							{{if IsURL .Payload}}
+								<a rel="noreferrer" target="_blank" href="{{.Payload}}" style="word-break: break-all">{{.Payload}}</a>
+							{{else}}
+								<a role="button" onclick="copyToClipboard(this)" translate="no" style="font-family: monospace; word-break: break-all">
+									{{.Payload}}
+									<i class="fa-solid fa-copy ms-1"></i>
+								</a>
+							{{end}}
+						</div>
+						<div class="flex-fill mb-2 text-end" data-relevance="detail"><span class="text-muted small">{{.DeliveryDate}}</span></div>
+					</div>
 				{{end}}
 			{{end}}
-			<tr>
-				<td colspan="3">{{.Tr "Overall Sum"}}</td>
-				<td>{{FmtEuro .Purchase.Ordered.Sum}}</td>
-			</tr>
-		</tbody>
-	</table>
+			{{if .AnythingDelivered}}
+				<div class="mb-3">{{.TranslateHowto $.Lang}}</div>
+			{{end}}
+		</div>
+	{{end}}
+	<div class="mb-3 text-end" data-relevance="detail">
+		<strong>{{.Tr "Overall Sum"}}:&ensp;{{FmtEuro .Purchase.Ordered.Sum}}</strong>
+	</div>
 
-	<h2 class="mb-3">{{.Tr "Your Goods"}}</h2>
-	<table class="table ms-md-3">
-		<thead>
-			<tr>
-				<th>{{.Tr "Product"}}</th>
-				<th>{{.Tr "Delivery Date"}}</th>
-				<th>{{.Tr "Code"}}</th>
-			</tr>
-		</thead>
-		<tbody>
-			{{range .Purchase.Delivered}}
-				<tr>
-					<td>{{.VariantID}}</td>
-					<td>{{.DeliveryDate}}</td>
-					<td>
-						<!-- use ID as code -->
-						{{if IsURL .Payload}}
-							<a rel="noreferrer" target="_blank" href="{{.Payload}}">{{.Payload}}</a>
-						{{else}}
-							<a role="button" onclick="copyToClipboard(this)" translate="no">
-								{{.Payload}}
-								<i class="fa-solid fa-copy ms-1"></i>
-							</a>
-						{{end}}
-					</td>
-				</tr>
-			{{end}}
-			{{if .Purchase.Underdelivered}}
-				<tr>
-					<td colspan="3">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</td>
-				</tr>
-			{{end}}
-			{{if .Purchase.Unpaid}}
-				<tr>
-					<td colspan="3">{{.Tr "You will receive your codes as soon as you payment has arrived."}}</td>
-				</tr>
-			{{end}}
-		</tbody>
-	</table>
+	{{if eq .Purchase.Status "finalized"}}
+		<div class="form-check form-switch d-nojs-none">
+			<input class="form-check-input" type="checkbox" role="switch" id="show-details" onchange="updateDetails(this)">
+			<label class="form-check-label" for="show-details">{{$.Tr "Show prices and delivery dates"}}</label>
+		</div>
+		<script>
+			function updateDetails(checkbox) {
+				for(elem of document.querySelectorAll("[data-relevance='detail']")) {
+					if(checkbox.checked) {
+						elem.style.display = 'block';
+					} else {
+						elem.style.display = 'none';
+					}
+				}
+			}
+			// initialize; use checkbox status in case the user reloaded the page and the browser kept the form data
+			updateDetails(document.getElementById('show-details'));
+		</script>
+	{{end}}
 {{end}}
