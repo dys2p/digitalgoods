@@ -59,16 +59,18 @@
 		</form>
 	{{end}}
 
-	<form action="/purchase/{{.ID}}/message" method="post">
-		<input type="hidden" name="id" value="{{.ID}}">
-		<div class="mb-3">
-			<label for="message" class="form-label">Message</label>
-			<textarea class="form-control" id="message" name="message" rows="3" maxlength="1000">{{.Message}}</textarea>
-		</div>
-		<div class="text-end">
-			<button type="submit" class="btn btn-success">Save Message only</button>
-		</div>
-	</form>
+	<details class="mb-3" {{if .Message}}open{{end}}>
+		<summary>Message</summary>
+		<form action="/purchase/{{.ID}}/message" method="post">
+			<input type="hidden" name="id" value="{{.ID}}">
+			<div class="mb-3">
+				<textarea class="form-control" id="message" name="message" rows="3" maxlength="1000">{{.Message}}</textarea>
+			</div>
+			<div class="text-end">
+				<button type="submit" class="btn btn-success">Save Message only</button>
+			</div>
+		</form>
+	</details>
 
 	{{if .Unpaid}}
 		<h2>Foreign currencies (rates from {{.Purchase.CreateDate}})</h2>
