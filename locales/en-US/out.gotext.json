@@ -744,6 +744,13 @@
             "fuzzy": true
         },
         {
+            "id": "Your Voucher Codes",
+            "message": "Your Voucher Codes",
+            "translation": "Your Voucher Codes",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Your Order",
             "message": "Your Order",
             "translation": "Your Order",

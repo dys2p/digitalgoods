@@ -532,6 +532,11 @@
             "translation": "Speichern"
         },
         {
+            "id": "Your Voucher Codes",
+            "message": "Your Voucher Codes",
+            "translation": "Deine Gutscheincodes"
+        },
+        {
             "id": "Your Order",
             "message": "Your Order",
             "translation": "Deine Bestellung"

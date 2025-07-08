@@ -83,7 +83,13 @@
 		</div>
 	{{end}}
 
-	<h2 class="mb-3">{{.Tr "Your Order"}}</h2>
+	<h2 class="mb-3">
+		{{if eq .Purchase.Status "finalized"}}
+			{{.Tr "Your Voucher Codes"}}
+		{{else}}
+			{{.Tr "Your Order"}}
+		{{end}}
+	</h2>
 
 	{{if .Purchase.Underdelivered}}
 		<div class="alert alert-warning">{{.Tr "You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience."}}</div>
