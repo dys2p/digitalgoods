@@ -55,7 +55,7 @@ type Shop struct {
 	RatesHistory     *rates.History
 	StaffSessions    *scs.SessionManager
 	StaffUsers       userdb.Authenticator
-	VATRate          func(digitalgoods.Sale) string
+	VATRate          func(digitalgoods.Sale) (vatRate string, difftax int)
 }
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
@@ -617,14 +617,14 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 
 	// set VAT rates
 	for i := range sales {
-		sales[i].VATRate = s.VATRate(sales[i])
+		sales[i].VATRate, sales[i].Difftax = s.VATRate(sales[i])
 	}
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	out := csv.NewWriter(w)
-	out.Write([]string{"pay_date", "id", "country", "gross", "vat_rate", "name"})
+	out.Write([]string{"pay_date", "id", "country", "gross", "difftax", "vat_rate", "description", "is_service"})
 	for _, sale := range sales {
-		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.Gross), sale.VATRate, sale.Name})
+		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.Gross), strconv.Itoa(sale.Difftax), sale.VATRate, sale.Name, "true"})
 	}
 	out.Flush()
 	return nil
