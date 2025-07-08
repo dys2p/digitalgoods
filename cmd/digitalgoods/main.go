@@ -624,7 +624,7 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 	out := csv.NewWriter(w)
 	out.Write([]string{"pay_date", "id", "country", "gross", "difftax", "vat_rate", "description", "is_service"})
 	for _, sale := range sales {
-		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.Gross), strconv.Itoa(sale.Difftax), sale.VATRate, sale.Name, "true"})
+		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.GrossSum), strconv.Itoa(sale.Difftax), sale.VATRate, sale.Name, "true"})
 	}
 	out.Flush()
 	return nil

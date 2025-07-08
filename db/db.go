@@ -146,7 +146,8 @@ func OpenDB() (*DB, error) {
 			countrycode,
 			deliverydate,
 			variant,
-			amount * itemprice as gross
+			amount,
+			amount * itemprice
 		from vat_log
 		where deliverydate >= ?`)
 	db.insertSale = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
@@ -416,7 +417,7 @@ func (db *DB) GetSales(minDate string) ([]digitalgoods.Sale, error) {
 	var sales []digitalgoods.Sale
 	for rows.Next() {
 		var sale digitalgoods.Sale
-		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.Name, &sale.Gross); err != nil {
+		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.Name, &sale.Amount, &sale.GrossSum); err != nil {
 			return nil, err
 		}
 		sales = append(sales, sale)
