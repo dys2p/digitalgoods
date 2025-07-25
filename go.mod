@@ -2,8 +2,6 @@ module github.com/dys2p/digitalgoods
 
 go 1.23
 
-toolchain go1.22.1
-
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0

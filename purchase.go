@@ -119,8 +119,8 @@ func (order *Order) Decrement(variantID string) error {
 
 func (order Order) Sum() int {
 	var sum = 0
-	for _, o := range order {
-		sum += o.Sum()
+	for _, row := range order {
+		sum += row.Quantity * row.ItemPrice
 	}
 	return sum
 }
@@ -129,10 +129,6 @@ type OrderRow struct {
 	Quantity  int    `json:"amount"`
 	VariantID string `json:"article-id"`
 	ItemPrice int    `json:"item-price"`
-}
-
-func (o OrderRow) Sum() int {
-	return o.Quantity * o.ItemPrice
 }
 
 type Delivery []DeliveredItem
