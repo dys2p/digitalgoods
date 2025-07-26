@@ -156,7 +156,7 @@ type PurchaseVariant struct {
 
 // MakePurchaseArticles runs in O(n^2). Only use it for small catalogs.
 func MakePurchaseArticles(catalog Catalog, purchase *Purchase) []PurchaseArticle {
-	// collect purchase.Ordered
+	// filter catalog by purchase.Ordered
 	var purchaseArticles []PurchaseArticle
 	for article := range catalog.Articles() {
 		var purchaseVariants []PurchaseVariant
@@ -184,7 +184,7 @@ func MakePurchaseArticles(catalog Catalog, purchase *Purchase) []PurchaseArticle
 	// add purchase.Delivered
 nextItem:
 	for _, item := range purchase.Delivered {
-		// linear search in articles
+		// linear search in purchaseArticles
 		for i := range purchaseArticles {
 			for j := range purchaseArticles[i].Variants {
 				if purchaseArticles[i].Variants[j].ID == item.VariantID {
@@ -193,14 +193,26 @@ nextItem:
 				}
 			}
 		}
-		// variant not found
+		// variant not found, add new article
+		//
+		// get Quantity and GrossPrice from first matching row in purchase.Ordered
+		var quantity int
+		var grossPrice int
+		for _, row := range purchase.Ordered {
+			if row.VariantID == item.VariantID {
+				quantity = row.Quantity
+				grossPrice = row.ItemPrice
+			}
+		}
 		purchaseArticles = append(purchaseArticles, PurchaseArticle{
 			Variants: []PurchaseVariant{{
 				Variant: Variant{
 					ID:   item.VariantID,
 					Name: item.VariantID,
 				},
-				Delivered: []DeliveredItem{item},
+				Quantity:   quantity,
+				GrossPrice: grossPrice,
+				Delivered:  []DeliveredItem{item},
 			}},
 		})
 	}
