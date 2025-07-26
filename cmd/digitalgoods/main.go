@@ -763,9 +763,9 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
-	variant, err := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("variant"))
-	if err != nil {
-		return err
+	variant, ok := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("variant"))
+	if !ok {
+		return errors.New("variant not found")
 	}
 	stock, err := s.Database.GetStock()
 	if err != nil {

@@ -120,17 +120,17 @@ func (catalog Catalog) Products() []productfeed.Product {
 	return products
 }
 
-func (catalog Catalog) Variant(id string) (Variant, error) {
+func (catalog Catalog) Variant(id string) (Variant, bool) {
 	for _, category := range catalog {
 		for _, article := range category.Articles {
 			for _, variant := range article.Variants {
 				if variant.ID == id {
-					return variant, nil
+					return variant, true
 				}
 			}
 		}
 	}
-	return Variant{}, fmt.Errorf("variant not found: %s", id)
+	return Variant{}, false
 }
 
 type PurchaseArticle struct {
