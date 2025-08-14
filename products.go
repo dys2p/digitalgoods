@@ -16,6 +16,7 @@ type Variant struct {
 	Name      string
 	ImageLink string
 	Price     int // euro cents
+	WarnStock int
 }
 
 func (variant Variant) NameHTML() template.HTML {

@@ -1,13 +1,33 @@
 {{define "content"}}
 	<h1>Hi</h1>
+
+	<!-- copied from purchase-search.html -->
+	<h2>Search a Purchase</h2>
+	<form method="post" action="/purchase">
+		<div class="input-group mb-3">
+			<span class="input-group-text">ID</span>
+			<input type="text" class="form-control" name="id">
+			<button type="submit" class="btn btn-success">Search Purchase</button>
+		</div>
+	</form>
+
 	{{with .Underdelivered}}
-		<h2>Underdelivered purchases</h2>
+		<h2>Underdelivered Purchases</h2>
 		<ul>
-		{{range .}}
-			<li>{{.}}</li>
-		{{end}}
+			{{range .}}
+				<li>{{.}}</li>
+			{{end}}
 		</ul>
-	{{else}}
-		<p>No underdelivered purchases.</p>
+	{{end}}
+
+	{{range .Catalog}}
+		{{range .Articles}}
+			{{range .Variants}}
+				{{$stock := (index $.Stock .ID)}}
+				{{if lt $stock .WarnStock}}
+					<div class="alert alert-warning">Low Stock: {{.NameHTML}} has only {{$stock}} items left.</div>
+				{{end}}
+			{{end}}
+		{{end}}
 	{{end}}
 {{end}}

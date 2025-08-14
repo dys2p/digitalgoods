@@ -577,13 +577,22 @@ func (s *Shop) byCookie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Shop) staffIndexGet(w http.ResponseWriter, r *http.Request) error {
+	stock, err := s.Database.GetStock()
+	if err != nil {
+		return err
+	}
+
 	underdelivered, err := s.Database.GetPurchases(digitalgoods.StatusUnderdelivered)
 	if err != nil {
 		return err
 	}
 	return html.StaffIndex.Execute(w, struct {
+		Catalog        digitalgoods.Catalog
+		Stock          digitalgoods.Stock
 		Underdelivered []string
 	}{
+		Catalog:        catalog,
+		Stock:          stock,
 		Underdelivered: underdelivered,
 	})
 }

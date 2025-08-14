@@ -1,12 +1,10 @@
 {{define "content"}}
 	<h1>Search a Purchase</h1>
-	<form method="post">
-		<div class="mb-3">
-			<label for="id" class="form-label">ID</label>
-			<input id="id" class="form-control" name="id">
-		</div>
-		<div class="text-end">
-			<button type="submit" class="btn btn-success">Search purchase</button>
+	<form method="post" action="/purchase">
+		<div class="input-group mb-3">
+			<span class="input-group-text">ID</span>
+			<input type="text" class="form-control" name="id">
+			<button type="submit" class="btn btn-success">Search Purchase</button>
 		</div>
 	</form>
 {{end}}
