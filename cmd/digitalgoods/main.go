@@ -262,6 +262,7 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/purchase", s.showErr(s.staffPurchaseSearchGet))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase", s.showErr(s.staffPurchaseSearchPost))
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/purchase/:id", s.showErr(s.staffPurchaseGet))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/get-link", s.showErr(s.staffPurchaseGetLinkPost))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/mark-paid", s.showErr(s.staffPurchaseMarkPaidPost))
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/message", s.showErr(s.staffPurchaseMessagePost))
 
@@ -682,6 +683,20 @@ func (s *Shop) staffPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 		EUCountries:      countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
 		PurchaseArticles: digitalgoods.MakePurchaseArticles(catalog, purchase),
 	})
+}
+
+func (s *Shop) staffPurchaseGetLinkPost(w http.ResponseWriter, r *http.Request) error {
+	id := r.PostFormValue("id")
+	purchase, err := s.Database.GetPurchaseByID(id)
+	if err != nil {
+		return err
+	}
+
+	if err := s.Emailer.Send(emailFrom, fmt.Sprintf("digitalgoods: purchase link %s shown", purchase.ID), []byte("a purchase link has been shown in the backend")); err != nil {
+		log.Println(err)
+	}
+	http.Redirect(w, r, "https://digitalgoods.proxysto.re"+path.Join("/", "order", purchase.ID, purchase.AccessKey), http.StatusFound) // no language prefix in url
+	return nil
 }
 
 func (s *Shop) staffPurchaseMarkPaidPost(w http.ResponseWriter, r *http.Request) error {

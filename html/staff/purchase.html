@@ -59,14 +59,24 @@
 		</form>
 	{{end}}
 
+	<details class="mb-2">
+		<summary>Get Purchase Link</summary>
+		<form class="mt-2" action="/purchase/{{.ID}}/get-link" method="post" target="_blank">
+			<input type="hidden" name="id" value="{{.ID}}">
+			<div>
+				<button type="submit" class="btn btn-warning">Get Purchase Link</button>
+			</div>
+		</form>
+	</details>
+
 	<details class="mb-3" {{if .Message}}open{{end}}>
 		<summary>Message</summary>
-		<form action="/purchase/{{.ID}}/message" method="post">
+		<form class="mt-2" action="/purchase/{{.ID}}/message" method="post">
 			<input type="hidden" name="id" value="{{.ID}}">
 			<div class="mb-3">
 				<textarea class="form-control" id="message" name="message" rows="3" maxlength="1000">{{.Message}}</textarea>
 			</div>
-			<div class="text-end">
+			<div>
 				<button type="submit" class="btn btn-success">Save Message only</button>
 			</div>
 		</form>
