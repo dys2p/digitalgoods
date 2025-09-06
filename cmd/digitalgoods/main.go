@@ -427,7 +427,9 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	selectedEUCountry, _ := countries.Get(countries.EuropeanUnion, r.PostFormValue("eu-country"))
 
 	// like in order template
-	var cart digitalgoods.Cart   // for page reload in case of error
+	var cart = digitalgoods.Cart{
+		Units: make(map[string]int),
+	}
 	var order digitalgoods.Order // in case of no errors
 	for _, category := range catalog {
 		for _, article := range category.Articles {
@@ -438,7 +440,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 				}
 
 				if quantity > 0 {
-					cart.Add(variant.ID, quantity)
+					cart.Units[variant.ID] += quantity
 					order = append(order, digitalgoods.OrderRow{
 						Quantity:  quantity,
 						VariantID: variant.ID,

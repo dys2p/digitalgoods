@@ -5,15 +5,6 @@ type Cart struct {
 	Units     map[string]int // variant id => quantity
 }
 
-func (cart *Cart) Add(variantID string, quantity int) {
-	if cart.Units == nil {
-		cart.Units = make(map[string]int)
-	}
-	if quantity != 0 {
-		cart.Units[variantID] += quantity
-	}
-}
-
 func (cart *Cart) Get(variantID string) int {
 	if cart == nil {
 		return 0
