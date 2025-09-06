@@ -60,7 +60,13 @@ type Shop struct {
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
 
+var ucatalog digitalgoods.UploadCatalog
+
 var staffLang, _, _ = lang.MakeLanguages(nil, "de", "en").FromPath("de")
+
+func init() {
+	ucatalog = digitalgoods.MakeUploadCatalog(catalog)
+}
 
 func main() {
 	log.SetFlags(0)
@@ -267,8 +273,8 @@ func (s *Shop) ListenAndServe() {
 	staffAuthRouter.HandlerFunc(http.MethodPost, "/purchase/:id/message", s.showErr(s.staffPurchaseMessagePost))
 
 	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload", s.showErr(s.staffSelectGet))
-	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:variant", s.showErr(s.staffUploadGet))
-	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:variant", returnErr(s.staffUploadPost))
+	staffAuthRouter.HandlerFunc(http.MethodGet, "/upload/:stockid", s.showErr(s.staffUploadGet))
+	staffAuthRouter.HandlerFunc(http.MethodPost, "/upload/:stockid", returnErr(s.staffUploadPost))
 
 	var staffRtr = httprouter.New()
 	staffRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()}))
@@ -723,7 +729,7 @@ func (s *Shop) staffPurchaseMarkPaidPost(w http.ResponseWriter, r *http.Request)
 			return err
 		}
 	}
-	if err := s.Database.SetSettled(purchase); err != nil {
+	if err := s.Database.SetSettled(purchase, catalog); err != nil {
 		return err
 	}
 	if err := s.NotifyPaymentReceived(purchase); err != nil {
@@ -765,8 +771,10 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 		if err != nil {
 			return err
 		}
-		for _, uf := range unfulfilled {
-			underdelivered[uf.VariantID] += uf.Quantity
+		for _, orderRow := range unfulfilled {
+			if variant, ok := catalog.Variant(orderRow.VariantID); ok {
+				underdelivered[variant.StockID()] += orderRow.Quantity
+			}
 		}
 	}
 
@@ -776,20 +784,21 @@ func (s *Shop) staffSelectGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.StaffSelect.Execute(w, struct {
-		Catalog        digitalgoods.Catalog
+		Catalog        digitalgoods.UploadCatalog
 		Stock          digitalgoods.Stock
 		Underdelivered map[string]int // key: variant id
 	}{
-		Catalog:        catalog,
+		Catalog:        ucatalog,
 		Stock:          stock,
 		Underdelivered: underdelivered,
 	})
 }
 
 func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
-	variant, ok := catalog.Variant(httprouter.ParamsFromContext(r.Context()).ByName("variant"))
+	stockID := httprouter.ParamsFromContext(r.Context()).ByName("stockid")
+	unit, ok := ucatalog.UploadStockUnit(stockID)
 	if !ok {
-		return errors.New("variant not found")
+		return errors.New("no variants found")
 	}
 	stock, err := s.Database.GetStock()
 	if err != nil {
@@ -797,28 +806,32 @@ func (s *Shop) staffUploadGet(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return html.StaffUpload.Execute(w, struct {
-		digitalgoods.Variant
-		Stock int
+		StockID  string
+		Stock    int
+		Variants []digitalgoods.Variant
 	}{
-		Variant: variant,
-		Stock:   stock[variant.ID],
+		StockID:  stockID,
+		Stock:    stock[stockID],
+		Variants: unit.Variants,
 	})
 }
 
 func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
-
-	var variantID = httprouter.ParamsFromContext(r.Context()).ByName("variant")
+	stockID := httprouter.ParamsFromContext(r.Context()).ByName("stockid")
+	if _, ok := ucatalog.UploadStockUnit(stockID); !ok {
+		return errors.New("stock unit not found")
+	}
 
 	for _, code := range strings.Fields(r.PostFormValue("codes")) {
-		if err := s.Database.AddToStock(variantID, code); err == nil {
-			log.Printf("added code to stock: %s %s", variantID, digitalgoods.Mask(code))
+		if err := s.Database.AddToStock(stockID, code); err == nil {
+			log.Printf("added code to stock: %s %s", stockID, digitalgoods.Mask(code))
 		} else {
 			log.Println(err)
 			return err
 		}
 	}
 
-	if err := s.Database.FulfilUnderdelivered(); err != nil {
+	if err := s.Database.FulfilUnderdelivered(catalog); err != nil {
 		return err
 	}
 
@@ -850,7 +863,7 @@ func (s *Shop) SetPurchasePaid(id, paymentKey, methodName string) error {
 	if err != nil {
 		return err
 	}
-	if err := s.Database.SetSettled(purchase); err != nil {
+	if err := s.Database.SetSettled(purchase, catalog); err != nil {
 		return err
 	}
 	return s.NotifyPaymentReceived(purchase)

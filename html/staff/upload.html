@@ -1,6 +1,19 @@
 {{define "content"}}
-	<h1>{{.NameHTML}} (ID {{.ID}}, unit price {{FmtEuro .Price}}, {{.Stock}} in stock)</h1>
-	<form method="post" action="/upload/{{.ID}}">
+	{{if eq (len .Variants) 1}}
+		{{with index .Variants 0}}
+			<h1>{{.NameHTML}} ({{.Stock}} in stock)</h1>
+			<p class="h4"><code>{{.ID}}</code> &mdash; {{FmtEuro .Price}}</p>
+		{{end}}
+	{{else}}
+		<h1>{{.StockID}} ({{.Stock}} in stock)</h1>
+		<ul>
+			{{range .Variants}}
+				<li>{{.NameHTML}} &mdash; <code>{{.ID}}</code> &mdash; {{FmtEuro .Price}}</li>
+			{{end}}
+		</ul>
+	{{end}}
+
+	<form method="post" action="/upload/{{.StockID}}">
 		<textarea class="form-control my-4" style="font-family: monospace" spellcheck="false" name="codes" rows="10" autofocus></textarea>
 		<div class="text-end">
 			<a class="btn btn-secondary" href="/">Back</a>

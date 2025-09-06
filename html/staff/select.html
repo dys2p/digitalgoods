@@ -8,27 +8,40 @@
 	<h1>Upload</h1>
 	<p>What article are you uploading?</p>
 	<table class="table">
-		<tr>
-			<th>Name</th>
-			<th>ID</th>
-			<th>Unit price</th>
-			<th>In stock</th>
-			<th>Underdelivered</th>
-			<th>Upload</th>
-		</tr>
+		<thead>
+			<tr>
+				<!-- variant -->
+				<th>Name</th>
+				<th>Unit price</th>
+				<!-- stock -->
+				<th>In stock</th>
+				<th>Underdelivered</th>
+				<th>Stock ID</th>
+			</tr>
+		</thead>
 		{{range .Catalog}}
-			{{range .Articles}}
-				{{range .Variants}}
-					<tr>
-						<td>{{.NameHTML}}</td>
-						<td>{{.ID}}</td>
-						<td>{{FmtEuro .Price}}</td>
-						<td>{{index $.Stock .ID}}</td>
-						<td>{{index $.Underdelivered .ID}}</td>
-						<td><a href="/upload/{{.ID}}">Upload</a></td>
-					</tr>
+			<tbody class="table-group-divider">
+				<tr>
+					<th colspan="5">{{.Brand}}</th>
+				</tr>
+				{{range .Units}}
+					{{$rowspan := len .Variants}}
+					{{range $i, $variant := .Variants}}
+						{{$underdelivered := index $.Underdelivered .StockID}}
+						<tr role="button" onclick="location.href='/upload/{{.StockID}}'" {{if $underdelivered}}class="table-danger"{{end}}>
+							<!-- variant -->
+							<td>{{$variant.NameHTML}}</td>
+							<td>{{FmtEuro $variant.Price}}</td>
+							<!-- stock id -->
+							{{if eq $i 0}}
+								<td class="align-middle" rowspan="{{$rowspan}}">{{index $.Stock .StockID}}</td>
+								<td class="align-middle" rowspan="{{$rowspan}}">{{$underdelivered}}</td>
+								<td class="align-middle" rowspan="{{$rowspan}}">{{.StockID}}</td>
+							{{end}}
+						</tr>
+					{{end}}
 				{{end}}
-			{{end}}
+			</tbody>
 		{{end}}
 	</table>
 {{end}}

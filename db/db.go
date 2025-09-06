@@ -238,7 +238,7 @@ func (db *DB) GetIDsByPattern(pattern string) ([]string, error) {
 }
 
 // FulfilUnderdelivered calls SetSettled for all underdelivered purchases. It can be called at any time.
-func (db *DB) FulfilUnderdelivered() error {
+func (db *DB) FulfilUnderdelivered(catalog digitalgoods.Catalog) error {
 	// no transaction required because SetSettled is idempotent
 	rows, err := db.getPurchasesByStatus.Query(digitalgoods.StatusUnderdelivered)
 	if err != nil {
@@ -254,7 +254,7 @@ func (db *DB) FulfilUnderdelivered() error {
 		if err != nil {
 			return err
 		}
-		if err := db.SetSettled(purchase); err != nil {
+		if err := db.SetSettled(purchase, catalog); err != nil {
 			return err
 		}
 	}
@@ -329,7 +329,7 @@ func (db *DB) SetNotify(purchase *digitalgoods.Purchase) error {
 }
 
 // idempotent, must be called only if the invoice has been paid
-func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
+func (db *DB) SetSettled(purchase *digitalgoods.Purchase, catalog digitalgoods.Catalog) error {
 
 	tx, err := db.sqlDB.Begin()
 	if err != nil {
@@ -345,11 +345,16 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		return nil
 	}
 
-	for _, u := range unfulfilled {
+	for _, orderRow := range unfulfilled {
+
+		variant, ok := catalog.Variant(orderRow.VariantID)
+		if !ok {
+			return fmt.Errorf("setting %s settled: variant %s not found", purchase.ID, orderRow.VariantID)
+		}
 
 		// get from stock
 
-		rows, err := tx.Stmt(db.getFromStock).Query(u.VariantID, u.Quantity)
+		rows, err := tx.Stmt(db.getFromStock).Query(variant.StockID(), orderRow.Quantity)
 		if err != nil {
 			return err
 		}
@@ -365,9 +370,9 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 			if _, err := tx.Stmt(db.deleteFromStock).Exec(payload); err != nil {
 				return err
 			}
-			log.Printf("[%s] delivering %s: %s", purchase.ID, u.VariantID, digitalgoods.Mask(payload))
+			log.Printf("[%s] delivering %s: %s", purchase.ID, variant.StockID(), digitalgoods.Mask(payload))
 			purchase.Delivered = append(purchase.Delivered, digitalgoods.DeliveredItem{
-				VariantID:    u.VariantID,
+				VariantID:    orderRow.VariantID, // not StockID because customer ordered a specific variant
 				Payload:      payload,
 				DeliveryDate: time.Now().Format(digitalgoods.DateFmt),
 			})
@@ -377,7 +382,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase) error {
 		// sales tax log
 
 		if gotQuantity > 0 {
-			if _, err := tx.Stmt(db.insertSale).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), u.VariantID, gotQuantity, u.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.insertSale).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), orderRow.VariantID, gotQuantity, orderRow.ItemPrice, purchase.CountryCode); err != nil {
 				return err
 			}
 		}

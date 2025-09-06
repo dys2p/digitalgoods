@@ -49,7 +49,7 @@
 												<input class="form-control flex-grow-0 text-end d-hide-spinner" name="{{.ID}}" id="qty-{{.ID}}" type="number" min="0" value="{{$.Cart.Get .ID}}" style="width: calc(1.5rem + 3ch)">
 												<button onclick="addToValue('qty-{{.ID}}', 1)" class="btn btn-light border" type="button">+</button>
 												<span   onclick="addToValue('qty-{{.ID}}', 1)" class="input-group-text">
-													<span class="d-inline-block" style="min-width: 2ch">{{index $.Stock .ID}}</span>&nbsp;{{$.Tr "in stock"}}
+													<span class="d-inline-block" style="min-width: 2ch">{{index $.Stock .StockID}}</span>&nbsp;{{$.Tr "in stock"}}
 												</span>
 											</div>
 										</div>
