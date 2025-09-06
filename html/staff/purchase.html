@@ -69,7 +69,7 @@
 		</form>
 	</details>
 
-	<details class="mb-3" {{if .Message}}open{{end}}>
+	<details class="mb-2" {{if .Message}}open{{end}}>
 		<summary>Message</summary>
 		<form class="mt-2" action="/purchase/{{.ID}}/message" method="post">
 			<input type="hidden" name="id" value="{{.ID}}">
@@ -83,22 +83,24 @@
 	</details>
 
 	{{if .Unpaid}}
-		<h2>Foreign currencies (rates from {{.Purchase.CreateDate}})</h2>
-		<table class="table ms-3 w-auto">
-			<thead>
-				<tr>
-					<th>Amount</th>
-					<th>Currency</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{range .CurrencyOptions}}
+		<details class="mb-2">
+			<summary>Foreign currencies (rates from {{.Purchase.CreateDate}})</summary>
+			<table class="table ms-3 w-auto">
+				<thead>
 					<tr>
-						<td>{{printf "%.2f" .Price}}</td>
-						<td>{{.Currency}}</td>
+						<th>Amount</th>
+						<th>Currency</th>
 					</tr>
-				{{end}}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{{range .CurrencyOptions}}
+						<tr>
+							<td>{{printf "%.2f" .Price}}</td>
+							<td>{{.Currency}}</td>
+						</tr>
+					{{end}}
+				</tbody>
+			</table>
+		</details>
 	{{end}}
 {{end}}
