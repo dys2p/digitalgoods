@@ -60,13 +60,12 @@ type Shop struct {
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
 
-var ucatalog digitalgoods.UploadCatalog
+var (
+	pcatalog []digitalgoods.Article     = digitalgoods.MakePurchaseCatalog(catalog)
+	ucatalog digitalgoods.UploadCatalog = digitalgoods.MakeUploadCatalog(catalog)
+)
 
 var staffLang, _, _ = lang.MakeLanguages(nil, "de", "en").FromPath("de")
-
-func init() {
-	ucatalog = digitalgoods.MakeUploadCatalog(catalog)
-}
 
 func main() {
 	log.SetFlags(0)
@@ -428,26 +427,41 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	// like in order template
 	var cart = digitalgoods.Cart{
-		Units: make(map[string]int),
+		Units: make(map[string]int), // key: article id and variant id, for page reload in case of error
 	}
-	var order digitalgoods.Order // in case of no errors
+	var orderQty = make(map[string]int) // variant only, in case of no errors
 	for _, category := range catalog {
 		for _, article := range category.Articles {
 			for _, variant := range article.Variants {
-				quantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
+				quantity, _ := strconv.Atoi(r.PostFormValue(article.ID + "-" + variant.ID))
 				if quantity > 100000 { // just to prevent overflow issues
 					quantity = 100000
 				}
 
+				// backwards compatibility
+				legacyQuantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
+				if legacyQuantity > 100000 { // just to prevent overflow issues
+					legacyQuantity = 100000
+				}
+				quantity += legacyQuantity
+
 				if quantity > 0 {
-					cart.Units[variant.ID] += quantity
-					order = append(order, digitalgoods.OrderRow{
-						Quantity:  quantity,
-						VariantID: variant.ID,
-						ItemPrice: variant.Price,
-					})
+					cart.Units[article.ID+"-"+variant.ID] += quantity
+					orderQty[variant.ID] += quantity
 				}
 			}
+		}
+	}
+
+	// make order so that we have only one OrderRow for each variantID
+	var order digitalgoods.Order
+	for variantID, quantity := range orderQty {
+		if variant, ok := catalog.Variant(variantID); ok {
+			order = append(order, digitalgoods.OrderRow{
+				Quantity:  quantity,
+				VariantID: variant.ID,
+				ItemPrice: variant.Price,
+			})
 		}
 	}
 
@@ -518,7 +532,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		ActivePaymentMethod: params.ByName("payment"),
 		PaymentMethods:      s.PaymentMethods,
 		Purchase:            purchase,
-		PurchaseArticles:    digitalgoods.MakePurchaseArticles(catalog, purchase),
+		PurchaseArticles:    digitalgoods.MakePurchaseArticles(pcatalog, purchase),
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
@@ -698,7 +712,7 @@ func (s *Shop) staffPurchaseGet(w http.ResponseWriter, r *http.Request) error {
 		Purchase:         purchase,
 		CurrencyOptions:  currencyOptions,
 		EUCountries:      countries.TranslateAndSort(staffLang, countries.EuropeanUnion, countries.Country("")),
-		PurchaseArticles: digitalgoods.MakePurchaseArticles(catalog, purchase),
+		PurchaseArticles: digitalgoods.MakePurchaseArticles(pcatalog, purchase),
 	})
 }
 

@@ -5,11 +5,11 @@ type Cart struct {
 	Units     map[string]int // variant id => quantity
 }
 
-func (cart *Cart) Get(variantID string) int {
+func (cart *Cart) Get(articleID, variantID string) int {
 	if cart == nil {
 		return 0
 	}
-	return cart.Units[variantID]
+	return cart.Units[articleID+"-"+variantID] + cart.Units[variantID] // backwards compatibility
 }
 
 func (cart *Cart) Has(article Article) bool {
@@ -17,7 +17,7 @@ func (cart *Cart) Has(article Article) bool {
 		return false
 	}
 	for _, variant := range article.Variants {
-		if cart.Units[variant.ID] > 0 {
+		if cart.Units[article.ID+"-"+variant.ID] > 0 || cart.Units[variant.ID] > 0 { // backwards compatibility
 			return true
 		}
 	}

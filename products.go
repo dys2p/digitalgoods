@@ -1,9 +1,11 @@
 package digitalgoods
 
 import (
+	"cmp"
 	"fmt"
 	"html/template"
 	"iter"
+	"slices"
 
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/productfeed"
@@ -163,11 +165,49 @@ type PurchaseVariant struct {
 	Delivered  []DeliveredItem
 }
 
+// MakePurchaseCatalog prepares a catalog for the purchase view. It removes categories and moves duplicate variants into separate articles.
+func MakePurchaseCatalog(catalog Catalog) []Article {
+	// count variant occurrences
+	var variantOccurrence = make(map[string]int)
+	for a := range catalog.Articles() {
+		for _, v := range a.Variants {
+			variantOccurrence[v.ID]++
+		}
+	}
+	// filter articles, put duplicate variants and their first article in a map aside into a map
+	var result []Article
+	var add = make(map[string]Article) // key: variant id
+	for a := range catalog.Articles() {
+		var keepVariants []Variant
+		for _, v := range a.Variants {
+			if variantOccurrence[v.ID] > 1 {
+				// put in map, else we would add it multiple times
+				var addArticle = a // copy
+				addArticle.Variants = []Variant{v}
+				add[v.ID] = addArticle
+			} else {
+				keepVariants = append(keepVariants, v)
+			}
+		}
+		if len(keepVariants) > 0 {
+			a.Variants = keepVariants
+			result = append(result, a)
+		}
+	}
+	// add one instance of each duplicate variant
+	for _, a := range add {
+		result = append(result, a)
+	}
+	// sort
+	slices.SortFunc(result, func(a, b Article) int { return cmp.Compare(a.Name, b.Name) })
+	return result
+}
+
 // MakePurchaseArticles runs in O(n^2). Only use it for small catalogs.
-func MakePurchaseArticles(catalog Catalog, purchase *Purchase) []PurchaseArticle {
+func MakePurchaseArticles(catalog []Article, purchase *Purchase) []PurchaseArticle {
 	// filter catalog by purchase.Ordered
 	var purchaseArticles []PurchaseArticle
-	for article := range catalog.Articles() {
+	for _, article := range catalog {
 		var purchaseVariants []PurchaseVariant
 		for _, variant := range article.Variants {
 			var purchaseVariant PurchaseVariant

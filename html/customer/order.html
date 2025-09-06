@@ -27,6 +27,7 @@
 				<h3>{{.TranslateName $.Lang}}</h3>
 			</div>
 			{{range .Articles}}
+				{{$article := .}}
 				{{if not .Hide}}
 					<div class="pt-2">
 						<details id="{{.ID}}" {{if $.Cart.Has .}}open{{end}}>
@@ -44,11 +45,11 @@
 									<div class="pb-1 pb-sm-0 d-flex justify-content-end">
 										<div>
 											<div class="input-group flex-nowrap py-1">
-												<span   onclick="addToValue('qty-{{.ID}}', -1)" class="input-group-text">{{FmtEuro .Price}}</span>
-												<button onclick="addToValue('qty-{{.ID}}', -1)" class="btn btn-light border" type="button">–</button>
-												<input class="form-control flex-grow-0 text-end d-hide-spinner" name="{{.ID}}" id="qty-{{.ID}}" type="number" min="0" value="{{$.Cart.Get .ID}}" style="width: calc(1.5rem + 3ch)">
-												<button onclick="addToValue('qty-{{.ID}}', 1)" class="btn btn-light border" type="button">+</button>
-												<span   onclick="addToValue('qty-{{.ID}}', 1)" class="input-group-text">
+												<span   onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', -1)" class="input-group-text">{{FmtEuro .Price}}</span>
+												<button onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', -1)" class="btn btn-light border" type="button">–</button>
+												<input class="form-control flex-grow-0 text-end d-hide-spinner" name="{{$article.ID}}-{{.ID}}" id="qty-{{$article.ID}}-{{.ID}}" type="number" min="0" value="{{$.Cart.Get $article.ID .ID}}" style="width: calc(1.5rem + 3ch)">
+												<button onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', 1)" class="btn btn-light border" type="button">+</button>
+												<span   onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', 1)" class="input-group-text">
 													<span class="d-inline-block" style="min-width: 2ch">{{index $.Stock .StockID}}</span>&nbsp;{{$.Tr "in stock"}}
 												</span>
 											</div>
