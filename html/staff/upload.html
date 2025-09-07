@@ -1,14 +1,13 @@
 {{define "content"}}
 	{{if eq (len .Variants) 1}}
 		{{with index .Variants 0}}
-			<h1>{{.NameHTML}} ({{.Stock}} in stock)</h1>
-			<p class="h4"><code>{{.ID}}</code> &mdash; {{FmtEuro .Price}}</p>
+			<h1 class="h3">{{.NameHTML}} &ndash; {{FmtEuro .Price}} &ndash; <mark>{{$.Stock}}</mark> in stock</h1>
 		{{end}}
 	{{else}}
-		<h1>{{.StockID}} ({{.Stock}} in stock)</h1>
+		<h1 class="h3 mb-3"><code>{{.StockID}}</code> &ndash; <mark>{{$.Stock}}</mark> in stock</h1>
 		<ul>
 			{{range .Variants}}
-				<li>{{.NameHTML}} &mdash; <code>{{.ID}}</code> &mdash; {{FmtEuro .Price}}</li>
+				<li class="h5">{{.NameHTML}} &ndash; {{FmtEuro .Price}}</li>
 			{{end}}
 		</ul>
 	{{end}}

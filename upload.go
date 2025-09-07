@@ -6,6 +6,22 @@ import (
 	"slices"
 )
 
+type UploadStockUnit struct {
+	StockID  string
+	Variants []Variant
+}
+
+func (unit UploadStockUnit) contains(variant Variant) bool {
+	return slices.ContainsFunc(unit.Variants, func(v Variant) bool {
+		return v.ID == variant.ID
+	})
+}
+
+type UploadBrand struct {
+	Brand string
+	Units []UploadStockUnit
+}
+
 type UploadCatalog []UploadBrand
 
 func MakeUploadCatalog(catalog Catalog) UploadCatalog {
@@ -17,7 +33,9 @@ func MakeUploadCatalog(catalog Catalog) UploadCatalog {
 				m[a.Brand] = append(m[a.Brand], UploadStockUnit{StockID: v.StockID()})
 				i = len(m[a.Brand]) - 1
 			}
-			m[a.Brand][i].Variants = append(m[a.Brand][i].Variants, v)
+			if !m[a.Brand][i].contains(v) {
+				m[a.Brand][i].Variants = append(m[a.Brand][i].Variants, v)
+			}
 		}
 	}
 	var result UploadCatalog
@@ -41,14 +59,4 @@ func (ucatalog UploadCatalog) UploadStockUnit(id string) (UploadStockUnit, bool)
 		}
 	}
 	return UploadStockUnit{}, false
-}
-
-type UploadBrand struct {
-	Brand string
-	Units []UploadStockUnit
-}
-
-type UploadStockUnit struct {
-	StockID  string
-	Variants []Variant
 }
