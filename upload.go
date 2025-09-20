@@ -24,6 +24,7 @@ type UploadBrand struct {
 
 type UploadCatalog []UploadBrand
 
+// MakeUploadCatalog creates a catalog for the backend upload view. It collects stock units by brand.
 func MakeUploadCatalog(catalog Catalog) UploadCatalog {
 	var m = make(map[string][]UploadStockUnit)
 	for a := range catalog.Articles() {

@@ -80,6 +80,7 @@ type CustOrderData struct {
 	AvailableEUCountries []countries.CountryOption
 	AvailableNonEU       bool
 	Catalog              digitalgoods.Catalog
+	FilterBrand          string
 	Stock                digitalgoods.Stock
 
 	Cart       *digitalgoods.Cart
@@ -93,6 +94,7 @@ type CustPurchaseData struct {
 	ssg.TemplateData
 
 	ActivePaymentMethod string
+	FilterBrand         string // empty, for compatibility with customer.html only
 	PaymentMethods      []payment.Method
 	Purchase            *digitalgoods.Purchase
 	PurchaseArticles    []digitalgoods.PurchaseArticle

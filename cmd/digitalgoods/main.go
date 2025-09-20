@@ -61,8 +61,9 @@ type Shop struct {
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
 
 var (
-	pcatalog []digitalgoods.Article     = digitalgoods.MakePurchaseCatalog(catalog)
-	ucatalog digitalgoods.UploadCatalog = digitalgoods.MakeUploadCatalog(catalog)
+	bcatalogs map[string]digitalgoods.BrandCatalog = digitalgoods.MakeBrandCatalogs(catalog)
+	pcatalog  []digitalgoods.Article               = digitalgoods.MakePurchaseCatalog(catalog)
+	ucatalog  digitalgoods.UploadCatalog           = digitalgoods.MakeUploadCatalog(catalog)
 )
 
 var staffLang, _, _ = lang.MakeLanguages(nil, "de", "en").FromPath("de")
@@ -236,6 +237,8 @@ func (s *Shop) ListenAndServe() {
 	for _, l := range s.Langs {
 		custRtr.Handler(http.MethodGet, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderGet))
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderPost))
+		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/brand/:brand", httputil.HandlerFunc(s.custOrderGet))
+		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/brand/:brand", httputil.HandlerFunc(s.custOrderPost))
 		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/order/:id/:access-key", httputil.HandlerFunc(s.custPurchaseGet))
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key", httputil.HandlerFunc(s.custPurchasePost))
 		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchaseGet))
@@ -388,12 +391,25 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 		return s.frontendErr(err, l.Tr("Error getting stock from database. Please try again later."))
 	}
 
+	var cata = catalog
+	var filterBrandName string
+	if b := httprouter.ParamsFromContext(r.Context()).ByName("brand"); b != "" && len(b) < 100 {
+		b = strings.ToLower(b) // same as in MakeBrandCatalogs
+		if bc, ok := bcatalogs[b]; ok {
+			cata = bc.Categories
+			filterBrandName = bc.Name
+		} else {
+			return http.RedirectHandler("/"+l.Prefix, http.StatusSeeOther)
+		}
+	}
+
 	err = html.CustOrder.Execute(w, &html.CustOrderData{
 		TemplateData: s.MakeTemplateData(r),
 
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, countries.Country("")),
 		AvailableNonEU:       availableNonEU,
-		Catalog:              catalog,
+		Catalog:              cata,
+		FilterBrand:          filterBrandName,
 		Stock:                stock,
 
 		Area: area,
