@@ -290,7 +290,7 @@ func (s *Shop) ListenAndServe() {
 		}
 	})
 
-	shutdownStaff := httputil.ListenAndServe("127.0.0.1:9003", s.StaffSessions.LoadAndSave(staffRtr), stop)
+	shutdownStaff := httputil.ListenAndServe("127.0.0.1:9003", http.NewCrossOriginProtection().Handler(s.StaffSessions.LoadAndSave(staffRtr)), stop)
 	defer shutdownStaff()
 
 	// cleanup bot
