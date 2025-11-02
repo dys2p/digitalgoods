@@ -180,7 +180,7 @@ func main() {
 			RedirectPath: "/by-cookie",
 			Store:        btcpayStore,
 			CreateInvoiceError: func(err error, msg string) http.Handler {
-				return s.frontendErr(err, msg)
+				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), msg)
 			},
 			WebhookError: func(err error) http.Handler {
 				log.Printf("webhook error: %v", err)
@@ -333,7 +333,7 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 		})
 
 		if err != nil {
-			log.Printf("internal server error: %v", err)
+			log.Printf("frontend error: %s", err)
 			ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
 		}
 	})
@@ -388,7 +388,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 
 	stock, err := s.Database.GetStock()
 	if err != nil {
-		return s.frontendErr(err, l.Tr("Error getting stock from database. Please try again later."))
+		return s.frontendErr(fmt.Errorf("getting stock: %w", err), l.Tr("Error getting stock from database. Please try again later."))
 	}
 
 	var cata = catalog
@@ -415,7 +415,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 		Area: area,
 	})
 	if err != nil {
-		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
+		return s.frontendErr(fmt.Errorf("executing customer order template: %w", err), l.Tr("Error displaying website. Please try again later."))
 	}
 	return nil
 }
@@ -434,7 +434,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	stock, err := s.Database.GetStock()
 	if err != nil {
-		return s.frontendErr(err, l.Tr("Error getting stock from database. Please try again later."))
+		return s.frontendErr(fmt.Errorf("getting stock: %w", err), l.Tr("Error getting stock from database. Please try again later."))
 	}
 
 	// read user input
@@ -525,7 +525,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	}
 
 	if err := s.Database.InsertPurchase(purchase); err != nil {
-		return s.frontendErr(err, l.Tr("Error inserting purchase into database. Please try again later."))
+		return s.frontendErr(fmt.Errorf("inserting purchase: %w", err), l.Tr("Error inserting purchase into database. Please try again later."))
 	}
 
 	// set cookie
@@ -552,7 +552,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
-		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
+		return s.frontendErr(fmt.Errorf("executing customer purchase template: %w", err), l.Tr("Error displaying website. Please try again later."))
 	}
 	return nil
 }
@@ -599,7 +599,7 @@ func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Han
 	purchase.NotifyProto = notifyProto
 	purchase.NotifyAddr = notifyAddr
 	if err := s.Database.SetNotify(purchase); err != nil {
-		return s.frontendErr(err, l.Tr("Error saving notify information. Please try again later."))
+		return s.frontendErr(fmt.Errorf("saving notify contact: %w", err), l.Tr("Error saving contact information. Please try again later."))
 	}
 
 	return http.RedirectHandler(r.URL.Path+"#notify", http.StatusSeeOther)

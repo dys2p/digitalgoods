@@ -100,9 +100,9 @@
             "fuzzy": true
         },
         {
-            "id": "Error saving notify information. Please try again later.",
-            "message": "Error saving notify information. Please try again later.",
-            "translation": "Error saving notify information. Please try again later.",
+            "id": "Error saving contact information. Please try again later.",
+            "message": "Error saving contact information. Please try again later.",
+            "translation": "Error saving contact information. Please try again later.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -257,6 +257,13 @@
             "id": "Montenegro",
             "message": "Montenegro",
             "translation": "Montenegro",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "North Macedonia",
+            "message": "North Macedonia",
+            "translation": "North Macedonia",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

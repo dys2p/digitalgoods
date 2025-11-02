@@ -72,9 +72,9 @@
             "translation": "Diese Bestellung existiert nicht oder wurde bereits gelöscht."
         },
         {
-            "id": "Error saving notify information. Please try again later.",
-            "message": "Error saving notify information. Please try again later.",
-            "translation": "Fehler beim Speichern der Benachrichtigungseinstellungen. Bitte versuche es später noch einmal."
+            "id": "Error saving contact information. Please try again later.",
+            "message": "Error saving contact information. Please try again later.",
+            "translation": "Fehler beim Speichern der Kontaktinformationen. Bitte versuche es später noch einmal."
         },
         {
             "id": "Austria",
@@ -185,6 +185,11 @@
             "id": "Montenegro",
             "message": "Montenegro",
             "translation": "Montenegro"
+        },
+        {
+            "id": "North Macedonia",
+            "message": "North Macedonia",
+            "translation": ""
         },
         {
             "id": "Malta",
