@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"iter"
 	"slices"
+	"strings"
 
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/productfeed"
@@ -17,6 +18,7 @@ type Variant struct {
 	ID              string
 	Name            string
 	ImageLink       string
+	OptionalFmt     string // must contain exactly one %s placeholder
 	OptionalStockID string // same stock for multiple variants
 	Price           int    // euro cents
 	WarnStock       int
@@ -31,6 +33,13 @@ func (variant Variant) StockID() string {
 
 func (variant Variant) NameHTML() template.HTML {
 	return template.HTML(variant.Name)
+}
+
+func (v Variant) Fmt(payload string) string {
+	if v.OptionalFmt != "" {
+		return fmt.Sprintf(v.OptionalFmt, payload)
+	}
+	return payload
 }
 
 type Description struct {
@@ -264,6 +273,20 @@ nextItem:
 				Delivered:  []DeliveredItem{item},
 			}},
 		})
+	}
+
+	// apply Variant.OptionalFmt
+	for i := range purchaseArticles {
+		for j := range purchaseArticles[i].Variants {
+			fmt := purchaseArticles[i].Variants[j].Fmt
+			for k := range purchaseArticles[i].Variants[j].Delivered {
+				payload := purchaseArticles[i].Variants[j].Delivered[k].Payload
+				if strings.HasPrefix(payload, "https://") {
+					continue // TODO workaround for migration
+				}
+				purchaseArticles[i].Variants[j].Delivered[k].Payload = fmt(payload)
+			}
+		}
 	}
 
 	return purchaseArticles
