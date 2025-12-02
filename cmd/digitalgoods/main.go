@@ -507,7 +507,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		country = countries.NonEU
 	} else {
 		country = countries.Country(co.EUCountry)
-		if !countries.InEuropeanUnion(country) {
+		if !country.InEU() {
 			co.CountryErr = true
 			html.CustOrder.Execute(w, co)
 			return nil
