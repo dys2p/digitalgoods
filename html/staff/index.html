@@ -21,7 +21,7 @@
 	{{end}}
 
 	{{range .Catalog}}
-		{{range .Articles}}
+		{{range .Units}}
 			{{range .Variants}}
 				{{$stock := (index $.Stock .ID)}}
 				{{if lt $stock .WarnStock}}

@@ -625,11 +625,11 @@ func (s *Shop) staffIndexGet(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return html.StaffIndex.Execute(w, struct {
-		Catalog        digitalgoods.Catalog
+		Catalog        digitalgoods.UploadCatalog
 		Stock          digitalgoods.Stock
 		Underdelivered []string
 	}{
-		Catalog:        catalog,
+		Catalog:        ucatalog,
 		Stock:          stock,
 		Underdelivered: underdelivered,
 	})
