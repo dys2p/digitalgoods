@@ -871,6 +871,10 @@ func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func (s *Shop) PaymentSettled(purchaseID, paymentKey, methodName, paymentID string, paymentCents int) error {
+	return nil // not used
+}
+
 func (s *Shop) PurchaseCreationDate(id, paymentKey string) (string, error) {
 	purchase, err := s.Database.GetPurchaseByIDAndPaymentKey(id, paymentKey)
 	if err != nil {
