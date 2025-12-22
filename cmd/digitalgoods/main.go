@@ -253,7 +253,14 @@ func (s *Shop) ListenAndServe() {
 		w.Write(bs)
 	})
 	custRtr.Handler(http.MethodGet, "/payment-health", healthSrv)
-	custRtr.NotFound = staticSites.Handler(nil, s.Langs.RedirectHandler())
+	custRtr.NotFound = staticSites.Handler(func(_ *http.Request, td ssg.TemplateData) any {
+		return struct {
+			ssg.TemplateData
+			FilterBrand string
+		}{
+			TemplateData: td,
+		}
+	}, s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()

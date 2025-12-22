@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
-	github.com/dys2p/eco v0.0.0-20250131095250-f9c9b387f0a5
+	github.com/dys2p/eco v0.0.0-20251221125122-8b29d17d2b9f
 	github.com/dys2p/go-btcpay v0.7.4
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16
@@ -30,5 +30,3 @@ require (
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 )
-
-replace github.com/dys2p/eco => ../eco-github
