@@ -70,17 +70,16 @@ var (
 )
 
 type CustErrorData struct {
-	ssg.TemplateData
+	TemplateData
 	Message string
 }
 
 type CustOrderData struct {
-	ssg.TemplateData
+	TemplateData
 
 	AvailableEUCountries []countries.CountryOption
 	AvailableNonEU       bool
 	Catalog              digitalgoods.Catalog
-	FilterBrand          string
 	Stock                digitalgoods.Stock
 
 	Cart       *digitalgoods.Cart
@@ -91,12 +90,17 @@ type CustOrderData struct {
 }
 
 type CustPurchaseData struct {
-	ssg.TemplateData
+	TemplateData
 
 	ActivePaymentMethod string
-	FilterBrand         string // empty, for compatibility with customer.html only
 	PaymentMethods      []payment.Method
 	Purchase            *digitalgoods.Purchase
 	PurchaseArticles    []digitalgoods.PurchaseArticle
 	URL                 string
+}
+
+type TemplateData struct {
+	ssg.TemplateData
+	FilterBrand string
+	Onion       bool
 }

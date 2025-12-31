@@ -219,7 +219,11 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error opening static dir: %v", err)
 	}
 
-	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs)
+	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs, func(_ *http.Request, td ssg.TemplateData) any {
+		return html.TemplateData{
+			TemplateData: td,
+		}
+	})
 	if err != nil {
 		log.Fatalf("error making static sites: %v", err)
 	}
@@ -253,14 +257,7 @@ func (s *Shop) ListenAndServe() {
 		w.Write(bs)
 	})
 	custRtr.Handler(http.MethodGet, "/payment-health", healthSrv)
-	custRtr.NotFound = staticSites.Handler(func(_ *http.Request, td ssg.TemplateData) any {
-		return struct {
-			ssg.TemplateData
-			FilterBrand string
-		}{
-			TemplateData: td,
-		}
-	}, s.Langs.RedirectHandler())
+	custRtr.NotFound = staticSites.Handler(s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()
@@ -335,7 +332,7 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		html.CustError.Execute(w, html.CustErrorData{
-			TemplateData: s.MakeTemplateData(r),
+			TemplateData: s.MakeTemplateData(r, ""),
 			Message:      message,
 		})
 
@@ -351,7 +348,7 @@ func (s *Shop) frontendNotFound(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		html.CustError.Execute(w, html.CustErrorData{
-			TemplateData: s.MakeTemplateData(r),
+			TemplateData: s.MakeTemplateData(r, ""),
 			Message:      message,
 		})
 	})
@@ -399,24 +396,23 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 	}
 
 	var cata = catalog
-	var filterBrandName string
+	var filterBrand string
 	if b := httprouter.ParamsFromContext(r.Context()).ByName("brand"); b != "" && len(b) < 100 {
 		b = strings.ToLower(b) // same as in MakeBrandCatalogs
 		if bc, ok := bcatalogs[b]; ok {
 			cata = bc.Categories
-			filterBrandName = bc.Name
+			filterBrand = bc.Name
 		} else {
 			return http.RedirectHandler("/"+l.Prefix, http.StatusSeeOther)
 		}
 	}
 
 	err = html.CustOrder.Execute(w, &html.CustOrderData{
-		TemplateData: s.MakeTemplateData(r),
+		TemplateData: s.MakeTemplateData(r, filterBrand),
 
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, countries.Country("")),
 		AvailableNonEU:       availableNonEU,
 		Catalog:              cata,
-		FilterBrand:          filterBrandName,
 		Stock:                stock,
 
 		Area: area,
@@ -491,7 +487,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	// validate user input
 
 	co := &html.CustOrderData{
-		TemplateData: s.MakeTemplateData(r),
+		TemplateData: s.MakeTemplateData(r, ""),
 
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, selectedEUCountry),
 		AvailableNonEU:       availableNonEU,
@@ -550,7 +546,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 	}
 
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{
-		TemplateData: s.MakeTemplateData(r),
+		TemplateData: s.MakeTemplateData(r, ""),
 
 		ActivePaymentMethod: params.ByName("payment"),
 		PaymentMethods:      s.PaymentMethods,
@@ -948,12 +944,15 @@ func (s *Shop) NotifyPaymentReceived(purchase *digitalgoods.Purchase) error {
 	return nil
 }
 
-func (s *Shop) MakeTemplateData(r *http.Request) ssg.TemplateData {
+func (s *Shop) MakeTemplateData(r *http.Request, filterBrand string) html.TemplateData {
 	l, path, _ := s.Langs.FromPath(r.URL.Path)
-	return ssg.TemplateData{
-		Lang:      l,
-		Languages: ssg.LangOptions(s.Langs, l),
-		Onion:     strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
-		Path:      path,
+	return html.TemplateData{
+		TemplateData: ssg.TemplateData{
+			Lang:      l,
+			Languages: ssg.LangOptions(s.Langs, l),
+			Path:      path,
+		},
+		Onion:       strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
+		FilterBrand: filterBrand,
 	}
 }
