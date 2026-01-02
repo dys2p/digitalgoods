@@ -11,7 +11,6 @@ import (
 	"github.com/dys2p/digitalgoods"
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/payment"
-	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/ssg"
 	"gitlab.com/golang-commonmark/markdown"
 )
@@ -47,7 +46,6 @@ func parse(fn ...string) *template.Template {
 			return template.HTML(md.RenderToString([]byte(input)))
 		},
 	})
-	t = template.Must(t.Parse(health.TemplateString))
 	t = template.Must(t.ParseFS(Files, fn...))
 	t = template.Must(t.ParseGlob(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "*.html")))
 	return t

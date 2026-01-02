@@ -4,10 +4,10 @@ github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a h1:5S
 github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a/go.mod h1:Iyk7S76cxGaiEX/mSYmTZzYehp4KfyylcLaV3OnToss=
 github.com/alexedwards/scs/v2 v2.4.0 h1:XfnMamKnvp1muJVNr1WzikQTclopsBXWZtzz0NBjOK0=
 github.com/alexedwards/scs/v2 v2.4.0/go.mod h1:ToaROZxyKukJKT/xLcVQAChi5k6+Pn1Gvmdl7h3RRj8=
-github.com/dys2p/eco v0.0.0-20251230122823-ad6a7f413ef4 h1:EMOO0mZtUn9Dm4bHOfzguP3VsSjX0yz+K1CItGsXy5s=
-github.com/dys2p/eco v0.0.0-20251230122823-ad6a7f413ef4/go.mod h1:YwtXdtqe8SIl4iQcr3oxCIo44jecXgiZPo7Wag8afwU=
-github.com/dys2p/go-btcpay v0.7.4 h1:0o1Zf+X4hM8YGbQjRY/Llzlg0dtbdVhpcJ+nPwSmsIQ=
-github.com/dys2p/go-btcpay v0.7.4/go.mod h1:qGcX9SYJSBa9HIBik8eBPanh7ZeQ8vicAq06G2madhQ=
+github.com/dys2p/eco v0.0.0-20260102232325-03817774e8b2 h1:hkeJOLv/zQkqMlISI+PuXVyjiymGUSMom9QRGuyaEj8=
+github.com/dys2p/eco v0.0.0-20260102232325-03817774e8b2/go.mod h1:YnwCUhxwZ9zIH5CKIN6hGAynFQaIcqhk5fdIn9CWjtM=
+github.com/dys2p/go-btcpay v0.8.1 h1:7sIYIX1nKbcj3eknp9uql8EKMi2MYKSwtchLqJ5ZHO0=
+github.com/dys2p/go-btcpay v0.8.1/go.mod h1:qxi3rBJRp8L5UMCw1RA8aSUUvEqlHhpegoRxvJhiVBI=
 github.com/dys2p/go-paypal v0.2.3 h1:fJpSx9FiIKf4tfDV+J1qVsQc94oTHeh4T997uiNJ9eU=
 github.com/dys2p/go-paypal v0.2.3/go.mod h1:SEscSsCAtVS66HaleWX37DMl/jLL+lOoPm2dKd+3OvU=
 github.com/emersion/go-sasl v0.0.0-20200509203442-7bfe0ed36a21/go.mod h1:iL2twTeMvZnrg54ZoPDNfJaJaqy0xIQFuBdrLsmspwQ=

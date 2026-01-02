@@ -35,7 +35,6 @@ import (
 	"github.com/dys2p/eco/lang"
 	"github.com/dys2p/eco/ntfysh"
 	"github.com/dys2p/eco/payment"
-	"github.com/dys2p/eco/payment/health"
 	"github.com/dys2p/eco/payment/rates"
 	"github.com/dys2p/eco/productfeed"
 	"github.com/dys2p/eco/ssg"
@@ -83,16 +82,10 @@ func main() {
 	}
 
 	// btcpay
-	var btcpayStore btcpay.Store
-	if *test {
-		btcpayStore = btcpay.NewDummyStore()
-		log.Println("\033[33m" + "warning: using btcpay dummy store" + "\033[0m")
-	} else {
-		btcpayStore, err = btcpay.Load(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "btcpay.json"))
-		if err != nil {
-			log.Printf("error loading btcpay store: %v", err)
-			return
-		}
+	btcpayStore, err := btcpay.LoadConfig(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "btcpay.json"))
+	if err != nil {
+		log.Printf("error loading btcpay store: %v", err)
+		return
 	}
 
 	// emailer
@@ -107,16 +100,11 @@ func main() {
 	}
 
 	// foreign currency cash
-	ratesDB, err := rates.OpenDB(filepath.Join(os.Getenv("STATE_DIRECTORY"), "rates.sqlite3"))
+	ratesHistory, err := rates.MakeAndRun(filepath.Join(os.Getenv("STATE_DIRECTORY"), "rates.sqlite3"), GetBuyRates)
 	if err != nil {
-		log.Printf("error opening rates db: %v", err)
+		log.Printf("error running rates daemon: %v", err)
 		return
 	}
-	ratesHistory := &rates.History{
-		Database:    ratesDB,
-		GetBuyRates: GetBuyRates,
-	}
-	go ratesHistory.RunDaemon()
 
 	// staff users
 	staffUsers, err := userdb.Open(filepath.Join(os.Getenv("CONFIGURATION_DIRECTORY"), "users.json"))
@@ -175,18 +163,19 @@ func main() {
 
 	// payment methods (need shop variable)
 	s.PaymentMethods = []payment.Method{
-		payment.BTCPay{
+		&payment.BTCPay{
 			Purchases:    s,
 			RedirectPath: "/by-cookie",
 			Store:        btcpayStore,
-			CreateInvoiceError: func(err error, msg string) http.Handler {
+			ErrCreateInvoice: func(err error, msg string) http.Handler {
 				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), msg)
 			},
-			WebhookError: func(err error) http.Handler {
+			ErrWebhook: func(err error) http.Handler {
 				log.Printf("webhook error: %v", err)
 				ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
 				return nil
 			},
+			GetStatus: btcpayStore.StatusDaemon(),
 		},
 		payment.Cash{
 			AddressHTML: addressHTML,
@@ -228,12 +217,6 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error making static sites: %v", err)
 	}
 
-	healthSrv := &health.Server{
-		BTCPay: s.Btcpay,
-		Rates:  s.RatesHistory,
-	}
-	go healthSrv.Run()
-
 	// customer http server
 
 	var custRtr = httprouter.New()
@@ -249,14 +232,17 @@ func (s *Shop) ListenAndServe() {
 		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchasePost))
 	}
 	for _, method := range s.PaymentMethods {
-		custRtr.Handler(http.MethodPost, fmt.Sprintf("/payment/%s/*path", method.ID()), method)
+		// TODO use http.ServeMux and omit MethodGet/MethodPost here
+		prefix := "/payment/" + method.ID()
+		handler := method.Handler()
+		custRtr.Handler(http.MethodGet, prefix+"/*path", http.StripPrefix(prefix, handler))
+		custRtr.Handler(http.MethodPost, prefix+"/*path", http.StripPrefix(prefix, handler))
 	}
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
 	custRtr.HandlerFunc(http.MethodGet, "/productfeed.xml", func(w http.ResponseWriter, r *http.Request) {
 		bs, _ := s.ProductFeed.Bytes()
 		w.Write(bs)
 	})
-	custRtr.Handler(http.MethodGet, "/payment-health", healthSrv)
 	custRtr.NotFound = staticSites.Handler(s.Langs.RedirectHandler())
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
