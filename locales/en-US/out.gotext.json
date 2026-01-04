@@ -821,9 +821,9 @@
             "fuzzy": true
         },
         {
-            "id": "Cash by mail in 20 currencies",
-            "message": "Cash by mail in 20 currencies",
-            "translation": "Cash by mail in 20 currencies",
+            "id": "Cash by mail in 18 currencies",
+            "message": "Cash by mail in 18 currencies",
+            "translation": "Cash by mail in 18 currencies",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -975,9 +975,9 @@
             "fuzzy": true
         },
         {
-            "id": "Please send banknotes only and round up if necessary. We do not accept coins.",
-            "message": "Please send banknotes only and round up if necessary. We do not accept coins.",
-            "translation": "Please send banknotes only and round up if necessary. We do not accept coins.",
+            "id": "Please send undamaged banknotes only and round up if necessary. We do not accept coins.",
+            "message": "Please send undamaged banknotes only and round up if necessary. We do not accept coins.",
+            "translation": "Please send undamaged banknotes only and round up if necessary. We do not accept coins.",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
