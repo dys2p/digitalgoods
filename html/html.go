@@ -100,5 +100,6 @@ type CustPurchaseData struct {
 type TemplateData struct {
 	ssg.TemplateData
 	FilterBrand string
+	Active      string
 	Onion       bool
 }

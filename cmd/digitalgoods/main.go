@@ -208,10 +208,8 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error opening static dir: %v", err)
 	}
 
-	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs, func(_ *http.Request, td ssg.TemplateData) any {
-		return html.TemplateData{
-			TemplateData: td,
-		}
+	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs, func(r *http.Request, _ ssg.TemplateData) any {
+		return s.MakeTemplateData(r, "")
 	})
 	if err != nil {
 		log.Fatalf("error making static sites: %v", err)
@@ -938,6 +936,7 @@ func (s *Shop) MakeTemplateData(r *http.Request, filterBrand string) html.Templa
 			Languages: ssg.LangOptions(s.Langs, l),
 			Path:      path,
 		},
+		Active:      "digitalgoods",
 		Onion:       strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		FilterBrand: filterBrand,
 	}
