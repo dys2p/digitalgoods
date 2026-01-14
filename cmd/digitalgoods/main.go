@@ -167,8 +167,8 @@ func main() {
 			Purchases:    s,
 			RedirectPath: "/by-cookie",
 			Store:        btcpayStore,
-			ErrCreateInvoice: func(err error, msg string) http.Handler {
-				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), msg)
+			ErrCreateInvoice: func(err error) http.Handler {
+				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), "Error creating BTCPay invoice")
 			},
 			ErrWebhook: func(err error) http.Handler {
 				log.Printf("webhook error: %v", err)
@@ -231,10 +231,10 @@ func (s *Shop) ListenAndServe() {
 	}
 	for _, method := range s.PaymentMethods {
 		// TODO use http.ServeMux and omit MethodGet/MethodPost here
-		prefix := "/payment/" + method.ID()
+		route := fmt.Sprintf("/payment/%s/*path", method.ID())
 		handler := method.Handler()
-		custRtr.Handler(http.MethodGet, prefix+"/*path", http.StripPrefix(prefix, handler))
-		custRtr.Handler(http.MethodPost, prefix+"/*path", http.StripPrefix(prefix, handler))
+		custRtr.Handler(http.MethodGet, route, handler)
+		custRtr.Handler(http.MethodPost, route, handler)
 	}
 	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
 	custRtr.HandlerFunc(http.MethodGet, "/productfeed.xml", func(w http.ResponseWriter, r *http.Request) {
