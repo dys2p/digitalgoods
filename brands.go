@@ -22,7 +22,7 @@ func MakeBrandCatalogs(catalog Catalog) map[string]BrandCatalog {
 		for _, category := range catalog {
 			var articles []Article
 			for _, a := range category.Articles {
-				if a.Brand == brand {
+				if a.Brand == brand && !a.Hide {
 					articles = append(articles, a)
 				}
 			}
