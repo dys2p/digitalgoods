@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/fs"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -841,10 +842,19 @@ func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 		return errors.New("stock unit not found")
 	}
 
-	for _, code := range strings.Fields(r.PostFormValue("codes")) {
-		if err := s.Database.AddToStock(stockID, code); err == nil {
-			log.Printf("added code to stock: %s %s", stockID, digitalgoods.Mask(code))
-		} else {
+	codes := strings.Fields(r.PostFormValue("codes"))
+	for _, code := range codes {
+		log.Printf("adding code to stock: %s %s", stockID, digitalgoods.Mask(code))
+	}
+
+	// shuffle codes
+	rand.Shuffle(len(codes), func(i, j int) {
+		codes[i], codes[j] = codes[j], codes[i]
+	})
+
+	for _, code := range codes {
+		err := s.Database.AddToStock(stockID, code)
+		if err != nil {
 			log.Println(err)
 			return err
 		}
