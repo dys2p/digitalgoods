@@ -807,9 +807,9 @@
             "fuzzy": true
         },
         {
-            "id": "Imprint",
-            "message": "Imprint",
-            "translation": "Imprint",
+            "id": "Legal Notice",
+            "message": "Legal Notice",
+            "translation": "Legal Notice",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
