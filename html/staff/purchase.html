@@ -1,10 +1,22 @@
-{{define "content"}}
-	<h1>{{.ID}}</h1>
+{{define "title"}}
+	Purchase {{.ID}}
+{{end}}
 
-	<p class="mb-1">Price: {{FmtEuro .Ordered.Sum}}</p>
-	<p class="mb-1">Status: {{.Status}}</p>
-	<p class="mb-1">Delete Date: {{.DeleteDate}}</p>
-	<p>Country: {{.CountryCode}}</p>
+{{define "content"}}
+	<div class="alert
+		{{if eq .Status "new"}}alert-warning{{end}}
+		{{if eq .Status "finalized"}}alert-success{{end}}
+		{{if eq .Status "underdelivered"}}alert-danger{{end}}
+		text-center">
+		<h1 class="display-1">
+			{{.ID}} &ndash; {{.Status}}
+		</h1>
+		<div class="d-flex justify-content-center gap-4">
+			<span>Price: {{FmtEuro .Ordered.Sum}}</span>
+			<span>Country: {{.CountryCode}}</span>
+			<span>Delete Date: {{.DeleteDate}}</span>
+		</div>
+	</div>
 
 	<table class="table">
 		<thead>
@@ -34,7 +46,7 @@
 	</table>
 
 	{{if .Unpaid}}
-		<form action="/purchase/{{.ID}}/mark-paid" method="post">
+		<form action="/purchase/{{.ID}}/mark-paid" method="post" class="mb-3">
 			<input type="hidden" name="id" value="{{.ID}}">
 			<div class="mb-3 form-check">
 				<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
@@ -53,13 +65,13 @@
 					</optgroup>
 				</select>
 			</div>
-			<div class="text-end">
+			<div>
 				<button type="submit" class="btn btn-primary">Mark as paid and deliver the goods</button>
 			</div>
 		</form>
 	{{end}}
 
-	<details class="mb-2">
+	<details class="mb-3">
 		<summary>Get Purchase Link</summary>
 		<form class="mt-2" action="/purchase/{{.ID}}/get-link" method="post" target="_blank">
 			<input type="hidden" name="id" value="{{.ID}}">
@@ -69,7 +81,7 @@
 		</form>
 	</details>
 
-	<details class="mb-2" {{if .Message}}open{{end}}>
+	<details class="mb-3" {{if .Message}}open{{end}}>
 		<summary>Message</summary>
 		<form class="mt-2" action="/purchase/{{.ID}}/message" method="post">
 			<input type="hidden" name="id" value="{{.ID}}">

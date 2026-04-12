@@ -9,7 +9,9 @@
 			<link rel="stylesheet" href="/static/style.css">
 			<link rel="stylesheet" href="/static/digitalgoods.css">
 			<link rel="icon" type="image/png" href="/static/favicon-96.png" sizes="96x96">
-			<title>Digital Goods Backend</title>
+			<title>
+				{{block "title" .}}Digital Goods Backend{{end}}
+			</title>
 			{{block "head" .}}{{end}}
 		</head>
 		<body>

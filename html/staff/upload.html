@@ -1,3 +1,7 @@
+{{define "title"}}
+	Upload {{.StockID}}
+{{end}}
+
 {{define "content"}}
 	{{if eq (len .Variants) 1}}
 		{{with index .Variants 0}}
