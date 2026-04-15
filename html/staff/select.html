@@ -28,7 +28,7 @@
 					{{$rowspan := len .Variants}}
 					{{range $i, $variant := .Variants}}
 						{{$underdelivered := index $.Underdelivered .StockID}}
-						<tr role="button" onclick="location.href='/upload/{{.StockID}}'" {{if $underdelivered}}class="table-danger"{{end}}>
+						<tr role="button" id="{{.StockID}}" onclick="location.href='/upload/{{.StockID}}'" {{if $underdelivered}}class="table-danger"{{end}}>
 							<!-- variant -->
 							<td>{{$variant.NameHTML}}</td>
 							<td>{{FmtEuro $variant.Price}}</td>

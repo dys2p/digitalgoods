@@ -864,7 +864,7 @@ func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/upload#"+stockID, http.StatusSeeOther)
 	return nil
 }
 
