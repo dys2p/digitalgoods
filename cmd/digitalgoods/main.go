@@ -431,7 +431,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	// like in order template
 	var cart = digitalgoods.Cart{
-		Units: make(map[string]int), // key: article id and variant id, for page reload in case of error
+		Units: make(map[string]int), // key: article id + "-" + variant id, see type Cart
 	}
 	var orderQty = make(map[string]int) // variant only, in case of no errors
 	for _, category := range catalog {
@@ -441,13 +441,6 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 				if quantity > 100000 { // just to prevent overflow issues
 					quantity = 100000
 				}
-
-				// backwards compatibility
-				legacyQuantity, _ := strconv.Atoi(r.PostFormValue(variant.ID))
-				if legacyQuantity > 100000 { // just to prevent overflow issues
-					legacyQuantity = 100000
-				}
-				quantity += legacyQuantity
 
 				if quantity > 0 {
 					cart.Units[article.ID+"-"+variant.ID] += quantity

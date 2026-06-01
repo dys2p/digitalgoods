@@ -2,14 +2,14 @@ package digitalgoods
 
 type Cart struct {
 	CountryID string
-	Units     map[string]int // variant id => quantity
+	Units     map[string]int // key: article id + "-" + variant id because multiple articles can have a common variant, and the cart must remember which article has been used
 }
 
 func (cart *Cart) Get(articleID, variantID string) int {
 	if cart == nil {
 		return 0
 	}
-	return cart.Units[articleID+"-"+variantID] + cart.Units[variantID] // backwards compatibility
+	return cart.Units[articleID+"-"+variantID]
 }
 
 func (cart *Cart) Has(article Article) bool {
@@ -17,7 +17,7 @@ func (cart *Cart) Has(article Article) bool {
 		return false
 	}
 	for _, variant := range article.Variants {
-		if cart.Units[article.ID+"-"+variant.ID] > 0 || cart.Units[variant.ID] > 0 { // backwards compatibility
+		if cart.Units[article.ID+"-"+variant.ID] > 0 {
 			return true
 		}
 	}
