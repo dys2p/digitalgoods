@@ -30,7 +30,7 @@
 				{{$article := .}}
 				{{if not .Hide}}
 					<div class="pt-2">
-						<details id="{{.ID}}" {{if $.Cart.Has .}}open{{end}}>
+						<details id="{{.ID}}" {{if or ($.Cart.Has .) (eq (len $.Catalog) 1)}}open{{end}}>
 							<summary>
 								<strong class="text-primary">{{.Name}}</strong>
 							</summary>
