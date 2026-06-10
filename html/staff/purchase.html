@@ -45,6 +45,17 @@
 		</tbody>
 	</table>
 
+	{{if .Underdelivered}}
+		<form action="/purchase/{{.ID}}/mark-paid" method="post" class="mb-3">
+			<input type="hidden" name="id" value="{{.ID}}">
+			<div class="mb-3 form-check">
+				<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
+				<label for="confirm" class="form-check-label">Yes, I am sure. We have received <strong>{{FmtEuro .Ordered.Sum}}</strong>.</label>
+			</div>
+			<button type="submit" class="btn btn-primary">Check again</button>
+		</form>
+	{{end}}
+
 	{{if .Unpaid}}
 		<form action="/purchase/{{.ID}}/mark-paid" method="post" class="mb-3">
 			<input type="hidden" name="id" value="{{.ID}}">

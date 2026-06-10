@@ -736,10 +736,11 @@ func (s *Shop) staffPurchaseMarkPaidPost(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		return err
 	}
-	countryCode := r.PostFormValue("country")
-	if purchase.CountryCode != countryCode {
-		if err := s.Database.SetCountry(purchase, countryCode); err != nil {
-			return err
+	if countryCode := r.PostFormValue("country"); countryCode != "" {
+		if purchase.CountryCode != countryCode {
+			if err := s.Database.SetCountry(purchase, countryCode); err != nil {
+				return err
+			}
 		}
 	}
 	if err := s.Database.SetSettled(purchase, catalog); err != nil {
