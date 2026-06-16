@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"maps"
 	"slices"
+	"strings"
 )
 
 type UploadStockUnit struct {
@@ -40,7 +41,7 @@ func MakeUploadCatalog(catalog Catalog) UploadCatalog {
 		}
 	}
 	var result UploadCatalog
-	for _, brand := range slices.Sorted(maps.Keys(m)) {
+	for _, brand := range slices.SortedFunc(maps.Keys(m), func(a, b string) int { return cmp.Compare(strings.ToLower(a), strings.ToLower(b)) }) {
 		var units = m[brand]
 		slices.SortFunc(units, func(a, b UploadStockUnit) int { return cmp.Compare(a.StockID, b.StockID) })
 		result = append(result, UploadBrand{
