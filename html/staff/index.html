@@ -23,7 +23,7 @@
 	{{range .Catalog}}
 		{{range .Units}}
 			{{range .Variants}}
-				{{$stock := (index $.Stock .ID)}}
+				{{$stock := (index $.Stock .StockID)}}
 				{{if lt $stock .WarnStock}}
 					<div class="alert alert-warning">Low Stock: {{.NameHTML}} has only {{$stock}} items left.</div>
 				{{end}}
