@@ -1,6 +1,6 @@
 module github.com/dys2p/digitalgoods
 
-go 1.23.0
+go 1.25.0
 
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
