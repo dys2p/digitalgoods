@@ -5,7 +5,7 @@ type Sale struct {
 	Country   string
 	PayDate   string
 	Name      string
-	Amount    int
+	Quantity  int
 	GrossSum  int // for all items
 	Difftax   int
 	IsService bool

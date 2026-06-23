@@ -422,7 +422,7 @@ func (db *DB) GetSales(minDate string) ([]digitalgoods.Sale, error) {
 	var sales []digitalgoods.Sale
 	for rows.Next() {
 		var sale digitalgoods.Sale
-		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.Name, &sale.Amount, &sale.GrossSum); err != nil {
+		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.Name, &sale.Quantity, &sale.GrossSum); err != nil {
 			return nil, err
 		}
 		sales = append(sales, sale)
