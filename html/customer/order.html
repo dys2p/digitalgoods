@@ -75,7 +75,7 @@
 				<div class="d-flex align-items-center">
 					<div class="form-check me-2">
 						<input class="form-check-input {{if .CountryErr}}is-invalid{{end}}" id="eu" type="radio" name="area" value="eu" {{if eq $.Area "eu"}}checked{{end}} onclick="document.getElementById('eu-country').disabled = false;">
-						<label class="form-check-label" for="eu">{{.Tr "European Union"}}:</label>
+						<label class="form-check-label" for="eu-country">{{.Tr "European Union"}}:</label>
 					</div>
 					<select class="form-select d-inline w-auto {{if .CountryErr}}is-invalid{{end}}" id="eu-country" name="eu-country" onchange="document.getElementById('eu').checked = true;">
 						<option class="text-secondary">{{.Tr "please select"}}</option>

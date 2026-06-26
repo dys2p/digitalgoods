@@ -723,6 +723,13 @@
             "fuzzy": true
         },
         {
+            "id": "Select notification method",
+            "message": "Select notification method",
+            "translation": "Select notification method",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Select",
             "message": "Select",
             "translation": "Select",

@@ -39,19 +39,19 @@ func init() {
 }
 
 var messageKeyToIndex = map[string]int{
-	"%.2f":     142,
-	"%.2f EUR": 151,
+	"%.2f":     143,
+	"%.2f EUR": 152,
 	"A payment is on the way, but we're still waiting for the required amount of confirmations on the blockchain.": 1,
-	"Account holder":            147,
-	"Address":                   105,
-	"All Services and Projects": 120,
-	"Amount":                    140,
+	"Account holder":            148,
+	"Address":                   106,
+	"All Services and Projects": 121,
+	"Amount":                    141,
 	"As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock.": 99,
 	"Australian dollars":                50,
 	"Austria":                           15,
-	"BIC (if required)":                 149,
+	"BIC (if required)":                 150,
 	"Bank Transfer to our SEPA Account": 49,
-	"Bank name (if required)":           150,
+	"Bank name (if required)":           151,
 	"Belgium":                           16,
 	"Bookmark this page or save its address in another way. You will need it to access your goods.": 96,
 	"Bookmark your order. You will need it to access your goods.":                                   73,
@@ -60,26 +60,26 @@ var messageKeyToIndex = map[string]int{
 	"Buy":           89,
 	"Buy coupons, voucher codes and gift cards for privacy services and pay anonymously with Monero, Bitcoin or cash letter. SEPA Bank transfer is also available.": 69,
 	"Canadian dollars":              52,
-	"Cancellation Policy":           116,
+	"Cancellation Policy":           117,
 	"Cash":                          48,
-	"Cash by mail in 18 currencies": 117,
+	"Cash by mail in 18 currencies": 118,
 	"Cash in Foreign Currency":      47,
 	"Cash: Send cash (we accept 20 currencies) to our office in Germany. We shred the letter after processing.": 77,
 	"Chinese renminbi": 54,
 	"Click to copy":    97,
-	"Contact & News":   127,
-	"Contact us":       128,
+	"Contact & News":   128,
+	"Contact us":       129,
 	"Country options are limited by your IP address and browser language.": 88,
 	"Croatia":               29,
-	"Currency":              141,
+	"Currency":              142,
 	"Current deletion date": 93,
 	"Cyprus":                19,
 	"Czech koruna":          55,
 	"Czechia":               20,
 	"Danish krone":          56,
 	"Denmark":               22,
-	"Digital Goods":         123,
-	"Email":                 104,
+	"Digital Goods":         124,
+	"Email":                 105,
 	"Enter the quantity and press „Buy“.":                             72,
 	"Error displaying website. Please try again later.":               9,
 	"Error getting stock from database. Please try again later.":      8,
@@ -92,29 +92,29 @@ var messageKeyToIndex = map[string]int{
 	"France":         26,
 	"Germany":        21,
 	"Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards.": 102,
-	"Got an idea or found an error? Drop us a note!": 133,
+	"Got an idea or found an error? Drop us a note!": 134,
 	"Greece":          28,
 	"Hungary":         30,
-	"IBAN":            148,
+	"IBAN":            149,
 	"Icelandic króna": 58,
-	"If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.":                                                                                   143,
-	"If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.": 145,
+	"If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.":                                                                                   144,
+	"If you use TOR or a VPN: The payment options displayed depend on the country of your IP address. In addition, PayPal blocks some TOR exit nodes. In that case, try „New Circuit for this Site“.": 146,
 	"Ireland":      31,
 	"Italy":        32,
 	"Japanese yen": 59,
 	"JavaScript is disabled in your browser. In order to receive updates on your order, please reload this page from time to time.": 94,
 	"Latvia":       35,
-	"Legal":        112,
-	"Legal Notice": 115,
+	"Legal":        113,
+	"Legal Notice": 116,
 	"Lithuania":    33,
-	"Local Store":  122,
+	"Local Store":  123,
 	"Luxembourg":   34,
-	"Make a bank transfer to our German SEPA (Single Euro Payments Area) bank account. We check for new incoming payments manually every day. We will see your name and account number on our bank statement. If your bank account is outside the Single Euro Payments Area, please pay any fees yourself by selecting the „OUR“ fee option.": 146,
+	"Make a bank transfer to our German SEPA (Single Euro Payments Area) bank account. We check for new incoming payments manually every day. We will see your name and account number on our bank statement. If your bank account is outside the Single Euro Payments Area, please pay any fees yourself by selecting the „OUR“ fee option.": 147,
 	"Malta":              38,
 	"Message from store": 92,
-	"Mon+Thu 2pm-6pm":    130,
+	"Mon+Thu 2pm-6pm":    131,
 	"Monero (XMR) or Bitcoin (BTC): Your voucher codes are shown as soon as your payment is confirmed on the blockchain.": 76,
-	"Monero and Bitcoin":        118,
+	"Monero and Bitcoin":        119,
 	"Monero or Bitcoin":         46,
 	"Montenegro":                36,
 	"Netherlands":               39,
@@ -125,45 +125,46 @@ var messageKeyToIndex = map[string]int{
 	"North Macedonia":           37,
 	"Norwegian krone":           61,
 	"Not in the European Union": 84,
-	"Online printing":           126,
-	"Online shop":               124,
-	"Opening hours":             129,
+	"Online printing":           127,
+	"Online shop":               125,
+	"Opening hours":             130,
 	"Optional: Get notified by email or ntfy.sh when your payment arrives.": 79,
 	"Optional: Get notified when your payment arrives":                      101,
-	"Or scan the EPC QR code:":                                              153,
+	"Or scan the EPC QR code:":                                              154,
 	"Order":                                                                 90,
-	"Order Service":                                                         125,
+	"Order Service":                                                         126,
 	"Order with a few clicks. Pay with Monero, Bitcoin, cash in 20 currencies, or SEPA Bank transfer.": 70,
 	"Our service thinks that you are a bot. If you are not, please contact us.":                        10,
-	"Overall Sum": 110,
-	"Pay the specified amount in one of the following currencies.": 138,
-	"Pay using Monero or Bitcoin":                                  135,
-	"Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.": 134,
+	"Overall Sum": 111,
+	"Pay the specified amount in one of the following currencies.": 139,
+	"Pay using Monero or Bitcoin":                                  136,
+	"Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.": 135,
 	"Pay your order.": 74,
 	"Pay your order. Unpaid orders are deleted after 30 days.": 98,
 	"Payment":            100,
 	"Payment processing": 5,
-	"Please include a note with this order number":                                            137,
+	"Please include a note with this order number":                                            138,
 	"Please select some products.":                                                            81,
 	"Please select your country of residence.":                                                87,
-	"Please send undamaged banknotes only and round up if necessary. We do not accept coins.": 139,
+	"Please send undamaged banknotes only and round up if necessary. We do not accept coins.": 140,
 	"Poland":         40,
 	"Polish złoty":   63,
 	"Portugal":       41,
 	"Pound sterling": 57,
-	"Privacy policy": 114,
-	"Purpose":        152,
+	"Privacy policy": 115,
+	"Purpose":        153,
 	"Read more":      71,
 	"Romania":        42,
 	"Romanian leu":   64,
 	"SEPA (Single Euro Payments Area) bank transfer to our German bank account. We manually check for new payments every day.": 78,
-	"SEPA bank transfer":              119,
-	"Save":                            106,
-	"See here for short-term changes": 132,
-	"Select":                          103,
-	"Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:": 136,
+	"SEPA bank transfer":              120,
+	"Save":                            107,
+	"See here for short-term changes": 133,
+	"Select":                          104,
+	"Select notification method":      103,
+	"Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:": 137,
 	"Serbian dinar":                  65,
-	"Show prices and delivery dates": 111,
+	"Show prices and delivery dates": 112,
 	"Slovakia":                       45,
 	"Slovenia":                       44,
 	"Spain":                          24,
@@ -172,30 +173,30 @@ var messageKeyToIndex = map[string]int{
 	"Swedish krona":                  66,
 	"Swiss francs":                   53,
 	"Switzerland":                    18,
-	"Terms and Conditions":           113,
+	"Terms and Conditions":           114,
 	"There is no such purchase, or it has been deleted, or the URL is incorrect.": 12,
 	"There is no such purchase, or it has been deleted.":                          13,
-	"Tue+Wed+Fri+Sat 10am-2pm":                                                    131,
+	"Tue+Wed+Fri+Sat 10am-2pm":                                                    132,
 	"Underdelivered":                                                              6,
 	"United Kingdom":                                                              27,
 	"United States dollars":                                                       68,
 	"Unpaid orders are deleted after 30 days.":                                    75,
 	"We are waiting for your payment.":                                            0,
 	"We have received your payment, but have gone out of stock meanwhile. You will receive the missing codes here as soon as possible. Sorry for the inconvenience.": 2,
-	"We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.":                                         144,
+	"We only send the order number to PayPal. Your ordered items and delivery or pickup details will not be sent to PayPal.":                                         145,
 	"What's next?": 95,
 	"Where do you live? (We have to ask that for tax reasons. It does not affect the price or the goods.)": 83,
-	"Why?": 121,
+	"Why?": 122,
 	"Write down your codes. We will delete them 30 days after delivery.":                                       80,
-	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 109,
-	"Your Order":                      108,
-	"Your Voucher Codes":              107,
+	"You will receive the missing codes here as soon as they are in stock again. Sorry for the inconvenience.": 110,
+	"Your Order":                      109,
+	"Your Voucher Codes":              108,
 	"Your codes have been delivered.": 3,
 	"in stock":                        82,
 	"please select":                   86,
 }
 
-var de_DEIndex = []uint32{ // 155 elements
+var de_DEIndex = []uint32{ // 156 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000002b, 0x000000a1, 0x00000155,
 	0x00000176, 0x0000017a, 0x00000193, 0x000001a2,
@@ -226,23 +227,23 @@ var de_DEIndex = []uint32{ // 155 elements
 	// Entry 60 - 7F
 	0x00000d5e, 0x00000dd8, 0x00000def, 0x00000e41,
 	0x00000f2c, 0x00000f34, 0x00000f76, 0x00001053,
-	0x0000105e, 0x00001065, 0x0000106e, 0x00001078,
-	0x0000108d, 0x0000109e, 0x0000110b, 0x00001117,
-	0x00001137, 0x00001143, 0x00001147, 0x00001153,
-	0x0000115d, 0x00001170, 0x00001192, 0x000011a5,
-	0x000011bb, 0x000011d6, 0x000011dd, 0x000011ec,
-	0x000011fc, 0x00001207, 0x00001216, 0x00001226,
+	0x00001077, 0x00001082, 0x00001089, 0x00001092,
+	0x0000109c, 0x000010b1, 0x000010c2, 0x0000112f,
+	0x0000113b, 0x0000115b, 0x00001167, 0x0000116b,
+	0x00001177, 0x00001181, 0x00001194, 0x000011b6,
+	0x000011c9, 0x000011df, 0x000011fa, 0x00001201,
+	0x00001210, 0x00001220, 0x0000122b, 0x0000123a,
 	// Entry 80 - 9F
-	0x00001235, 0x0000123d, 0x0000124d, 0x0000125d,
-	0x00001273, 0x0000129b, 0x000012be, 0x000013eb,
-	0x00001411, 0x00001554, 0x00001586, 0x000015c6,
-	0x0000162a, 0x00001631, 0x0000163a, 0x0000163f,
-	0x000016a4, 0x0000173d, 0x00001837, 0x000019aa,
-	0x000019b7, 0x000019bc, 0x000019cf, 0x000019e3,
-	0x000019ec, 0x000019ff, 0x00001a1c,
-} // Size: 644 bytes
+	0x0000124a, 0x00001259, 0x00001261, 0x00001271,
+	0x00001281, 0x00001297, 0x000012bf, 0x000012e2,
+	0x0000140f, 0x00001435, 0x00001578, 0x000015aa,
+	0x000015ea, 0x0000164e, 0x00001655, 0x0000165e,
+	0x00001663, 0x000016c8, 0x00001761, 0x0000185b,
+	0x000019ce, 0x000019db, 0x000019e0, 0x000019f3,
+	0x00001a07, 0x00001a10, 0x00001a23, 0x00001a40,
+} // Size: 648 bytes
 
-const de_DEData string = "" + // Size: 6684 bytes
+const de_DEData string = "" + // Size: 6720 bytes
 	"\x02Wir warten auf den Eingang deiner Zahlung.\x02Eine Zahlung wurde ang" +
 	"ekündigt, aber wir warten noch auf die erforderliche Anzahl Bestätigunge" +
 	"n auf der Blockchain.\x02Wir haben deine Zahlung erhalten, aber unser Vo" +
@@ -304,45 +305,46 @@ const de_DEData string = "" + // Size: 6684 bytes
 	"chrichtigen, wenn deine Zahlung eintrifft\x02Lass dich benachrichtigen, " +
 	"wenn deine Zahlung eingegangen ist und die Voucher-Codes angezeigt werde" +
 	"n. Die Benachrichtigung wird weder die Bestellnummer noch den Link entha" +
-	"lten. Deine Kontaktdaten werden danach gelöscht.\x02Wähle aus\x02E-Mail" +
-	"\x02Addresse\x02Speichern\x02Deine Gutscheincodes\x02Deine Bestellung" +
-	"\x02Die fehlenden Codes erhälst du, sobald Nachschub eintroffen ist. Wir" +
-	" bitten die Umstände zu entschuldigen.\x02Gesamtsumme\x02Preise und Lief" +
-	"erdatum anzeigen\x02Rechtliches\x02AGB\x02Datenschutz\x02Impressum\x02Wi" +
-	"derrufsbelehrung\x02Bargeld per Post in 18 Währungen\x02Monero und Bitco" +
-	"in\x02SEPA-Banküberweisung\x02Alle Angebote und Projekte\x02Warum?\x02La" +
-	"dengeschäft\x02Digitale Güter\x02Onlineshop\x02Bestellservice\x02Onlined" +
-	"ruckerei\x02Kontakt & News\x02Kontakt\x02Öffnungszeiten\x02Mo+Do 14-18 U" +
-	"hr\x02Di+Mi+Fr+Sa 10-14 Uhr\x02Sieh hier für kurzfristige Änderungen\x02" +
-	"Fehler oder Hinweise? Schreib uns!\x02Bezahle den angegebenen Betrag in " +
-	"Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minute" +
-	"n vollständig und als einzelne Transaktion auf der angegebenen Adresse e" +
-	"ingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell" +
-	" bestätigen. Im Zweifel kontaktiere uns bitte.\x02Zur Bezahlung mit Mone" +
-	"ro oder Bitcoin\x02Sende uns Bargeld in einem versichertem Brief oder Pa" +
-	"ket. Nachdem wir das Geld entnommen haben, schreddern wir den Brief. Bit" +
-	"te beachte die Höchstgrenzen deines Postunternehmens für den Bargeldvers" +
-	"and (z. B. Deutsche Post „Einschreiben Wert“ bis 100 Euro innerhalb Deut" +
-	"schlands, DHL Paket bis 500 Euro). Sende es an:\x02Bitte lege einen Zett" +
-	"el mit der Bestellnummer bei\x02Zahle den angegebenen Betrag in einer de" +
-	"r folgenden Währungen.\x02Bitte sende nur unbeschädigte Banknoten und ru" +
-	"nde gegebenenfalls auf. Wir nehmen keine Münzen an.\x02Betrag\x02Währung" +
-	"\x02%.2f\x02Falls du Münzen sendest, klebe sie bitte gut fest. Sonst wer" +
-	"den sie beim Transport herausgedrückt.\x02Wir übermitteln nur die Bestel" +
-	"lnummer an PayPal. Deine bestellten Artikel sowie die Details zu Lieferu" +
-	"ng oder Abholung werden nicht an PayPal gesendet.\x02Falls du TOR oder e" +
-	"inen VPN benutzt: Die angezeigten Bezahlmöglichkeiten sind von der Lände" +
-	"rzuordnung deiner IP-Adresse abhängig. Darüber hinaus blockiert PayPal m" +
-	"anche TOR Exit Nodes. In dem Fall versuche es mit „New Circuit for this " +
-	"Site“.\x02Überweise das Geld auf unser deutsches SEPA-Bankkonto. Wir prü" +
-	"fen es täglich manuell auf neue Zahlungseingänge. Wir werden deinen Name" +
-	"n und deine Kontonummer auf unserem Kontoauszug sehen. Falls dein Konto " +
-	"außerhalb des einheitlichen Euro-Zahlungsverkehrsraums (SEPA) liegt, zah" +
-	"le eventuelle Gebühren bitte selbst, indem du die Gebührenregelung „OUR“" +
-	" wählst.\x02Kontoinhaber\x02IBAN\x02BIC (falls nötig)\x02Bank (falls nöt" +
-	"ig)\x02%.2f €\x02Überweisungszweck\x02Oder scanne den EPC-QR-Code:"
+	"lten. Deine Kontaktdaten werden danach gelöscht.\x02Benachrichtigungsmet" +
+	"hode auswählen\x02Wähle aus\x02E-Mail\x02Addresse\x02Speichern\x02Deine " +
+	"Gutscheincodes\x02Deine Bestellung\x02Die fehlenden Codes erhälst du, so" +
+	"bald Nachschub eintroffen ist. Wir bitten die Umstände zu entschuldigen." +
+	"\x02Gesamtsumme\x02Preise und Lieferdatum anzeigen\x02Rechtliches\x02AGB" +
+	"\x02Datenschutz\x02Impressum\x02Widerrufsbelehrung\x02Bargeld per Post i" +
+	"n 18 Währungen\x02Monero und Bitcoin\x02SEPA-Banküberweisung\x02Alle Ang" +
+	"ebote und Projekte\x02Warum?\x02Ladengeschäft\x02Digitale Güter\x02Onlin" +
+	"eshop\x02Bestellservice\x02Onlinedruckerei\x02Kontakt & News\x02Kontakt" +
+	"\x02Öffnungszeiten\x02Mo+Do 14-18 Uhr\x02Di+Mi+Fr+Sa 10-14 Uhr\x02Sieh h" +
+	"ier für kurzfristige Änderungen\x02Fehler oder Hinweise? Schreib uns!" +
+	"\x02Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). D" +
+	"er Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Tra" +
+	"nsaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung versp" +
+	"ätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktie" +
+	"re uns bitte.\x02Zur Bezahlung mit Monero oder Bitcoin\x02Sende uns Barg" +
+	"eld in einem versichertem Brief oder Paket. Nachdem wir das Geld entnomm" +
+	"en haben, schreddern wir den Brief. Bitte beachte die Höchstgrenzen dein" +
+	"es Postunternehmens für den Bargeldversand (z. B. Deutsche Post „Einschr" +
+	"eiben Wert“ bis 100 Euro innerhalb Deutschlands, DHL Paket bis 500 Euro)" +
+	". Sende es an:\x02Bitte lege einen Zettel mit der Bestellnummer bei\x02Z" +
+	"ahle den angegebenen Betrag in einer der folgenden Währungen.\x02Bitte s" +
+	"ende nur unbeschädigte Banknoten und runde gegebenenfalls auf. Wir nehme" +
+	"n keine Münzen an.\x02Betrag\x02Währung\x02%.2f\x02Falls du Münzen sende" +
+	"st, klebe sie bitte gut fest. Sonst werden sie beim Transport herausgedr" +
+	"ückt.\x02Wir übermitteln nur die Bestellnummer an PayPal. Deine bestell" +
+	"ten Artikel sowie die Details zu Lieferung oder Abholung werden nicht an" +
+	" PayPal gesendet.\x02Falls du TOR oder einen VPN benutzt: Die angezeigte" +
+	"n Bezahlmöglichkeiten sind von der Länderzuordnung deiner IP-Adresse abh" +
+	"ängig. Darüber hinaus blockiert PayPal manche TOR Exit Nodes. In dem Fa" +
+	"ll versuche es mit „New Circuit for this Site“.\x02Überweise das Geld au" +
+	"f unser deutsches SEPA-Bankkonto. Wir prüfen es täglich manuell auf neue" +
+	" Zahlungseingänge. Wir werden deinen Namen und deine Kontonummer auf uns" +
+	"erem Kontoauszug sehen. Falls dein Konto außerhalb des einheitlichen Eur" +
+	"o-Zahlungsverkehrsraums (SEPA) liegt, zahle eventuelle Gebühren bitte se" +
+	"lbst, indem du die Gebührenregelung „OUR“ wählst.\x02Kontoinhaber\x02IBA" +
+	"N\x02BIC (falls nötig)\x02Bank (falls nötig)\x02%.2f €\x02Überweisungszw" +
+	"eck\x02Oder scanne den EPC-QR-Code:"
 
-var en_USIndex = []uint32{ // 155 elements
+var en_USIndex = []uint32{ // 156 elements
 	// Entry 0 - 1F
 	0x00000000, 0x00000021, 0x0000008e, 0x0000012d,
 	0x0000014d, 0x00000151, 0x00000164, 0x00000173,
@@ -373,23 +375,23 @@ var en_USIndex = []uint32{ // 155 elements
 	// Entry 60 - 7F
 	0x00000b3d, 0x00000b9b, 0x00000ba9, 0x00000be2,
 	0x00000ca6, 0x00000cae, 0x00000cdf, 0x00000d9d,
-	0x00000da4, 0x00000daa, 0x00000db2, 0x00000db7,
-	0x00000dca, 0x00000dd5, 0x00000e3e, 0x00000e4a,
-	0x00000e69, 0x00000e6f, 0x00000e84, 0x00000e93,
-	0x00000ea0, 0x00000eb4, 0x00000ed2, 0x00000ee5,
-	0x00000ef8, 0x00000f12, 0x00000f17, 0x00000f23,
-	0x00000f31, 0x00000f3d, 0x00000f4b, 0x00000f5b,
+	0x00000db8, 0x00000dbf, 0x00000dc5, 0x00000dcd,
+	0x00000dd2, 0x00000de5, 0x00000df0, 0x00000e59,
+	0x00000e65, 0x00000e84, 0x00000e8a, 0x00000e9f,
+	0x00000eae, 0x00000ebb, 0x00000ecf, 0x00000eed,
+	0x00000f00, 0x00000f13, 0x00000f2d, 0x00000f32,
+	0x00000f3e, 0x00000f4c, 0x00000f58, 0x00000f66,
 	// Entry 80 - 9F
-	0x00000f6a, 0x00000f75, 0x00000f83, 0x00000f93,
-	0x00000fac, 0x00000fcc, 0x00000ffb, 0x000010e4,
-	0x00001100, 0x00001230, 0x0000125d, 0x0000129a,
-	0x000012f2, 0x000012f9, 0x00001302, 0x00001307,
-	0x00001375, 0x000013ec, 0x000014b0, 0x000015fc,
-	0x0000160b, 0x00001610, 0x00001622, 0x0000163a,
-	0x00001643, 0x0000164b, 0x00001664,
-} // Size: 644 bytes
+	0x00000f76, 0x00000f85, 0x00000f90, 0x00000f9e,
+	0x00000fae, 0x00000fc7, 0x00000fe7, 0x00001016,
+	0x000010ff, 0x0000111b, 0x0000124b, 0x00001278,
+	0x000012b5, 0x0000130d, 0x00001314, 0x0000131d,
+	0x00001322, 0x00001390, 0x00001407, 0x000014cb,
+	0x00001617, 0x00001626, 0x0000162b, 0x0000163d,
+	0x00001655, 0x0000165e, 0x00001666, 0x0000167f,
+} // Size: 648 bytes
 
-const en_USData string = "" + // Size: 5732 bytes
+const en_USData string = "" + // Size: 5759 bytes
 	"\x02We are waiting for your payment.\x02A payment is on the way, but we'" +
 	"re still waiting for the required amount of confirmations on the blockch" +
 	"ain.\x02We have received your payment, but have gone out of stock meanwh" +
@@ -442,39 +444,40 @@ const en_USData string = "" + // Size: 5732 bytes
 	"back in stock.\x02Payment\x02Optional: Get notified when your payment ar" +
 	"rives\x02Get notified when your payment arrives and your voucher codes a" +
 	"re shown. The notification will not contain the order number or the link" +
-	". Your contact information will be deleted afterwards.\x02Select\x02Emai" +
-	"l\x02Address\x02Save\x02Your Voucher Codes\x02Your Order\x02You will rec" +
-	"eive the missing codes here as soon as they are in stock again. Sorry fo" +
-	"r the inconvenience.\x02Overall Sum\x02Show prices and delivery dates" +
-	"\x02Legal\x02Terms and Conditions\x02Privacy policy\x02Legal Notice\x02C" +
-	"ancellation Policy\x02Cash by mail in 18 currencies\x02Monero and Bitcoi" +
-	"n\x02SEPA bank transfer\x02All Services and Projects\x02Why?\x02Local St" +
-	"ore\x02Digital Goods\x02Online shop\x02Order Service\x02Online printing" +
-	"\x02Contact & News\x02Contact us\x02Opening hours\x02Mon+Thu 2pm-6pm\x02" +
-	"Tue+Wed+Fri+Sat 10am-2pm\x02See here for short-term changes\x02Got an id" +
-	"ea or found an error? Drop us a note!\x02Pay with Monero (XMR) or Bitcoi" +
-	"n (BTC). The full amount must be paid with a single transaction to the g" +
-	"iven address within 60 minutes. If your payment arrives too late, we hav" +
-	"e to confirm it manually. If in doubt, please contact us.\x02Pay using M" +
-	"onero or Bitcoin\x02Send cash in an insured letter or package to our sto" +
-	"re address in Germany. After we take out the money, we shred the letter." +
-	" Please check the cash shipment limits of your postal company (e. g. Deu" +
-	"tsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parce" +
-	"l up to 500 Euros). Send it to:\x02Please include a note with this order" +
-	" number\x02Pay the specified amount in one of the following currencies." +
-	"\x02Please send undamaged banknotes only and round up if necessary. We d" +
-	"o not accept coins.\x02Amount\x02Currency\x02%.2f\x02If you are sending " +
-	"coins, please stick them down firmly. Otherwise they will be pressed out" +
-	" during transport.\x02We only send the order number to PayPal. Your orde" +
-	"red items and delivery or pickup details will not be sent to PayPal.\x02" +
-	"If you use TOR or a VPN: The payment options displayed depend on the cou" +
-	"ntry of your IP address. In addition, PayPal blocks some TOR exit nodes." +
-	" In that case, try „New Circuit for this Site“.\x02Make a bank transfer " +
-	"to our German SEPA (Single Euro Payments Area) bank account. We check fo" +
-	"r new incoming payments manually every day. We will see your name and ac" +
-	"count number on our bank statement. If your bank account is outside the " +
-	"Single Euro Payments Area, please pay any fees yourself by selecting the" +
-	" „OUR“ fee option.\x02Account holder\x02IBAN\x02BIC (if required)\x02Ban" +
-	"k name (if required)\x02%.2f EUR\x02Purpose\x02Or scan the EPC QR code:"
+	". Your contact information will be deleted afterwards.\x02Select notific" +
+	"ation method\x02Select\x02Email\x02Address\x02Save\x02Your Voucher Codes" +
+	"\x02Your Order\x02You will receive the missing codes here as soon as the" +
+	"y are in stock again. Sorry for the inconvenience.\x02Overall Sum\x02Sho" +
+	"w prices and delivery dates\x02Legal\x02Terms and Conditions\x02Privacy " +
+	"policy\x02Legal Notice\x02Cancellation Policy\x02Cash by mail in 18 curr" +
+	"encies\x02Monero and Bitcoin\x02SEPA bank transfer\x02All Services and P" +
+	"rojects\x02Why?\x02Local Store\x02Digital Goods\x02Online shop\x02Order " +
+	"Service\x02Online printing\x02Contact & News\x02Contact us\x02Opening ho" +
+	"urs\x02Mon+Thu 2pm-6pm\x02Tue+Wed+Fri+Sat 10am-2pm\x02See here for short" +
+	"-term changes\x02Got an idea or found an error? Drop us a note!\x02Pay w" +
+	"ith Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a s" +
+	"ingle transaction to the given address within 60 minutes. If your paymen" +
+	"t arrives too late, we have to confirm it manually. If in doubt, please " +
+	"contact us.\x02Pay using Monero or Bitcoin\x02Send cash in an insured le" +
+	"tter or package to our store address in Germany. After we take out the m" +
+	"oney, we shred the letter. Please check the cash shipment limits of your" +
+	" postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros" +
+	" within Germany, DHL Parcel up to 500 Euros). Send it to:\x02Please incl" +
+	"ude a note with this order number\x02Pay the specified amount in one of " +
+	"the following currencies.\x02Please send undamaged banknotes only and ro" +
+	"und up if necessary. We do not accept coins.\x02Amount\x02Currency\x02%." +
+	"2f\x02If you are sending coins, please stick them down firmly. Otherwise" +
+	" they will be pressed out during transport.\x02We only send the order nu" +
+	"mber to PayPal. Your ordered items and delivery or pickup details will n" +
+	"ot be sent to PayPal.\x02If you use TOR or a VPN: The payment options di" +
+	"splayed depend on the country of your IP address. In addition, PayPal bl" +
+	"ocks some TOR exit nodes. In that case, try „New Circuit for this Site“." +
+	"\x02Make a bank transfer to our German SEPA (Single Euro Payments Area) " +
+	"bank account. We check for new incoming payments manually every day. We " +
+	"will see your name and account number on our bank statement. If your ban" +
+	"k account is outside the Single Euro Payments Area, please pay any fees " +
+	"yourself by selecting the „OUR“ fee option.\x02Account holder\x02IBAN" +
+	"\x02BIC (if required)\x02Bank name (if required)\x02%.2f EUR\x02Purpose" +
+	"\x02Or scan the EPC QR code:"
 
-	// Total table size 13704 bytes (13KiB); checksum: 64A70D89
+	// Total table size 13775 bytes (13KiB); checksum: 2AD05042

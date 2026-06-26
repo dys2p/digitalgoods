@@ -68,7 +68,7 @@
 			<p>{{.Tr "Get notified when your payment arrives and your voucher codes are shown. The notification will not contain the order number or the link. Your contact information will be deleted afterwards."}}</p>
 			<form method="post">
 				<div class="input-group mb-3">
-					<select class="form-select" name="notify-proto">
+					<select class="form-select" name="notify-proto" aria-label="{{$.Tr "Select notification method"}}">
 						<option value="">{{$.Tr "Select"}}</option>
 						<option value="email" {{if eq .Purchase.NotifyProto "email"}}selected{{end}}>{{$.Tr "Email"}}</option>
 						<option value="ntfysh" {{if eq .Purchase.NotifyProto "ntfysh"}}selected{{end}}>ntfy.sh</option>
