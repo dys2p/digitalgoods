@@ -21,6 +21,7 @@ type Variant struct {
 	OptionalFmt     string // must contain exactly one %s placeholder
 	OptionalStockID string // same stock for multiple variants
 	Price           int    // euro cents
+	BorderTop       bool
 	WarnStock       int
 }
 

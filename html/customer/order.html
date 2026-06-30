@@ -40,7 +40,7 @@
 							<p class="my-2">{{.TranslateAbout $.Lang}} {{.TranslateHowto $.Lang}} {{.TranslateLegal $.Lang}}</p>
 							{{range .Variants}}
 								<!-- breakpoint: sm -->
-								<div class="d-sm-flex border-top align-items-center justify-content-between">
+								<div class="d-sm-flex border-top align-items-center justify-content-between {{if .BorderTop}}border-2 border-dark{{end}}">
 									<div class="py-1 pe-sm-3">{{.NameHTML}}</div>
 									<div class="pb-1 pb-sm-0 d-flex justify-content-end">
 										<div>
