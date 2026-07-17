@@ -849,20 +849,6 @@
             "fuzzy": true
         },
         {
-            "id": "All Services and Projects",
-            "message": "All Services and Projects",
-            "translation": "All Services and Projects",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Why?",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Local Store",
             "message": "Local Store",
             "translation": "Local Store",
@@ -894,6 +880,20 @@
             "id": "Online printing",
             "message": "Online printing",
             "translation": "Online printing",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Why?",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "All Services and Projects",
+            "message": "All Services and Projects",
+            "translation": "All Services and Projects",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

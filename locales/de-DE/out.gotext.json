@@ -607,16 +607,6 @@
             "translation": "SEPA-Banküberweisung"
         },
         {
-            "id": "All Services and Projects",
-            "message": "All Services and Projects",
-            "translation": "Alle Angebote und Projekte"
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Warum?"
-        },
-        {
             "id": "Local Store",
             "message": "Local Store",
             "translation": "Ladengeschäft"
@@ -640,6 +630,16 @@
             "id": "Online printing",
             "message": "Online printing",
             "translation": "Onlinedruckerei"
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Warum?"
+        },
+        {
+            "id": "All Services and Projects",
+            "message": "All Services and Projects",
+            "translation": "Alle Angebote und Projekte"
         },
         {
             "id": "Contact \u0026 News",
