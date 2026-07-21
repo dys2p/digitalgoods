@@ -4,7 +4,7 @@ type Sale struct {
 	ID        string
 	Country   string
 	PayDate   string
-	Name      string
+	VariantID string
 	Quantity  int
 	GrossSum  int // for all items
 	Difftax   int
