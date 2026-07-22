@@ -849,48 +849,6 @@
             "fuzzy": true
         },
         {
-            "id": "Local Store",
-            "message": "Local Store",
-            "translation": "Local Store",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Digital Goods",
-            "message": "Digital Goods",
-            "translation": "Digital Goods",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Online shop",
-            "message": "Online shop",
-            "translation": "Online shop",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Order Service",
-            "message": "Order Service",
-            "translation": "Order Service",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Online printing",
-            "message": "Online printing",
-            "translation": "Online printing",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Why?",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "All Services and Projects",
             "message": "All Services and Projects",
             "translation": "All Services and Projects",
@@ -908,6 +866,13 @@
             "id": "Contact us",
             "message": "Contact us",
             "translation": "Contact us",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Local Store",
+            "message": "Local Store",
+            "translation": "Local Store",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -943,6 +908,41 @@
             "id": "Got an idea or found an error? Drop us a note!",
             "message": "Got an idea or found an error? Drop us a note!",
             "translation": "Got an idea or found an error? Drop us a note!",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Digital Goods",
+            "message": "Digital Goods",
+            "translation": "Digital Goods",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Online shop",
+            "message": "Online shop",
+            "translation": "Online shop",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Order Service",
+            "message": "Order Service",
+            "translation": "Order Service",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Online printing",
+            "message": "Online printing",
+            "translation": "Online printing",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Why?",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

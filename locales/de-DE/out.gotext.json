@@ -607,36 +607,6 @@
             "translation": "SEPA-Banküberweisung"
         },
         {
-            "id": "Local Store",
-            "message": "Local Store",
-            "translation": "Ladengeschäft"
-        },
-        {
-            "id": "Digital Goods",
-            "message": "Digital Goods",
-            "translation": "Digitale Güter"
-        },
-        {
-            "id": "Online shop",
-            "message": "Online shop",
-            "translation": "Onlineshop"
-        },
-        {
-            "id": "Order Service",
-            "message": "Order Service",
-            "translation": "Bestellservice"
-        },
-        {
-            "id": "Online printing",
-            "message": "Online printing",
-            "translation": "Onlinedruckerei"
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Warum?"
-        },
-        {
             "id": "All Services and Projects",
             "message": "All Services and Projects",
             "translation": "Alle Angebote und Projekte"
@@ -650,6 +620,11 @@
             "id": "Contact us",
             "message": "Contact us",
             "translation": "Kontakt"
+        },
+        {
+            "id": "Local Store",
+            "message": "Local Store",
+            "translation": "Ladengeschäft"
         },
         {
             "id": "Opening hours",
@@ -675,6 +650,31 @@
             "id": "Got an idea or found an error? Drop us a note!",
             "message": "Got an idea or found an error? Drop us a note!",
             "translation": "Fehler oder Hinweise? Schreib uns!"
+        },
+        {
+            "id": "Digital Goods",
+            "message": "Digital Goods",
+            "translation": "Digitale Güter"
+        },
+        {
+            "id": "Online shop",
+            "message": "Online shop",
+            "translation": "Onlineshop"
+        },
+        {
+            "id": "Order Service",
+            "message": "Order Service",
+            "translation": "Bestellservice"
+        },
+        {
+            "id": "Online printing",
+            "message": "Online printing",
+            "translation": "Onlinedruckerei"
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Warum?"
         },
         {
             "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",
