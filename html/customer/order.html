@@ -35,7 +35,7 @@
 								<strong class="text-primary">{{.Name}}</strong>
 							</summary>
 							{{with .TranslateAlert $.Lang}}
-								<div class="alert alert-danger">{{.}}</div>
+								<div class="alert alert-warning mt-2">{{.}}</div>
 							{{end}}
 							<p class="my-2">{{.TranslateAbout $.Lang}} {{.TranslateHowto $.Lang}} {{.TranslateLegal $.Lang}}</p>
 							{{range .Variants}}
