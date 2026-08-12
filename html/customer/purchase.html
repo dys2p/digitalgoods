@@ -23,9 +23,9 @@
 	{{end}}
 
 	<h2>{{.Tr "What's next?"}}</h2>
-	<ol>
-		<!-- same as in order.html -->
-		{{if .Purchase.Unpaid}}
+	<!-- same text as in order.html -->
+	{{if .Purchase.Unpaid}}
+		<ol>
 			<li>
 				{{.Tr "Bookmark this page or save its address in another way. You will need it to access your goods."}}
 				<div>
@@ -38,9 +38,12 @@
 			</li>
 			<li>{{.Tr "Pay your order. Unpaid orders are deleted after 30 days."}}</li>
 			<li>{{.Tr "As soon as your payment arrives, your voucher codes are shown. In the unlikely case that your goods have become sold out in the meantime, your codes will appear as soon as they are back in stock."}}</li>
-		{{end}}
-		<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
-	</ol>
+			<li>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</li>
+		</ol>
+	{{else}}
+		<!-- no list because it is just one bullet point -->
+		<p>{{.Tr "Write down your codes. We will delete them 30 days after delivery."}}</p>
+	{{end}}
 
 	{{if .Purchase.Unpaid}}
 		<h2 id="payment" class="mb-3">{{.Tr "Payment"}}</h2>
