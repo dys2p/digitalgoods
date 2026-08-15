@@ -165,9 +165,8 @@ func main() {
 	// payment methods (need shop variable)
 	s.PaymentMethods = []payment.Method{
 		&payment.BTCPay{
-			Purchases:    s,
-			RedirectPath: "/by-cookie",
-			Store:        btcpayStore,
+			Store:     btcpayStore,
+			Purchases: s,
 			ErrCreateInvoice: func(err error) http.Handler {
 				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), "Error creating BTCPay invoice")
 			},
@@ -218,31 +217,27 @@ func (s *Shop) ListenAndServe() {
 
 	// customer http server
 
-	var custRtr = httprouter.New()
-	custRtr.ServeFiles("/static/*filepath", http.FS(httputil.ModTimeFS{staticFiles, time.Now()})) // can be omitted when ssg.Handler sets the modification time
-	for _, l := range s.Langs {
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderGet))
-		custRtr.Handler(http.MethodPost, "/"+l.Prefix, httputil.HandlerFunc(s.custOrderPost))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/brand/:brand", httputil.HandlerFunc(s.custOrderGet))
-		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/brand/:brand", httputil.HandlerFunc(s.custOrderPost))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/order/:id/:access-key", httputil.HandlerFunc(s.custPurchaseGet))
-		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key", httputil.HandlerFunc(s.custPurchasePost))
-		custRtr.Handler(http.MethodGet, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchaseGet))
-		custRtr.Handler(http.MethodPost, "/"+l.Prefix+"/order/:id/:access-key/:payment", httputil.HandlerFunc(s.custPurchasePost))
+	var custRtr = http.NewServeMux()
+	lang.Handle(custRtr, s.Langs, "GET  /{$}", httputil.HandlerFunc(s.custOrderGet))
+	lang.Handle(custRtr, s.Langs, "POST /{$}", httputil.HandlerFunc(s.custOrderPost))
+	lang.Handle(custRtr, s.Langs, "GET  /brand/{brand}", httputil.HandlerFunc(s.custOrderGet))
+	lang.Handle(custRtr, s.Langs, "POST /brand/{brand}", httputil.HandlerFunc(s.custOrderPost))
+	lang.Handle(custRtr, s.Langs, "GET  /order/{id}/{access_key}", httputil.HandlerFunc(s.custPurchaseGet))
+	lang.Handle(custRtr, s.Langs, "POST /order/{id}/{access_key}", httputil.HandlerFunc(s.custPurchasePost))
+	lang.Handle(custRtr, s.Langs, "GET  /order/{id}/{access_key}/{payment}", httputil.HandlerFunc(s.custPurchaseGet))
+	lang.Handle(custRtr, s.Langs, "POST /order/{id}/{access_key}/{payment}", httputil.HandlerFunc(s.custPurchasePost))
+	// api
+	for _, m := range s.PaymentMethods {
+		custRtr.Handle(fmt.Sprintf("/payment/%s/", m.ID()), m.Handler()) // API only, no language prefix
 	}
-	for _, method := range s.PaymentMethods {
-		// TODO use http.ServeMux and omit MethodGet/MethodPost here
-		route := fmt.Sprintf("/payment/%s/*path", method.ID())
-		handler := method.Handler()
-		custRtr.Handler(http.MethodGet, route, handler)
-		custRtr.Handler(http.MethodPost, route, handler)
-	}
-	custRtr.HandlerFunc(http.MethodGet, "/by-cookie", s.byCookie)
-	custRtr.HandlerFunc(http.MethodGet, "/productfeed.xml", func(w http.ResponseWriter, r *http.Request) {
+	custRtr.HandleFunc("GET /productfeed.xml", func(w http.ResponseWriter, r *http.Request) {
 		bs, _ := s.ProductFeed.Bytes()
 		w.Write(bs)
 	})
-	custRtr.NotFound = staticSites.Handler(s.Langs.RedirectHandler())
+	// static files
+	custRtr.Handle("GET /static/", http.FileServerFS(httputil.ModTimeFS{siteFiles, time.Now()}))
+	// static sites
+	custRtr.Handle("/", staticSites.Handler(s.frontendNotFound("Not found."))) // TODO
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()
@@ -298,7 +293,11 @@ func (s *Shop) ListenAndServe() {
 	}()
 
 	// notify us
-	if err := s.Emailer.Send(emailFrom, "digitalgoods service started", []byte("the digitalgoods service has been started")); err != nil {
+	if err := s.Emailer.Send(email.Email{
+		To:      emailFrom,
+		Subject: "digitalgoods service started",
+		Body:    []byte("the digitalgoods service has been started"),
+	}); err != nil {
 		log.Println(err)
 	}
 	if err := ntfysh.Publish(ntfyshLog, "digitalgoods service started", "the digitalgoods service has been started"); err != nil {
@@ -328,9 +327,17 @@ func (s *Shop) frontendErr(err error, message string) http.Handler {
 	})
 }
 
-// frontend notfound handler, logs err and displays a message
+// tries trailing slash redirect, then displays a message
 func (s *Shop) frontendNotFound(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// trim trailing slash if exists
+		newpath, ok := strings.CutSuffix(r.URL.Path, "/")
+		if ok && len(newpath) > 0 {
+			http.Redirect(w, r, newpath, http.StatusSeeOther)
+			return
+		}
+
+		// or show message
 		w.WriteHeader(http.StatusNotFound)
 		html.CustError.Execute(w, html.CustErrorData{
 			TemplateData: s.MakeTemplateData(r, ""),
@@ -382,7 +389,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 
 	var cata = catalog
 	var filterBrand string
-	if b := httprouter.ParamsFromContext(r.Context()).ByName("brand"); b != "" && len(b) < 100 {
+	if b := r.PathValue("brand"); b != "" && len(b) < 100 {
 		b = strings.ToLower(b) // same as in MakeBrandCatalogs
 		if bc, ok := bcatalogs[b]; ok {
 			cata = bc.Categories
@@ -517,8 +524,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Handler {
 	l, _, _ := s.Langs.FromPath(r.URL.Path)
-	params := httprouter.ParamsFromContext(r.Context())
-	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
+	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(r.PathValue("id"), r.PathValue("access_key"))
 	if err != nil {
 		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted, or the URL is incorrect."))
 	}
@@ -526,7 +532,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{
 		TemplateData: s.MakeTemplateData(r, ""),
 
-		ActivePaymentMethod: params.ByName("payment"),
+		ActivePaymentMethod: r.PathValue("payment"),
 		PaymentMethods:      s.PaymentMethods,
 		Purchase:            purchase,
 		PurchaseArticles:    digitalgoods.MakePurchaseArticles(pcatalog, purchase),
@@ -540,8 +546,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 
 func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Handler {
 	l, _, _ := s.Langs.FromPath(r.URL.Path)
-	params := httprouter.ParamsFromContext(r.Context())
-	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(params.ByName("id"), params.ByName("access-key"))
+	purchase, err := s.Database.GetPurchaseByIDAndAccessKey(r.PathValue("id"), r.PathValue("access_key"))
 	if err != nil {
 		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted."))
 	}
@@ -720,7 +725,11 @@ func (s *Shop) staffPurchaseGetLinkPost(w http.ResponseWriter, r *http.Request) 
 		return err
 	}
 
-	if err := s.Emailer.Send(emailFrom, fmt.Sprintf("digitalgoods: purchase link %s shown", purchase.ID), []byte("a purchase link has been shown in the backend")); err != nil {
+	if err := s.Emailer.Send(email.Email{
+		To:      emailFrom,
+		Subject: fmt.Sprintf("digitalgoods: purchase link %s shown", purchase.ID),
+		Body:    []byte("a purchase link has been shown in the backend"),
+	}); err != nil {
 		log.Println(err)
 	}
 	http.Redirect(w, r, "https://digitalgoods.proxysto.re"+path.Join("/", "order", purchase.ID, purchase.AccessKey), http.StatusFound) // no language prefix in url
@@ -862,7 +871,7 @@ func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Shop) PaymentSettled(purchaseID, paymentKey, methodName, paymentID string, paymentCents int) error {
+func (s *Shop) PaymentSettled(purchaseID, paymentKey, methodName, paymentID string, paymentCents int, paidLate bool) error {
 	return nil // not used
 }
 
@@ -910,7 +919,11 @@ func (s *Shop) NotifyPaymentReceived(purchase *digitalgoods.Purchase) error {
 
 	switch purchase.NotifyProto {
 	case "email":
-		err := s.Emailer.Send(purchase.NotifyAddr, subject, []byte(msg))
+		err := s.Emailer.Send(email.Email{
+			To:      purchase.NotifyAddr,
+			Subject: subject,
+			Body:    []byte(msg),
+		})
 		if err != nil {
 			return fmt.Errorf("sending email notification: %w", err)
 		}

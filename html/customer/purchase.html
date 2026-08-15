@@ -55,7 +55,7 @@
 							<a class="accordion-button" href="{{$.URL}}#payment">{{.Name $.Lang}}</a><!-- close accordion -->
 						</h2>
 						<div class="accordion-body pb-0">
-							{{.PayHTML $.Purchase.ID $.Purchase.PaymentKey $.Lang}}
+							{{.PayHTML $.Purchase.ID $.Purchase.PaymentKey $.URL $.Lang}}
 						</div>
 					{{else}}
 						<h2 class="accordion-header">
