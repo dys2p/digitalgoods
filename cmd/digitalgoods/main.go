@@ -156,7 +156,7 @@ func main() {
 	}
 
 	s.ProductFeed = productfeed.Feed{
-		ID:       "https://digitalgoods.proxysto.re",
+		ID:       "https://digitalgoods.proxystore.de",
 		Title:    "Digital Goods by ProxyStore",
 		Updated:  CatalogUpdated,
 		Products: catalog.Products(),
@@ -732,7 +732,7 @@ func (s *Shop) staffPurchaseGetLinkPost(w http.ResponseWriter, r *http.Request) 
 	}); err != nil {
 		log.Println(err)
 	}
-	http.Redirect(w, r, "https://digitalgoods.proxysto.re"+path.Join("/", "order", purchase.ID, purchase.AccessKey), http.StatusFound) // no language prefix in url
+	http.Redirect(w, r, "https://digitalgoods.proxystore.de"+path.Join("/", "order", purchase.ID, purchase.AccessKey), http.StatusFound) // no language prefix in url
 	return nil
 }
 
@@ -914,7 +914,7 @@ func (s *Shop) SetPurchaseProcessing(id, paymentKey string) error {
 }
 
 func (s *Shop) NotifyPaymentReceived(purchase *digitalgoods.Purchase) error {
-	const subject = "digitalgoods.proxysto.re payment received"
+	const subject = "digitalgoods.proxystore.de payment received"
 	const msg = "We have received your payment. Please download your vouchers within the next 30 days."
 
 	switch purchase.NotifyProto {

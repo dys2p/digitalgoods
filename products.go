@@ -131,7 +131,7 @@ func (catalog Catalog) Products() []productfeed.Product {
 					Id:           variant.ID,
 					ImageLink:    imageLink,
 					ItemGroupId:  article.ID,
-					Link:         "https://digitalgoods.proxysto.re/#" + article.ID,
+					Link:         "https://digitalgoods.proxystore.de/#" + article.ID,
 					Price:        fmt.Sprintf("%.2f EUR", float64(variant.Price)/100.0),
 					Title:        variant.Name,
 				})
