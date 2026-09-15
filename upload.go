@@ -2,59 +2,49 @@ package digitalgoods
 
 import (
 	"cmp"
-	"maps"
 	"slices"
 	"strings"
 )
 
-type UploadStockUnit struct {
-	StockID  string
-	Variants []Variant
-}
-
-func (unit UploadStockUnit) contains(variant Variant) bool {
-	return slices.ContainsFunc(unit.Variants, func(v Variant) bool {
-		return v.ID == variant.ID
-	})
-}
+type UploadCatalog []UploadBrand
 
 type UploadBrand struct {
 	Brand string
 	Units []UploadStockUnit
 }
 
-type UploadCatalog []UploadBrand
+type UploadStockUnit struct {
+	StockID  string
+	Variants []Variant
+}
 
 // MakeUploadCatalog creates a catalog for the backend upload view. It collects stock units by brand.
 func MakeUploadCatalog(catalog Catalog) UploadCatalog {
-	var m = make(map[string][]UploadStockUnit)
+	var ucatalog UploadCatalog
 	for a := range catalog.Articles() {
+		// get or insert brand at index b
+		b := slices.IndexFunc(ucatalog, func(brand UploadBrand) bool { return brand.Brand == a.Brand })
+		if b < 0 {
+			ucatalog = append(ucatalog, UploadBrand{Brand: a.Brand})
+			b = len(ucatalog) - 1
+		}
+		// insert or append unit for variant
 		for _, v := range a.Variants {
-			i := slices.IndexFunc(m[a.Brand], func(unit UploadStockUnit) bool { return unit.StockID == v.StockID() })
+			i := slices.IndexFunc(ucatalog[b].Units, func(unit UploadStockUnit) bool { return unit.StockID == v.StockID() })
 			if i < 0 {
-				m[a.Brand] = append(m[a.Brand], UploadStockUnit{StockID: v.StockID()})
-				i = len(m[a.Brand]) - 1
-			}
-			if !m[a.Brand][i].contains(v) {
-				m[a.Brand][i].Variants = append(m[a.Brand][i].Variants, v)
+				ucatalog[b].Units = append(ucatalog[b].Units, UploadStockUnit{StockID: v.StockID(), Variants: []Variant{v}})
+			} else {
+				ucatalog[b].Units[i].Variants = append(ucatalog[b].Units[i].Variants, v)
 			}
 		}
 	}
-	var result UploadCatalog
-	for _, brand := range slices.SortedFunc(maps.Keys(m), func(a, b string) int { return cmp.Compare(strings.ToLower(a), strings.ToLower(b)) }) {
-		var units = m[brand]
-		slices.SortFunc(units, func(a, b UploadStockUnit) int { return cmp.Compare(a.StockID, b.StockID) })
-		result = append(result, UploadBrand{
-			Brand: brand,
-			Units: units,
-		})
-	}
-	return result
+	slices.SortFunc(ucatalog, func(a, b UploadBrand) int { return cmp.Compare(strings.ToLower(a.Brand), strings.ToLower(b.Brand)) })
+	return ucatalog
 }
 
 func (ucatalog UploadCatalog) UploadStockUnit(id string) (UploadStockUnit, bool) {
-	for _, brand := range ucatalog {
-		for _, unit := range brand.Units {
+	for _, article := range ucatalog {
+		for _, unit := range article.Units {
 			if unit.StockID == id {
 				return unit, true
 			}
