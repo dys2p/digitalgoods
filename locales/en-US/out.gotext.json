@@ -198,6 +198,13 @@
             "fuzzy": true
         },
         {
+            "id": "Georgia (Europe)",
+            "message": "Georgia (Europe)",
+            "translation": "Georgia (Europe)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Greece",
             "message": "Greece",
             "translation": "Greece",
@@ -849,6 +856,13 @@
             "fuzzy": true
         },
         {
+            "id": "New website address, everything else stays the same.",
+            "message": "New website address, everything else stays the same.",
+            "translation": "New website address, everything else stays the same.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "All Services and Projects",
             "message": "All Services and Projects",
             "translation": "All Services and Projects",
@@ -856,58 +870,9 @@
             "fuzzy": true
         },
         {
-            "id": "Contact \u0026 News",
-            "message": "Contact \u0026 News",
-            "translation": "Contact \u0026 News",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Contact us",
-            "message": "Contact us",
-            "translation": "Contact us",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Local Store",
             "message": "Local Store",
             "translation": "Local Store",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Opening hours",
-            "message": "Opening hours",
-            "translation": "Opening hours",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Mon+Thu 2pm-6pm",
-            "message": "Mon+Thu 2pm-6pm",
-            "translation": "Mon+Thu 2pm-6pm",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Tue+Wed+Fri+Sat 10am-2pm",
-            "message": "Tue+Wed+Fri+Sat 10am-2pm",
-            "translation": "Tue+Wed+Fri+Sat 10am-2pm",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "See here for short-term changes",
-            "message": "See here for short-term changes",
-            "translation": "See here for short-term changes",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Got an idea or found an error? Drop us a note!",
-            "message": "Got an idea or found an error? Drop us a note!",
-            "translation": "Got an idea or found an error? Drop us a note!",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -943,6 +908,55 @@
             "id": "Why?",
             "message": "Why?",
             "translation": "Why?",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Contact \u0026 News",
+            "message": "Contact \u0026 News",
+            "translation": "Contact \u0026 News",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Contact us",
+            "message": "Contact us",
+            "translation": "Contact us",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Opening hours",
+            "message": "Opening hours",
+            "translation": "Opening hours",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Mon+Thu 2pm-6pm",
+            "message": "Mon+Thu 2pm-6pm",
+            "translation": "Mon+Thu 2pm-6pm",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Tue+Wed+Fri+Sat 10am-2pm",
+            "message": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translation": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "See here for short-term changes",
+            "message": "See here for short-term changes",
+            "translation": "See here for short-term changes",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Got an idea or found an error? Drop us a note!",
+            "message": "Got an idea or found an error? Drop us a note!",
+            "translation": "Got an idea or found an error? Drop us a note!",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

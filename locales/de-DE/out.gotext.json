@@ -142,6 +142,11 @@
             "translation": "Vereinigtes Königreich"
         },
         {
+            "id": "Georgia (Europe)",
+            "message": "Georgia (Europe)",
+            "translation": "Georgien (Europa)"
+        },
+        {
             "id": "Greece",
             "message": "Greece",
             "translation": "Griechenland"
@@ -607,49 +612,19 @@
             "translation": "SEPA-Banküberweisung"
         },
         {
+            "id": "New website address, everything else stays the same.",
+            "message": "New website address, everything else stays the same.",
+            "translation": "Neue Webadresse, alles andere bleibt beim Alten."
+        },
+        {
             "id": "All Services and Projects",
             "message": "All Services and Projects",
             "translation": "Alle Angebote und Projekte"
         },
         {
-            "id": "Contact \u0026 News",
-            "message": "Contact \u0026 News",
-            "translation": "Kontakt \u0026 News"
-        },
-        {
-            "id": "Contact us",
-            "message": "Contact us",
-            "translation": "Kontakt"
-        },
-        {
             "id": "Local Store",
             "message": "Local Store",
             "translation": "Ladengeschäft"
-        },
-        {
-            "id": "Opening hours",
-            "message": "Opening hours",
-            "translation": "Öffnungszeiten"
-        },
-        {
-            "id": "Mon+Thu 2pm-6pm",
-            "message": "Mon+Thu 2pm-6pm",
-            "translation": "Mo+Do 14-18 Uhr"
-        },
-        {
-            "id": "Tue+Wed+Fri+Sat 10am-2pm",
-            "message": "Tue+Wed+Fri+Sat 10am-2pm",
-            "translation": "Di+Mi+Fr+Sa 10-14 Uhr"
-        },
-        {
-            "id": "See here for short-term changes",
-            "message": "See here for short-term changes",
-            "translation": "Sieh hier für kurzfristige Änderungen"
-        },
-        {
-            "id": "Got an idea or found an error? Drop us a note!",
-            "message": "Got an idea or found an error? Drop us a note!",
-            "translation": "Fehler oder Hinweise? Schreib uns!"
         },
         {
             "id": "Digital Goods",
@@ -675,6 +650,41 @@
             "id": "Why?",
             "message": "Why?",
             "translation": "Warum?"
+        },
+        {
+            "id": "Contact \u0026 News",
+            "message": "Contact \u0026 News",
+            "translation": "Kontakt \u0026 News"
+        },
+        {
+            "id": "Contact us",
+            "message": "Contact us",
+            "translation": "Kontakt"
+        },
+        {
+            "id": "Opening hours",
+            "message": "Opening hours",
+            "translation": "Öffnungszeiten"
+        },
+        {
+            "id": "Mon+Thu 2pm-6pm",
+            "message": "Mon+Thu 2pm-6pm",
+            "translation": "Mo+Do 14-18 Uhr"
+        },
+        {
+            "id": "Tue+Wed+Fri+Sat 10am-2pm",
+            "message": "Tue+Wed+Fri+Sat 10am-2pm",
+            "translation": "Di+Mi+Fr+Sa 10-14 Uhr"
+        },
+        {
+            "id": "See here for short-term changes",
+            "message": "See here for short-term changes",
+            "translation": "Sieh hier für kurzfristige Änderungen"
+        },
+        {
+            "id": "Got an idea or found an error? Drop us a note!",
+            "message": "Got an idea or found an error? Drop us a note!",
+            "translation": "Fehler oder Hinweise? Schreib uns!"
         },
         {
             "id": "Pay with Monero (XMR) or Bitcoin (BTC). The full amount must be paid with a single transaction to the given address within 60 minutes. If your payment arrives too late, we have to confirm it manually. If in doubt, please contact us.",

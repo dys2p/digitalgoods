@@ -142,6 +142,11 @@
             "translation": "Vereinigtes Königreich"
         },
         {
+            "id": "Georgia (Europe)",
+            "message": "Georgia (Europe)",
+            "translation": "Georgien (Europa)"
+        },
+        {
             "id": "Greece",
             "message": "Greece",
             "translation": "Griechenland"
@@ -607,14 +612,14 @@
             "translation": "SEPA-Banküberweisung"
         },
         {
+            "id": "New website address, everything else stays the same.",
+            "message": "New website address, everything else stays the same.",
+            "translation": "Neue Webadresse, alles andere bleibt beim Alten."
+        },
+        {
             "id": "All Services and Projects",
             "message": "All Services and Projects",
             "translation": "Alle Angebote und Projekte"
-        },
-        {
-            "id": "Why?",
-            "message": "Why?",
-            "translation": "Warum?"
         },
         {
             "id": "Local Store",
@@ -640,6 +645,11 @@
             "id": "Online printing",
             "message": "Online printing",
             "translation": "Onlinedruckerei"
+        },
+        {
+            "id": "Why?",
+            "message": "Why?",
+            "translation": "Warum?"
         },
         {
             "id": "Contact \u0026 News",
