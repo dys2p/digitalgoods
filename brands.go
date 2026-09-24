@@ -7,7 +7,7 @@ type BrandCatalog struct {
 	Categories []Category
 }
 
-// MakeBrandCatalogs creates a catalog for the backend upload view. It collects stock units by brand.
+// MakeBrandCatalogs creates catalogs for filtering by brand in the frontend.
 func MakeBrandCatalogs(catalog Catalog) map[string]BrandCatalog {
 	// collect brands
 	var brands = make(map[string]any)
