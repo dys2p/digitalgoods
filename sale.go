@@ -7,7 +7,7 @@ type Sale struct {
 	VariantID string
 	Quantity  int
 	GrossSum  int // for all items
-	Difftax   int
+	Difftax   int // for all items
 	IsService bool
 	VATRate   string
 }

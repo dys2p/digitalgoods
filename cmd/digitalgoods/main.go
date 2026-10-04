@@ -31,6 +31,7 @@ import (
 	"github.com/dys2p/eco/countries"
 	"github.com/dys2p/eco/countries/detect"
 	"github.com/dys2p/eco/email"
+	"github.com/dys2p/eco/euvat"
 	"github.com/dys2p/eco/httputil"
 	"github.com/dys2p/eco/id"
 	"github.com/dys2p/eco/lang"
@@ -55,7 +56,7 @@ type Shop struct {
 	RatesHistory     *rates.History
 	StaffSessions    *scs.SessionManager
 	StaffUsers       userdb.Authenticator
-	VATRate          func(digitalgoods.Sale) (vatRate string, difftax int)
+	VATRate          func(variantID, country string) (vatRate euvat.Rate, difftax int) // returns difftax for one item
 }
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
@@ -651,7 +652,9 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 
 	// set VAT rates
 	for i := range sales {
-		sales[i].VATRate, sales[i].Difftax = s.VATRate(sales[i])
+		vatRate, itemDifftax := s.VATRate(sales[i].VariantID, sales[i].Country)
+		sales[i].VATRate = string(vatRate)
+		sales[i].Difftax = sales[i].Quantity * itemDifftax
 	}
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
