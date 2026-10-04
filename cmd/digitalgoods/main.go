@@ -209,9 +209,9 @@ func (s *Shop) ListenAndServe() {
 		log.Fatalf("error opening static dir: %v", err)
 	}
 
-	staticSites, err := ssg.MakeWebsite(siteFiles, html.CustSite, s.Langs, func(r *http.Request, _ ssg.TemplateData) any {
+	staticSites, err := ssg.Make(siteFiles, html.CustSite, s.Langs, func(r *http.Request, _ ssg.TemplateData) any {
 		return s.MakeTemplateData(r, "")
-	})
+	}, s.frontendNotFound("Not found."))
 	if err != nil {
 		log.Fatalf("error making static sites: %v", err)
 	}
@@ -238,7 +238,7 @@ func (s *Shop) ListenAndServe() {
 	// static files
 	custRtr.Handle("GET /static/", http.FileServerFS(httputil.ModTimeFS{siteFiles, time.Now()}))
 	// static sites
-	custRtr.Handle("/", staticSites.Handler(s.frontendNotFound("Not found."))) // TODO
+	custRtr.Handle("/", staticSites)
 
 	shutdownCust := httputil.ListenAndServe(":9002", s.CustomerSessions.LoadAndSave(custRtr), stop)
 	defer shutdownCust()
