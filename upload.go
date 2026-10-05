@@ -28,13 +28,18 @@ func MakeUploadCatalog(catalog Catalog) UploadCatalog {
 			ucatalog = append(ucatalog, UploadBrand{Brand: a.Brand})
 			b = len(ucatalog) - 1
 		}
-		// insert or append unit for variant
+
 		for _, v := range a.Variants {
+			// search for unit with StockID
 			i := slices.IndexFunc(ucatalog[b].Units, func(unit UploadStockUnit) bool { return unit.StockID == v.StockID() })
 			if i < 0 {
+				// new unit
 				ucatalog[b].Units = append(ucatalog[b].Units, UploadStockUnit{StockID: v.StockID(), Variants: []Variant{v}})
 			} else {
-				ucatalog[b].Units[i].Variants = append(ucatalog[b].Units[i].Variants, v)
+				// add to existing unit
+				if !slices.Contains(ucatalog[b].Units[i].Variants, v) {
+					ucatalog[b].Units[i].Variants = append(ucatalog[b].Units[i].Variants, v)
+				}
 			}
 		}
 	}
