@@ -889,7 +889,8 @@ func (s *Shop) PurchaseCreationDate(id, paymentKey string) (string, error) {
 	return purchase.CreateDate, nil
 }
 
-func (s *Shop) PurchaseSumCents(id, paymentKey string) (int, error) {
+// TODO allow for multiple payments
+func (s *Shop) PurchaseDueCents(id, paymentKey string) (int, error) {
 	purchase, err := s.Database.GetPurchaseByIDAndPaymentKey(id, paymentKey)
 	if err != nil {
 		return 0, err
