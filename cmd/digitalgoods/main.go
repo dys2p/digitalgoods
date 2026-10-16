@@ -192,6 +192,20 @@ func main() {
 		},
 	}
 
+	// notify us
+	if !*test {
+		if err := s.Emailer.Send(email.Email{
+			To:      emailFrom,
+			Subject: "digitalgoods service started",
+			Body:    []byte("the digitalgoods service has been started"),
+		}); err != nil {
+			log.Println(err)
+		}
+		if err := ntfysh.Publish(ntfyshLog, "digitalgoods service started", "the digitalgoods service has been started"); err != nil {
+			log.Println(err)
+		}
+	}
+
 	s.ListenAndServe()
 }
 
@@ -292,18 +306,6 @@ func (s *Shop) ListenAndServe() {
 			wg.Done()
 		}
 	}()
-
-	// notify us
-	if err := s.Emailer.Send(email.Email{
-		To:      emailFrom,
-		Subject: "digitalgoods service started",
-		Body:    []byte("the digitalgoods service has been started"),
-	}); err != nil {
-		log.Println(err)
-	}
-	if err := ntfysh.Publish(ntfyshLog, "digitalgoods service started", "the digitalgoods service has been started"); err != nil {
-		log.Println(err)
-	}
 
 	// run until we receive an interrupt or any of the listeners fails
 
