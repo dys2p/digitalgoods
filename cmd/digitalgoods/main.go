@@ -180,6 +180,7 @@ func main() {
 		},
 		payment.Cash{
 			AddressHTML: addressHTML,
+			Purchases:   s,
 		},
 		payment.CashForeign{
 			AddressHTML: addressHTML,
