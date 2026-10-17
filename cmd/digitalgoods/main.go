@@ -877,7 +877,7 @@ func (s *Shop) staffUploadPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func (s *Shop) PaymentSettled(purchaseID, paymentKey, methodName, paymentID string, paymentCents int, paidLate bool) error {
+func (s *Shop) PaymentSettled(purchaseID, paymentKey, methodName string, methodAuthenticates, verifiesAdult bool, paymentID string, paymentCents int, paidLate bool) error {
 	return nil // not used
 }
 
@@ -901,7 +901,7 @@ func (s *Shop) PurchaseDueCents(id, paymentKey string) (int, error) {
 	return purchase.Ordered.Sum(), nil
 }
 
-func (s *Shop) SetPurchasePaid(id, paymentKey, methodName string) error {
+func (s *Shop) SetPurchasePaid(id, paymentKey, methodName string, methodAuthenticates, verifiesAdult bool) error {
 	purchase, err := s.Database.GetPurchaseByIDAndPaymentKey(id, paymentKey)
 	if err != nil {
 		return err
