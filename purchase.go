@@ -69,6 +69,7 @@ type Purchase struct {
 	CreateDate  string // yyyy-mm-dd, for foreign currency rates
 	DeleteDate  string // yyyy-mm-dd
 	CountryCode string // EU country
+	B2BVATID    string
 }
 
 func (p *Purchase) GetUnfulfilled() (Order, error) {
@@ -82,6 +83,10 @@ func (p *Purchase) GetUnfulfilled() (Order, error) {
 		}
 	}
 	return unfulfilled, nil
+}
+
+func (p *Purchase) RequireAuthenticatedPayment() bool {
+	return p.B2BVATID != ""
 }
 
 func (p *Purchase) Underdelivered() bool {

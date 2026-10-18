@@ -15,6 +15,9 @@
 			<span>Price: {{FmtEuro .Ordered.Sum}}</span>
 			<span>Country: {{.CountryCode}}</span>
 			<span>Delete Date: {{.DeleteDate}}</span>
+			{{with .B2BVATID}}
+				<span>B2B VAT ID: {{.}}</span>
+			{{end}}
 		</div>
 	</div>
 
@@ -63,6 +66,12 @@
 				<input type="checkbox" class="form-check-input" id="confirm" name="confirm">
 				<label for="confirm" class="form-check-label">Yes, I am sure. We have received <strong>{{FmtEuro .Ordered.Sum}}</strong>.</label>
 			</div>
+			{{if .RequireAuthenticatedPayment}}
+				<div class="mb-3 form-check">
+					<input type="checkbox" class="form-check-input" id="authenticated" name="authenticated">
+					<label for="authenticated" class="form-check-label">Yes, the payment comes from the business customer {{.B2BVATID}}.</label>
+				</div>
+			{{end}}
 			<div class="input-group mb-3">
 				<label class="input-group-text">Adjust country?</label>
 				<select class="form-select" name="country">

@@ -77,7 +77,9 @@ type CustOrderData struct {
 
 	AvailableEUCountries []countries.CountryOption
 	AvailableNonEU       bool
+	B2BVATID             string
 	Catalog              digitalgoods.Catalog
+	Price                func(digitalgoods.Variant) int
 	Stock                digitalgoods.Stock
 
 	Cart       *digitalgoods.Cart

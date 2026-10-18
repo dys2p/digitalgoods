@@ -47,6 +47,7 @@ import (
 
 type Shop struct {
 	Btcpay           btcpay.Store
+	Customers        map[string]digitalgoods.Customer // key: url secret
 	CustomerSessions *scs.SessionManager
 	Database         *db.DB
 	Emailer          email.Emailer
@@ -146,6 +147,7 @@ func main() {
 	// shop
 	s := &Shop{
 		Btcpay:           btcpayStore,
+		Customers:        customers,
 		Database:         database,
 		Emailer:          emailer,
 		Langs:            lang.MakeLanguages(nil, "de", "en"),
@@ -238,6 +240,8 @@ func (s *Shop) ListenAndServe() {
 	lang.Handle(custRtr, s.Langs, "POST /{$}", httputil.HandlerFunc(s.custOrderPost))
 	lang.Handle(custRtr, s.Langs, "GET  /brand/{brand}", httputil.HandlerFunc(s.custOrderGet))
 	lang.Handle(custRtr, s.Langs, "POST /brand/{brand}", httputil.HandlerFunc(s.custOrderPost))
+	lang.Handle(custRtr, s.Langs, "GET  /customer/{secret}", httputil.HandlerFunc(s.custOrderGet))
+	lang.Handle(custRtr, s.Langs, "POST /customer/{secret}", httputil.HandlerFunc(s.custOrderPost))
 	lang.Handle(custRtr, s.Langs, "GET  /order/{id}/{access_key}", httputil.HandlerFunc(s.custPurchaseGet))
 	lang.Handle(custRtr, s.Langs, "POST /order/{id}/{access_key}", httputil.HandlerFunc(s.custPurchasePost))
 	lang.Handle(custRtr, s.Langs, "GET  /order/{id}/{access_key}/{payment}", httputil.HandlerFunc(s.custPurchaseGet))
@@ -377,6 +381,13 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 		log.Printf("error detecting countries: %v", err)
 	}
 
+	// overwrite available countries if customer is given
+	customer := s.customer(r)
+	if customer.Country != countries.Country("") {
+		availableEUCountries = []countries.Country{customer.Country}
+		availableNonEU = false
+	}
+
 	// pre-select area if it's known
 	var area string
 	if len(availableEUCountries) == 0 {
@@ -408,8 +419,12 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, countries.Country("")),
 		AvailableNonEU:       availableNonEU,
+		B2BVATID:             customer.B2BVATID,
 		Catalog:              cata,
-		Stock:                stock,
+		Price: func(variant digitalgoods.Variant) int {
+			return s.price(customer, variant)
+		},
+		Stock: stock,
 
 		Area: area,
 	})
@@ -429,6 +444,13 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 	availableEUCountries, availableNonEU, err := detect.Countries(r)
 	if err != nil {
 		log.Printf("error detecting countries: %v", err)
+	}
+
+	// overwrite available countries if customer is given
+	customer := s.customer(r)
+	if customer.Country != countries.Country("") {
+		availableEUCountries = []countries.Country{customer.Country}
+		availableNonEU = false
 	}
 
 	stock, err := s.Database.GetStock()
@@ -468,7 +490,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 			order = append(order, digitalgoods.OrderRow{
 				Quantity:  quantity,
 				VariantID: variant.ID,
-				ItemPrice: variant.Price,
+				ItemPrice: s.price(customer, variant),
 			})
 		}
 	}
@@ -514,6 +536,7 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		CreateDate:  time.Now().Format("2006-01-02"),
 		DeleteDate:  time.Now().AddDate(0, 0, 31).Format("2006-01-02"),
 		CountryCode: string(country),
+		B2BVATID:    customer.B2BVATID,
 	}
 
 	if err := s.Database.InsertPurchase(purchase); err != nil {
@@ -533,11 +556,24 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		return s.frontendNotFound(l.Tr("There is no such purchase, or it has been deleted, or the URL is incorrect."))
 	}
 
+	// if required, remove unauthenticated payment methods
+	var paymentMethods = s.PaymentMethods
+	if purchase.RequireAuthenticatedPayment() {
+		paymentMethods = slices.Clone(s.PaymentMethods) // create a copy to delete from
+		paymentMethods = slices.DeleteFunc(paymentMethods, func(m payment.Method) bool { return !m.Authenticates() })
+	}
+
+	// if there is just one payment method, then select it
+	var activePaymentMethod = r.PathValue("payment")
+	if len(paymentMethods) == 1 {
+		activePaymentMethod = paymentMethods[0].ID() // or make http redirect
+	}
+
 	err = html.CustPurchase.Execute(w, &html.CustPurchaseData{
 		TemplateData: s.MakeTemplateData(r, ""),
 
-		ActivePaymentMethod: r.PathValue("payment"),
-		PaymentMethods:      s.PaymentMethods,
+		ActivePaymentMethod: activePaymentMethod,
+		PaymentMethods:      paymentMethods,
 		Purchase:            purchase,
 		PurchaseArticles:    digitalgoods.MakePurchaseArticles(pcatalog, purchase),
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
@@ -662,9 +698,9 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	out := csv.NewWriter(w)
-	out.Write([]string{"pay_date", "id", "country", "gross", "difftax", "vat_rate", "description", "is_service"})
+	out.Write([]string{"pay_date", "id", "country", "vat_id", "gross", "difftax", "vat_rate", "description", "is_service"})
 	for _, sale := range sales {
-		out.Write([]string{sale.PayDate, sale.ID, sale.Country, strconv.Itoa(sale.GrossSum), strconv.Itoa(sale.Difftax), sale.VATRate, sale.VariantID, "true"})
+		out.Write([]string{sale.PayDate, sale.ID, sale.Country, sale.B2BVATID, strconv.Itoa(sale.GrossSum), strconv.Itoa(sale.Difftax), sale.VATRate, sale.VariantID, "true"})
 	}
 	out.Flush()
 	return nil
@@ -750,6 +786,9 @@ func (s *Shop) staffPurchaseMarkPaidPost(w http.ResponseWriter, r *http.Request)
 	purchase, err := s.Database.GetPurchaseByID(id)
 	if err != nil {
 		return err
+	}
+	if purchase.RequireAuthenticatedPayment() && r.PostFormValue("authenticated") == "" {
+		return errors.New("You did not confirm payment authenticity.")
 	}
 	if countryCode := r.PostFormValue("country"); countryCode != "" {
 		if purchase.CountryCode != countryCode {
@@ -906,6 +945,10 @@ func (s *Shop) SetPurchasePaid(id, paymentKey, methodName string, methodAuthenti
 	if err != nil {
 		return err
 	}
+	if purchase.RequireAuthenticatedPayment() && !methodAuthenticates {
+		ntfysh.Publish(ntfyshLog, "digitalgoods received unauthenticated payment", fmt.Sprintf("order: %s\nmethod: %s", id, methodName))
+		return nil
+	}
 	if err := s.Database.SetSettled(purchase, catalog); err != nil {
 		return err
 	}
@@ -964,4 +1007,32 @@ func (s *Shop) MakeTemplateData(r *http.Request, filterBrand string) html.Templa
 		Onion:       strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		FilterBrand: filterBrand,
 	}
+}
+
+func (s *Shop) customer(r *http.Request) digitalgoods.Customer {
+	secret := r.PathValue("secret")
+	if customer, ok := s.Customers[secret]; ok {
+		return customer
+	}
+	return digitalgoods.Customer{}
+}
+
+func (s *Shop) price(customer digitalgoods.Customer, variant digitalgoods.Variant) int {
+	// anonymous pay full price
+	if customer.Country == countries.Country("") {
+		return variant.Price
+	}
+	// domestic pay full price
+	if customer.Country == countries.DE {
+		return variant.Price
+	}
+	// consumers pay full price
+	if customer.B2BVATID == "" {
+		return variant.Price
+	}
+	// foreign B2B customer with VAT ID
+	rate, difftax := s.VATRate(variant.ID, string(customer.Country))
+	gross := variant.Price - difftax
+	net, _ := euvat.NetInt(customer.Country, gross, rate)
+	return net + difftax
 }

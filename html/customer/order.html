@@ -45,7 +45,7 @@
 									<div class="pb-1 pb-sm-0 d-flex justify-content-end">
 										<div>
 											<div class="input-group flex-nowrap py-1">
-												<span   onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', -1)" class="input-group-text">{{FmtEuro .Price}}</span>
+												<span   onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', -1)" class="input-group-text">{{FmtEuro (call $.Price .)}}</span>
 												<button onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', -1)" class="btn border bg-body-tertiary" type="button">–</button>
 												<input class="form-control flex-grow-0 text-end d-hide-spinner" name="{{$article.ID}}-{{.ID}}" id="qty-{{$article.ID}}-{{.ID}}" type="number" min="0" value="{{$.Cart.Get $article.ID .ID}}" style="width: calc(1.5rem + 3ch)">
 												<button onclick="addToValue('qty-{{$article.ID}}-{{.ID}}', 1)" class="btn border bg-body-tertiary" type="button">+</button>
@@ -93,6 +93,10 @@
 			<label for="n-o-b-o-t-s" class="form-label">Please leave this field empty</label>
 			<input class="form-control" id="n-o-b-o-t-s" name="n-o-b-o-t-s">
 		</div>
+
+		{{with .B2BVATID}}
+			<div class="alert alert-primary text-center">I am a business customer and my VAT ID is {{.}}.</div>
+		{{end}}
 
 		<div class="text-end">
 			<button class="btn btn-primary p-3 w-100" type="submit">{{.Tr "Buy"}}</button>

@@ -64,6 +64,7 @@ func OpenDB() (*DB, error) {
 			create_date text not null, -- yyyy-mm-dd
 			deletedate  text not null, -- yyyy-mm-dd
 			countrycode text not null,
+			b2bvatid    text not null,
 			unique(access_key),
 			unique(payment_key)
 		);
@@ -78,7 +79,8 @@ func OpenDB() (*DB, error) {
 			variant        text not null,
 			amount         int  not null,
 			itemprice      int  not null, -- euro cents
-			countrycode    text not null
+			countrycode    text not null,
+			b2bvatid       text not null
 		);
 	`)
 	if err != nil {
@@ -98,12 +100,12 @@ func OpenDB() (*DB, error) {
 	}
 
 	// purchase
-	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode) values (?, ?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?)")
+	db.insertPurchase = mustPrepare("insert into purchase (id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode, b2bvatid) values (?, ?, ?, ?, ?, ?, ?, ?, '[]', ?, ?, ?, ?)")
 	db.cleanupPurchases = mustPrepare("delete from purchase where status = ? and deletedate != '' and deletedate < ?")
 	db.getIDByPattern = mustPrepare("select id from purchase where id like ? limit 10")
-	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? limit 1")
-	db.getPurchaseByIDAndAccessKey = mustPrepare(" select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and access_key = ? limit 1")
-	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode from purchase where id = ? and payment_key = ? limit 1")
+	db.getPurchaseByID = mustPrepare("             select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode, b2bvatid from purchase where id = ? limit 1")
+	db.getPurchaseByIDAndAccessKey = mustPrepare(" select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode, b2bvatid from purchase where id = ? and access_key = ? limit 1")
+	db.getPurchaseByIDAndPaymentKey = mustPrepare("select id, access_key, payment_key, status, message, notifyproto, notifyaddr, ordered, delivered, create_date, deletedate, countrycode, b2bvatid from purchase where id = ? and payment_key = ? limit 1")
 	db.getPurchasesByStatus = mustPrepare("select id from purchase where status = ?")
 	db.updatePurchase = mustPrepare("update purchase set status = ?, delivered = ?, deletedate = ? where id = ?")
 	db.updatePurchaseCountry = mustPrepare("update purchase set countrycode = ?                 where id = ?")
@@ -144,13 +146,14 @@ func OpenDB() (*DB, error) {
 		select
 			purchase,
 			countrycode,
+			b2bvatid,
 			deliverydate,
 			variant,
 			amount,
 			amount * itemprice
 		from vat_log
 		where deliverydate >= ?`)
-	db.insertSale = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode) values (?, ?, ?, ?, ?, ?)")
+	db.insertSale = mustPrepare("insert into vat_log (purchase, deliverydate, variant, amount, itemprice, countrycode, b2bvatid) values (?, ?, ?, ?, ?, ?, ?)")
 
 	return db, nil
 }
@@ -162,7 +165,7 @@ func (db *DB) InsertPurchase(purchase *digitalgoods.Purchase) error {
 	}
 	for i := 0; i < 5; i++ { // try five times if pay id already exists, see id.New
 		purchase.ID = id.New(6, id.AlphanumCaseInsensitiveDigits)
-		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, purchase.Status, purchase.Message, purchase.NotifyProto, purchase.NotifyAddr, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode); err == nil {
+		if _, err = db.insertPurchase.Exec(purchase.ID, purchase.AccessKey, purchase.PaymentKey, purchase.Status, purchase.Message, purchase.NotifyProto, purchase.NotifyAddr, orderJson, purchase.CreateDate, purchase.DeleteDate, purchase.CountryCode, purchase.B2BVATID); err == nil {
 			return nil
 		}
 	}
@@ -278,7 +281,7 @@ func (db *DB) getPurchaseWithStmt(stmt *sql.Stmt, args ...any) (*digitalgoods.Pu
 	var purchase = &digitalgoods.Purchase{}
 	var ordered string
 	var delivered string
-	if err := stmt.QueryRow(args...).Scan(&purchase.ID, &purchase.AccessKey, &purchase.PaymentKey, &purchase.Status, &purchase.Message, &purchase.NotifyProto, &purchase.NotifyAddr, &ordered, &delivered, &purchase.CreateDate, &purchase.DeleteDate, &purchase.CountryCode); err != nil {
+	if err := stmt.QueryRow(args...).Scan(&purchase.ID, &purchase.AccessKey, &purchase.PaymentKey, &purchase.Status, &purchase.Message, &purchase.NotifyProto, &purchase.NotifyAddr, &ordered, &delivered, &purchase.CreateDate, &purchase.DeleteDate, &purchase.CountryCode, &purchase.B2BVATID); err != nil {
 		return nil, err
 	}
 	if err := json.Unmarshal([]byte(ordered), &purchase.Ordered); err != nil {
@@ -382,7 +385,7 @@ func (db *DB) SetSettled(purchase *digitalgoods.Purchase, catalog digitalgoods.C
 		// sales tax log
 
 		if gotQuantity > 0 {
-			if _, err := tx.Stmt(db.insertSale).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), orderRow.VariantID, gotQuantity, orderRow.ItemPrice, purchase.CountryCode); err != nil {
+			if _, err := tx.Stmt(db.insertSale).Exec(purchase.ID, time.Now().Format(digitalgoods.DateFmt), orderRow.VariantID, gotQuantity, orderRow.ItemPrice, purchase.CountryCode, purchase.B2BVATID); err != nil {
 				return err
 			}
 		}
@@ -422,7 +425,7 @@ func (db *DB) GetSales(minDate string) ([]digitalgoods.Sale, error) {
 	var sales []digitalgoods.Sale
 	for rows.Next() {
 		var sale digitalgoods.Sale
-		if err := rows.Scan(&sale.ID, &sale.Country, &sale.PayDate, &sale.VariantID, &sale.Quantity, &sale.GrossSum); err != nil {
+		if err := rows.Scan(&sale.ID, &sale.Country, &sale.B2BVATID, &sale.PayDate, &sale.VariantID, &sale.Quantity, &sale.GrossSum); err != nil {
 			return nil, err
 		}
 		sales = append(sales, sale)
