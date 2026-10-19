@@ -1011,8 +1011,10 @@ func (s *Shop) MakeTemplateData(r *http.Request, filterBrand string) html.Templa
 
 func (s *Shop) customer(r *http.Request) digitalgoods.Customer {
 	secret := r.PathValue("secret")
-	if customer, ok := s.Customers[secret]; ok {
-		return customer
+	if secret != "" {
+		if customer, ok := s.Customers[secret]; ok {
+			return customer
+		}
 	}
 	return digitalgoods.Customer{}
 }
