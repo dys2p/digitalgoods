@@ -692,9 +692,14 @@
             "translation": "Bezahle den angegebenen Betrag in Monero (XMR) oder Bitcoin (BTC). Der Betrag muss innerhalb von 60 Minuten vollständig und als einzelne Transaktion auf der angegebenen Adresse eingehen. Falls deine Zahlung verspätet eintrifft, müssen wir sie manuell bestätigen. Im Zweifel kontaktiere uns bitte."
         },
         {
-            "id": "Pay using Monero or Bitcoin",
-            "message": "Pay using Monero or Bitcoin",
-            "translation": "Zur Bezahlung mit Monero oder Bitcoin"
+            "id": "Pay",
+            "message": "Pay",
+            "translation": "Bezahlen"
+        },
+        {
+            "id": "Pay with Monero or Bitcoin",
+            "message": "Pay with Monero or Bitcoin",
+            "translation": "Bezahlen mit Monero oder Bitcoin"
         },
         {
             "id": "Send cash in an insured letter or package to our store address in Germany. After we take out the money, we shred the letter. Please check the cash shipment limits of your postal company (e. g. Deutsche Post „Einschreiben Wert“ up to 100 Euros within Germany, DHL Parcel up to 500 Euros). Send it to:",
@@ -732,6 +737,11 @@
             "translation": "%.2f"
         },
         {
+            "id": "%.2f EUR",
+            "message": "%.2f EUR",
+            "translation": "%.2f €"
+        },
+        {
             "id": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
             "message": "If you are sending coins, please stick them down firmly. Otherwise they will be pressed out during transport.",
             "translation": "Falls du Münzen sendest, klebe sie bitte gut fest. Sonst werden sie beim Transport herausgedrückt."
@@ -762,24 +772,19 @@
             "translation": "IBAN"
         },
         {
-            "id": "BIC (if required)",
-            "message": "BIC (if required)",
-            "translation": "BIC (falls nötig)"
+            "id": "BIC",
+            "message": "BIC",
+            "translation": "BIC"
         },
         {
-            "id": "Bank name (if required)",
-            "message": "Bank name (if required)",
-            "translation": "Bank (falls nötig)"
+            "id": "Bank name",
+            "message": "Bank name",
+            "translation": "Bank"
         },
         {
-            "id": "%.2f EUR",
-            "message": "%.2f EUR",
-            "translation": "%.2f €"
-        },
-        {
-            "id": "Purpose",
-            "message": "Purpose",
-            "translation": "Überweisungszweck"
+            "id": "Reference",
+            "message": "Reference",
+            "translation": "Verwendungszweck"
         },
         {
             "id": "Or scan the EPC QR code:",
