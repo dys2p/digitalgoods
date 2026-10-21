@@ -93,6 +93,7 @@ type CustPurchaseData struct {
 	TemplateData
 
 	ActivePaymentMethod string
+	OfferOnion          bool
 	PaymentMethods      []payment.Method
 	Purchase            *digitalgoods.Purchase
 	PurchaseArticles    []digitalgoods.PurchaseArticle

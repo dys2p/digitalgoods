@@ -573,6 +573,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		TemplateData: s.MakeTemplateData(r, ""),
 
 		ActivePaymentMethod: activePaymentMethod,
+		OfferOnion:          strings.HasSuffix(r.Host, ".onion") || strings.Contains(r.Host, ".onion:"),
 		PaymentMethods:      paymentMethods,
 		Purchase:            purchase,
 		PurchaseArticles:    digitalgoods.MakePurchaseArticles(pcatalog, purchase),
