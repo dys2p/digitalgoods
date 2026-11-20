@@ -57,7 +57,7 @@ type Shop struct {
 	RatesHistory     *rates.History
 	StaffSessions    *scs.SessionManager
 	StaffUsers       userdb.Authenticator
-	VATRate          func(variantID, country string) (vatRate euvat.Rate, difftax int) // returns difftax for one item
+	VATRate          func(country, variantID string, itemPrice int) (vatRate euvat.Rate, difftax int) // returns difftax for one item
 }
 
 var CatalogUpdated string // go build -ldflags "-X main.CatalogUpdated=$(date --iso-8601=seconds --utc -r path/to/product-catalog.go)"
@@ -696,16 +696,16 @@ func (s *Shop) staffExportGet(w http.ResponseWriter, r *http.Request) error {
 
 	// set VAT rates
 	for i := range sales {
-		vatRate, itemDifftax := s.VATRate(sales[i].VariantID, sales[i].Country)
+		vatRate, itemDifftax := s.VATRate(sales[i].Country, sales[i].VariantID, sales[i].ItemPrice)
 		sales[i].VATRate = string(vatRate)
-		sales[i].Difftax = sales[i].Quantity * itemDifftax
+		sales[i].ItemDifftax = itemDifftax
 	}
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	out := csv.NewWriter(w)
 	out.Write([]string{"pay_date", "id", "country", "vat_id", "gross", "difftax", "vat_rate", "description", "is_service"})
 	for _, sale := range sales {
-		out.Write([]string{sale.PayDate, sale.ID, sale.Country, sale.B2BVATID, strconv.Itoa(sale.GrossSum), strconv.Itoa(sale.Difftax), sale.VATRate, sale.VariantID, "true"})
+		out.Write([]string{sale.PayDate, sale.ID, sale.Country, sale.B2BVATID, strconv.Itoa(sale.Quantity * sale.ItemPrice), strconv.Itoa(sale.Quantity * sale.ItemDifftax), sale.VATRate, sale.VariantID, "true"})
 	}
 	out.Flush()
 	return nil
@@ -1038,7 +1038,7 @@ func (s *Shop) price(customer digitalgoods.Customer, variant digitalgoods.Varian
 		return variant.Price
 	}
 	// foreign B2B customer with VAT ID
-	rate, difftax := s.VATRate(variant.ID, string(customer.Country))
+	rate, difftax := s.VATRate(string(customer.Country), variant.ID, variant.Price)
 	gross := variant.Price - difftax
 	net, _ := euvat.NetInt(customer.Country, gross, rate)
 	return net + difftax
