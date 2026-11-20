@@ -502,8 +502,12 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 		AvailableEUCountries: countries.TranslateAndSort(l, availableEUCountries, selectedEUCountry),
 		AvailableNonEU:       availableNonEU,
+		B2BVATID:             customer.B2BVATID,
 		Catalog:              catalog,
-		Stock:                stock,
+		Price: func(variant digitalgoods.Variant) int {
+			return s.price(customer, variant)
+		},
+		Stock: stock,
 
 		Cart:      &cart,
 		Area:      r.PostFormValue("area"),
