@@ -642,15 +642,6 @@ func (s *Shop) custPurchasePost(w http.ResponseWriter, r *http.Request) http.Han
 	return http.RedirectHandler(r.URL.Path+"#notify", http.StatusSeeOther)
 }
 
-func (s *Shop) byCookie(w http.ResponseWriter, r *http.Request) {
-	// TODO maybe save language in cookie and redirect to user's locale
-	if redirectPath := s.CustomerSessions.GetString(r.Context(), "redirect-path"); redirectPath != "" {
-		http.Redirect(w, r, redirectPath, http.StatusSeeOther)
-	} else {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-}
-
 func (s *Shop) staffIndexGet(w http.ResponseWriter, r *http.Request) error {
 	stock, err := s.Database.GetStock()
 	if err != nil {
