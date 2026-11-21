@@ -429,7 +429,7 @@ func (s *Shop) custOrderGet(w http.ResponseWriter, r *http.Request) http.Handler
 		Area: area,
 	})
 	if err != nil {
-		return s.frontendErr(fmt.Errorf("executing customer order template: %w", err), l.Tr("Error displaying website. Please try again later."))
+		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
 	}
 	return nil
 }
@@ -516,7 +516,10 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 
 	if len(order) == 0 {
 		co.OrderErr = true
-		html.CustOrder.Execute(w, co)
+		err := html.CustOrder.Execute(w, co)
+		if err != nil {
+			return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
+		}
 		return nil
 	}
 
@@ -527,7 +530,10 @@ func (s *Shop) custOrderPost(w http.ResponseWriter, r *http.Request) http.Handle
 		country = countries.Country(co.EUCountry)
 		if !country.InEU() {
 			co.CountryErr = true
-			html.CustOrder.Execute(w, co)
+			err := html.CustOrder.Execute(w, co)
+			if err != nil {
+				return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
+			}
 			return nil
 		}
 	}
@@ -584,7 +590,7 @@ func (s *Shop) custPurchaseGet(w http.ResponseWriter, r *http.Request) http.Hand
 		URL:                 httputil.SchemeHost(r) + path.Join("/", l.Prefix, "order", purchase.ID, purchase.AccessKey),
 	})
 	if err != nil {
-		return s.frontendErr(fmt.Errorf("executing customer purchase template: %w", err), l.Tr("Error displaying website. Please try again later."))
+		return s.frontendErr(err, l.Tr("Error displaying website. Please try again later."))
 	}
 	return nil
 }
