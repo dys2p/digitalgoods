@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/alexedwards/scs/sqlite3store v0.0.0-20220216073957-c252878bcf5a
 	github.com/alexedwards/scs/v2 v2.4.0
-	github.com/dys2p/eco v0.0.0-20261021091530-8dd76d6e6bcc
+	github.com/dys2p/eco v0.0.0-20261125100956-b8bd79683618
 	github.com/dys2p/go-btcpay v0.9.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.16

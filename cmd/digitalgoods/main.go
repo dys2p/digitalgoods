@@ -173,10 +173,9 @@ func main() {
 			ErrCreateInvoice: func(err error) http.Handler {
 				return s.frontendErr(fmt.Errorf("creating invoice: %w", err), "Error creating BTCPay invoice")
 			},
-			ErrWebhook: func(err error) http.Handler {
+			ErrWebhook: func(err error) {
 				log.Printf("webhook error: %v", err)
 				ntfysh.Publish(ntfyshLog, "digitalgoods error", err.Error())
-				return nil
 			},
 			GetStatus: btcpayStore.StatusDaemon(),
 		},
